@@ -62,6 +62,7 @@ public class MMDSceneSource: SCNSceneSource {
     private var boneArray: [MMDNode]! = nil
     private var boneInverseMatrixArray: [NSValue]! = nil
     private var rootBone: MMDNode! = nil
+    private var boneHash: [String:MMDNode]! = nil
     
     // MARK: IK data
     private var ikCount = 0
@@ -74,7 +75,12 @@ public class MMDSceneSource: SCNSceneSource {
     private var faceDisplayCount = 0
     private var boneDisplayNameCount = 0
     private var boneDisplayCount = 0
+    
+    // MARK: physics body data
+    private var physicsBodyCount = 0
+    private var physicsBodyArray: [SCNPhysicsBody]! = nil
 
+    
     
     // MARK: - property for VMD File
     private var workingAnimationGroup: CAAnimationGroup! = nil
@@ -310,11 +316,15 @@ public class MMDSceneSource: SCNSceneSource {
         
         self.boneCount = 0
         self.boneArray = [MMDNode]()
+        self.boneHash = [String:MMDNode]()
         self.boneInverseMatrixArray = [NSValue]()
         self.rootBone = MMDNode()
         
         self.ikCount = 0
         self.ikArray = [MMDNode]()
+        
+        self.physicsBodyCount = 0
+        self.physicsBodyArray = [SCNPhysicsBody]()
         
         self.faceCount = 0
 
@@ -356,7 +366,7 @@ public class MMDSceneSource: SCNSceneSource {
             return self.workingNode
         }
 
-        self.readRigidBody()
+        self.readPhysicsBody()
         self.readConstraint()
         
         return self.workingNode
@@ -444,19 +454,19 @@ public class MMDSceneSource: SCNSceneSource {
 
             #if os(iOS)
                 
-            material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-            material.shininess = CGFloat(getFloat())
-            material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-            material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-            material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-            
+                material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
+                material.shininess = CGFloat(getFloat())
+                material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                
             #elseif os(OSX)
                 
-            material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
-            material.shininess = CGFloat(getFloat())
-            material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-            material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-            material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
+                material.shininess = CGFloat(getFloat())
+                material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
 
             #endif
             
@@ -467,20 +477,14 @@ public class MMDSceneSource: SCNSceneSource {
             
             print("textureFileName: \(textureFile)")
             if textureFile != "" {
-                //let dirname = "art.scnassets/"  // FIXME: get dirname from model file name
-                //let fileName = dirname + String(textureFile!)
                 let fileName = (self.directoryPath as NSString).stringByAppendingPathComponent(String(textureFile!))
                 
                 print("setTexture: \(fileName)")
                 
                 #if os(iOS)
-             
                     material.diffuse.contents = UIImage(contentsOfFile: fileName)
-                
                 #elseif os(OSX)
-
                     material.diffuse.contents = NSImage(contentsOfFile: fileName)
-                    
                 #endif
             }
             
@@ -524,6 +528,7 @@ public class MMDSceneSource: SCNSceneSource {
             let position = SCNVector3Make(x, y, z)
             bonePositionArray.append(position)
             self.boneArray.append(boneNode)
+            self.boneHash[boneNode.name!] = boneNode
         }
         
         // set parent node
@@ -598,7 +603,7 @@ public class MMDSceneSource: SCNSceneSource {
         self.faceCount = Int(getUnsignedShort())
         
         for _ in 0..<self.faceCount {
-            let name = getString(20)
+            let name = getString(20)!
             print("faceName: \(name)")
             
             let numVertices = getUnsignedInt()
@@ -667,12 +672,70 @@ public class MMDSceneSource: SCNSceneSource {
         }
     }
     
-    private func readRigidBody() {
-        var rigidBodyCount = getUnsignedInt()
+    private func readPhysicsBody() {
+        self.physicsBodyCount = Int(getUnsignedInt())
+        let gravity = SCNPhysicsField()
         
-        for _ in 0..<rigidBodyCount {
-            let name = getString(20)
-            let etcData = getData(63)
+        for _ in 0..<self.physicsBodyCount {
+            let name = getString(20)!
+            let boneIndex = Int(getUnsignedShort())
+            let groupIndex = Int(getUnsignedByte())
+            let groupTarget = Int(getUnsignedShort())
+            let shapeType = Int(getUnsignedByte())
+            let dx = CGFloat(getFloat())
+            let dy = CGFloat(getFloat())
+            let dz = CGFloat(getFloat())
+            let posX = CGFloat(getFloat())
+            let posY = CGFloat(getFloat())
+            let posZ = CGFloat(-getFloat())
+            let rotX = CGFloat(getFloat())
+            let rotY = CGFloat(getFloat())
+            let rotZ = CGFloat(-getFloat())
+            let weight = CGFloat(getFloat())
+            let positionDim = CGFloat(getFloat())
+            let rotateDim = CGFloat(getFloat())
+            let recoil = CGFloat(getFloat())
+            let friction = CGFloat(getFloat())
+            let type = Int(getUnsignedByte())
+            
+            var bodyType: SCNPhysicsBodyType! = nil
+            if type == 0 {
+                bodyType = SCNPhysicsBodyType.Kinematic
+            } else if type == 1 {
+                bodyType = SCNPhysicsBodyType.Dynamic
+            } else if type == 2 {
+                bodyType = SCNPhysicsBodyType.Dynamic
+            }
+            bodyType = SCNPhysicsBodyType.Kinematic // for debug
+            
+            var shape: SCNGeometry! = nil
+            if shapeType == 0 {
+                shape = SCNSphere(radius: dx)
+            } else if shapeType == 1 {
+                shape = SCNBox(width: dx, height: dy, length: dz, chamferRadius: 0.0)
+            } else if shapeType == 2 {
+                shape = SCNCapsule(capRadius: dx, height: dy)
+            } else {
+                print("unknown physics body shape")
+            }
+            
+            
+            let body = SCNPhysicsBody(type: bodyType, shape: SCNPhysicsShape(geometry: shape, options: nil))
+            
+            body.affectedByGravity = true
+            body.mass = weight
+            body.friction = friction
+            body.rollingFriction = rotateDim
+            body.collisionBitMask = groupTarget
+            body.restitution = recoil
+            body.usesDefaultMomentOfInertia = true
+
+            if boneIndex != 0xFFFF {
+                let bone = self.boneArray[boneIndex]
+                bone.physicsBody = body
+            }
+            
+            self.physicsBodyArray.append(body)
         }
     }
     
@@ -710,6 +773,7 @@ public class MMDSceneSource: SCNSceneSource {
             
             let element = SCNGeometryElement(data: data, primitiveType: .Triangles, primitiveCount: count / 3, bytesPerIndex: 2)
             
+            /*
             if(index == 2) {
                 print("********** Element \(index) **********")
                 for i in 0..<count {
@@ -732,6 +796,7 @@ public class MMDSceneSource: SCNSceneSource {
                     print("v[\(vertexNumInt)]: pos(\(posX), \(posY), \(posZ)), bone(\(bone1), \(bone2)), weight(\(weight1), \(weight2))")
                 }
             }
+            */
             
             /*
             if(index != 2) {
@@ -974,13 +1039,18 @@ public class MMDSceneSource: SCNSceneSource {
             motion.duration = duration
             motion.usesSceneTimeBase = false
             
-            if(motion.keyPath!.hasSuffix(".quaternion")) {
+            /*
+            if(motion.keyPath!.hasSuffix(".quaternion") ||
+                motion.keyPath!.hasSuffix(".x")) {
                 let count = motion.keyTimes!.count
-                print("count: \(count)")
+                //print("count: \(count)")
                 
                 self.workingAnimationGroup.animations!.append(motion)
-                print("\(motion.keyPath!) added")
+                //print("\(motion.keyPath!) added")
             }
+            */
+            
+            self.workingAnimationGroup.animations!.append(motion)
         }
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
