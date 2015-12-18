@@ -30,6 +30,12 @@
 		DD12C00A1C1ABE4200B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
 		DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */; };
 		DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8961C23F42500A7F834 /* MMDReader.swift */; };
+		DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8961C23F42500A7F834 /* MMDReader.swift */; };
+		DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */; };
+		DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */; };
+		DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
+		DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
@@ -102,6 +108,9 @@
 		DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKitSample_OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD12BFFA1C1AB85800B20F37 /* MMDSceneKitSample_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_iOSTests.swift; sourceTree = "<group>"; };
 		DD12BFFC1C1AB85800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD41D8961C23F42500A7F834 /* MMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDReader.swift; sourceTree = "<group>"; };
+		DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMDReader.swift; sourceTree = "<group>"; };
+		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +209,9 @@
 			children = (
 				DD12BF131C1835E000B20F37 /* MMDNode.swift */,
 				DD12BF151C18361400B20F37 /* MMDSceneSource.swift */,
+				DD41D8961C23F42500A7F834 /* MMDReader.swift */,
+				DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */,
+				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
 			);
 			name = Common;
 			path = Source/Common;
@@ -653,8 +665,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */,
+				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
+				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,8 +685,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */,
+				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
+				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
