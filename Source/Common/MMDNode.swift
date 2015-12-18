@@ -43,7 +43,36 @@ public class MMDNode: SCNNode {
                         let boneNameKey = keyAnim.keyPath!.componentsSeparatedByString(".")[0]
                         let boneName = (boneNameKey as NSString).substringFromIndex(1)
                         let bone = self.childNodeWithName(boneName, recursively: true)
-                        if bone != nil {
+                        
+                        if boneNameKey == "morpher" {
+                            if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
+                                print("morpher Animation - \(keyAnim.keyPath!)")
+                                let faceName = (keyAnim.keyPath! as NSString).substringFromIndex(16)
+                                var faceIndex = -1
+                                for index in 0..<self.morpher!.targets.count {
+                                    if self.morpher!.targets[index].name == faceName {
+                                        faceIndex = index
+                                        break
+                                    }
+                                }
+                                if faceIndex >= 0 {
+                                    let newKeyPath: String! = "morpher.weights[\(faceIndex)]"
+                                    keyAnim.keyPath = newKeyPath
+                                    
+
+                                    print("set keyPath: \(keyAnim.keyPath!): \(faceName)")
+                                    
+                                    for index in 0..<keyAnim.values!.count {
+                                        let val = keyAnim.values![index]
+                                        let tim = keyAnim.keyTimes![index]
+                                        
+                                        print("  \(tim): \(val)")
+                                    }
+                                }else{
+                                    keyAnim.keyPath = "//"
+                                }
+                            }
+                        } else if bone != nil {
                             if keyAnim.keyPath!.hasSuffix(".translation.x") {
                                 // FIXME: clone values
                             

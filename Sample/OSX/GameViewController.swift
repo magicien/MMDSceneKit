@@ -10,6 +10,8 @@ import SceneKit
 import QuartzCore
 import MMDSceneKit_OSX
 
+var scene: SCNScene! = nil
+
 class GameViewController: NSViewController {
     
     @IBOutlet weak var gameView: GameView!
@@ -17,7 +19,7 @@ class GameViewController: NSViewController {
     override func awakeFromNib(){
         // create a new scene
         //let scene = SCNScene(named: "art.scnassets/ship.scn")!
-        let scene = SCNScene()
+        scene = SCNScene()
         
         // create and add a camera to the scene
         let cameraNode = SCNNode()
@@ -25,7 +27,7 @@ class GameViewController: NSViewController {
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 40)
+        cameraNode.position = SCNVector3(x: 0, y: 10, z: 40)
         
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -51,11 +53,14 @@ class GameViewController: NSViewController {
         // animate the 3d object
         let motionPath = NSBundle.mainBundle().pathForResource("art.scnassets/happysyn", ofType: ".vmd")
         let motionSceneSource = MMDSceneSource(path: motionPath!)
-        let animations = motionSceneSource?.animations()
+        //let animations = motionSceneSource?.animations()
         let motion = motionSceneSource?.animations().first?.1
         motion!.repeatCount = Float.infinity
         modelNode.addAnimation(motion!, forKey: "happysyn")
-
+        
+        
+        let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
+        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
 
         // set the scene to the view
         self.gameView!.scene = scene

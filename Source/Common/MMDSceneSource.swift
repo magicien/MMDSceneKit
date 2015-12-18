@@ -70,6 +70,9 @@ public class MMDSceneSource: SCNSceneSource {
     
     // MARK: face data
     private var faceCount = 0
+    private var faceIndexArray: [Int]! = nil
+    private var faceNameArray: [String]! = nil
+    private var faceVertexArray: [[Float32]]! = nil
     
     // MARK: display info data
     private var faceDisplayCount = 0
@@ -80,6 +83,11 @@ public class MMDSceneSource: SCNSceneSource {
     private var physicsBodyCount = 0
     private var physicsBodyArray: [SCNPhysicsBody]! = nil
 
+    // MARK: geometry data
+    private var vertexSource: SCNGeometrySource! = nil
+    private var normalSource: SCNGeometrySource! = nil
+    private var texcoordSource: SCNGeometrySource! = nil
+    private var elementArray: [SCNGeometryElement]! = nil
     
     
     // MARK: - property for VMD File
@@ -95,6 +103,7 @@ public class MMDSceneSource: SCNSceneSource {
     private var frameLength = 0
 
     // MARK: face motion data
+    private var faceAnimationHash: [String: CAKeyframeAnimation]! = nil
     
     // MARK: camera motion data
     
@@ -327,6 +336,11 @@ public class MMDSceneSource: SCNSceneSource {
         self.physicsBodyArray = [SCNPhysicsBody]()
         
         self.faceCount = 0
+        self.faceIndexArray = [Int]()
+        self.faceNameArray = [String]()
+        self.faceVertexArray = [[Float32]]()
+        
+        self.elementArray = [SCNGeometryElement]()
 
         // read contents of file
         self.readPMDHeader()
@@ -344,9 +358,10 @@ public class MMDSceneSource: SCNSceneSource {
         self.readIK()
         self.readFace()
         self.readDisplayInfo()
-        
+
         // create geometry for shader
         self.createGeometry()
+        self.createFaceMorph()
         
         // read additional data
 
@@ -487,6 +502,7 @@ public class MMDSceneSource: SCNSceneSource {
                     material.diffuse.contents = NSImage(contentsOfFile: fileName)
                 #endif
             }
+            material.doubleSided = true
             
             self.materialIndexCountArray.append(indexCount)
             self.materialArray.append(material)
@@ -601,21 +617,158 @@ public class MMDSceneSource: SCNSceneSource {
     
     private func readFace() {
         self.faceCount = Int(getUnsignedShort())
+
+        let zeroArray = [Float32](count: self.vertexArray.count, repeatedValue: 0)
         
-        for _ in 0..<self.faceCount {
-            let name = getString(20)!
-            print("faceName: \(name)")
+        // read base face
+        if self.faceCount > 0 {
+            let name = String(getString(20)!) // must be "base"
+            var faceVertex = zeroArray
             
             let numVertices = getUnsignedInt()
             let type = getUnsignedByte()
             
             for _ in 0..<numVertices {
-                let index = getUnsignedInt()
+                let index = Int(getUnsignedInt())
+                self.faceIndexArray.append(index)
+                
+                let vertexIndex = index * 3
+                
                 let x = getFloat()
                 let y = getFloat()
-                let z = getFloat()
+                let z = -getFloat()
+                
+                faceVertex[vertexIndex + 0] = x
+                faceVertex[vertexIndex + 1] = y
+                faceVertex[vertexIndex + 2] = z
             }
+            self.faceNameArray.append(name)
+            self.faceVertexArray.append(faceVertex)
         }
+
+        
+        for _ in 1..<self.faceCount {
+            let name = String(getString(20)!)
+            var faceVertex = zeroArray
+            print("faceName: \(name)")
+            
+            let numVertices = getUnsignedInt()
+            
+            // 0: base, 1: eyebrows, 2: eyes, 3: lips, 4: etc
+            let type = getUnsignedByte()
+            
+            for _ in 0..<numVertices {
+                let index = self.faceIndexArray[Int(getUnsignedInt())]
+                let vertexIndex = index * 3
+                
+                let x = getFloat()
+                let y = getFloat()
+                let z = -getFloat()
+                
+                faceVertex[vertexIndex + 0] = x
+                faceVertex[vertexIndex + 1] = y
+                faceVertex[vertexIndex + 2] = z
+            }
+            
+            self.faceNameArray.append(name)
+            self.faceVertexArray.append(faceVertex)
+        }
+    }
+    
+    private func createFaceMorph() {
+        let morpher = SCNMorpher()
+        morpher.calculationMode = .Additive
+        
+        /*
+        let zeroNormalArray = [Float32](count: self.normalArray.count, repeatedValue: 0)
+        let zeroNormalData = NSData(bytes: zeroNormalArray, length: 4 * 3 * self.vertexCount)
+        let zeroNormalSource = SCNGeometrySource(data: zeroNormalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        
+        let zeroTexcoordArray = [Float32](count: self.texcoordArray.count, repeatedValue: 0)
+        let zeroTexcoordData = NSData(bytes: zeroTexcoordArray, length: 4 * 2 * self.vertexCount)
+        let zeroTexcoordSource = SCNGeometrySource(data: zeroTexcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        */
+        
+        //let zeroElementArray = self.elementArray
+        
+        /*
+        for index in 0..<self.faceCount {
+            let faceVertexData = NSData(bytes: self.faceVertexArray[index], length: 4 * 3 * self.vertexCount)
+            let faceVertexSource = SCNGeometrySource(data: faceVertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+
+            // TODO: create normal source
+            
+            //let faceGeometry = SCNGeometry(sources: [faceVertexSource, zeroNormalSource, zeroTexcoordSource], elements: self.elementArray)
+            let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
+            //faceGeometry.materials = self.materialArray
+            faceGeometry.name = self.faceNameArray[index]
+            
+            morpher.targets.append(faceGeometry)
+        }
+        */
+        let geometryNode = self.workingNode.childNodeWithName("Geometry", recursively: true)
+        //geometryNode!.morpher = morpher
+        
+        let vertexCount = self.vertexArray.count
+        let faceVertex = [Float32](count: vertexCount, repeatedValue: 1.0)
+        let faceVertexData = NSData(bytes: faceVertex, length: 4 * vertexCount)
+        let faceVertexSource = SCNGeometrySource(data: faceVertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
+        faceGeometry.name = "faceGeometry"
+        
+        morpher.targets.append(faceGeometry)
+        geometryNode!.morpher = morpher
+        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
+        
+        /*
+        for index in 0..<geometryNode!.morpher!.targets.count {
+            geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: index)
+        }
+        */
+        /*
+        for index in 0..<geometryNode!.morpher!.targets.count {
+            geometryNode!.morpher!.setWeight(0.0, forTargetAtIndex: index)
+        }
+        */
+        
+        // for debug
+        /*
+        print("vertexCount = \(self.vertexCount)")
+        print("vertexArray.count = \(self.vertexArray.count)")
+
+        if self.vertexArray.count != self.faceVertexArray[3].count {
+            print("vertexArray count is different: \(self.vertexArray.count) != \(self.faceVertexArray[3].count)")
+        }
+        for index in 0..<self.vertexArray.count {
+            self.vertexArray[index] += self.faceVertexArray[3][index]
+        }
+        let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
+        self.vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        */
+        /*
+        let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
+        geometry.materials = self.materialArray
+        geometry.name = "Geometry"
+        
+        let newGeometryNode = SCNNode(geometry: geometry)
+        newGeometryNode.name = "Geometry"
+        
+        let boneIndicesData = NSData(bytes: self.boneIndicesArray, length: 2 * 2 * self.vertexCount)
+        let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 2 * self.vertexCount)
+        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
+        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+
+        let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
+        
+        newGeometryNode.skinner = skinner
+        newGeometryNode.skinner!.skeleton = self.rootBone
+        
+        //self.workingNode.name = "rootNode" // FIXME: set model name or file name
+        geometryNode!.removeFromParentNode()
+        self.workingNode.addChildNode(newGeometryNode)
+        
+        //geometryNode!.geometry = geometry
+        */
     }
     
     private func readDisplayInfo() {
@@ -749,6 +902,22 @@ public class MMDSceneSource: SCNSceneSource {
     }
     
     private func createGeometry() {
+        // FIXME: delete  debug
+        /*
+        for index in 0..<self.vertexArray.count {
+            let d = self.faceVertexArray[8][index]
+            
+            if d != 0 {
+                print("[\(index)]: \(d)")
+                print("  before: \(self.vertexArray[index])")
+            
+                self.vertexArray[index] += d
+            
+                print("  after : \(self.vertexArray[index])")
+            }
+        }
+        */
+
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
@@ -757,14 +926,13 @@ public class MMDSceneSource: SCNSceneSource {
         //let edgeData = NSData(bytes: self.edgeArray, length: 1 * 1 * self.vertexCount)
         let indexData = NSData(bytes: self.indexArray, length: 2 * self.indexCount)
         
-        let vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let normalSource = SCNGeometrySource(data: normalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let texcoordSource = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        self.vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        self.normalSource = SCNGeometrySource(data: normalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        self.texcoordSource = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
         let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         
         
-        var elementArray = [SCNGeometryElement]()
         var indexPos = 0
         for index in 0..<self.materialCount {
             let count = materialIndexCountArray[index]
@@ -806,13 +974,13 @@ public class MMDSceneSource: SCNSceneSource {
                 elementArray.append(emptyElement)
             }
             */
-            elementArray.append(element)
+            self.elementArray.append(element)
             
             indexPos += length
         }
         
-        let geometry = SCNGeometry(sources: [vertexSource, normalSource, texcoordSource], elements: elementArray)
-        geometry.materials = materialArray
+        let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
+        geometry.materials = self.materialArray
         geometry.name = "Geometry"
         
         let geometryNode = SCNNode(geometry: geometry)
@@ -841,6 +1009,7 @@ public class MMDSceneSource: SCNSceneSource {
         self.workingAnimationGroup.animations = [CAAnimation]()
 
         self.animationHash = [String: CAKeyframeAnimation]()
+        self.faceAnimationHash = [String: CAKeyframeAnimation]()
         
         self.readVMDHeader()
         self.readFrame()
@@ -1017,11 +1186,39 @@ public class MMDSceneSource: SCNSceneSource {
     */
     private func readFaceMotion() {
         let faceFrameCount = getUnsignedInt()
-        
+        //let timingFunc = CAMediaTimingFunction(controlPoints: 1, 0, 1, 1)
+        let timingFunc = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+
         for _ in 0..<faceFrameCount {
-            let name = getString(15)
-            let frameNo = getUnsignedInt()
-            let factor = getFloat()
+            let name = String(getString(15)!)
+            let frameNo = Int(getUnsignedInt())
+            let factor = NSNumber(float: getFloat())
+            
+            let keyPath: String! = "morpher.weights.\(name)"
+            var animation = self.faceAnimationHash[name]
+                
+            if animation == nil {
+                animation = CAKeyframeAnimation(keyPath: keyPath)
+                animation!.values = [AnyObject]()
+                animation!.keyTimes = [NSNumber]()
+                animation!.timingFunctions = [CAMediaTimingFunction]()
+                
+                self.faceAnimationHash[name] = animation
+            }
+            
+            var frameIndex = 0
+            while frameIndex < animation!.keyTimes!.count {
+                let k = Int(animation!.keyTimes![frameIndex])
+                if(k > frameNo) {
+                    break
+                }
+                
+                frameIndex++
+            }
+            
+            animation!.keyTimes!.insert(frameNo, atIndex: frameIndex)
+            animation!.values!.insert(factor, atIndex:  frameIndex)
+            animation!.timingFunctions!.insert(timingFunc, atIndex: frameIndex)
         }
     }
 
@@ -1030,6 +1227,7 @@ public class MMDSceneSource: SCNSceneSource {
     private func createAnimations() {
         let duration = Double(self.frameLength) / 30.0
         print("frameLength: \(self.frameLength)")
+        
         for (_, motion) in self.animationHash {
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
@@ -1039,19 +1237,22 @@ public class MMDSceneSource: SCNSceneSource {
             motion.duration = duration
             motion.usesSceneTimeBase = false
             
-            /*
-            if(motion.keyPath!.hasSuffix(".quaternion") ||
-                motion.keyPath!.hasSuffix(".x")) {
-                let count = motion.keyTimes!.count
-                //print("count: \(count)")
-                
-                self.workingAnimationGroup.animations!.append(motion)
-                //print("\(motion.keyPath!) added")
-            }
-            */
-            
             self.workingAnimationGroup.animations!.append(motion)
         }
+        
+        for (_, motion) in self.faceAnimationHash {
+            print("faceAnimation: \(motion.keyPath)")
+            for num in 0..<motion.keyTimes!.count {
+                let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
+                motion.keyTimes![num] = NSNumber(float: keyTime)
+            }
+            
+            motion.duration = duration
+            motion.usesSceneTimeBase = false
+            
+            //self.workingAnimationGroup.animations!.append(motion)
+        }
+        
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
     }
