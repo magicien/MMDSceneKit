@@ -307,6 +307,31 @@ class MMDPMDReader: MMDReader {
             let type = getUnsignedByte()
             let ikTarget = getUnsignedShort()
             
+            switch(type) {
+            case 0:
+                boneNode.type = .ROTATE
+            case 1:
+                boneNode.type = .ROTATE_TRANSLATE
+            case 2:
+                boneNode.type = .IK
+            case 3:
+                boneNode.type = .UNKNOWN
+            case 4:
+                boneNode.type = .IK_CHILD
+            case 5:
+                boneNode.type = .ROTATE_CHILD
+            case 6:
+                boneNode.type = .IK_TARGET
+            case 7:
+                boneNode.type = .HIDDEN
+            case 8:
+                boneNode.type = .TWIST
+            case 9:
+                boneNode.type = .ROLL
+            default:
+                boneNode.type = .UNKNOWN
+            }
+            
             #if os(iOS)
                 let x = getFloat()
                 let y = getFloat()
@@ -361,12 +386,12 @@ class MMDPMDReader: MMDReader {
         
         for _ in 0..<self.ikCount {
             let targetBoneNo = Int(getUnsignedShort())
-            let effectBoneNo = Int(getUnsignedShort())
+            let effectorBoneNo = Int(getUnsignedShort())
             let numLink = getUnsignedByte()
             let iteration = getUnsignedShort()
             let weight = getUnsignedInt()
             
-            print("targetBoneNo: \(targetBoneNo), effectBoneNo: \(effectBoneNo)")
+            print("targetBoneNo: \(targetBoneNo), effectorBoneNo: \(effectorBoneNo)")
             for _ in 0..<numLink-1 {
                 let linkNo = Int(getUnsignedShort())
                 print("linkNo: \(linkNo), \(boneArray[linkNo])")
@@ -375,19 +400,38 @@ class MMDPMDReader: MMDReader {
             let rootLinkNo = Int(getUnsignedShort())
             print("rootLinkNo: \(rootLinkNo)")
             
-            /*
-            let chainRootNode = boneArray[rootLinkNo]
-            let constraint = SCNIKConstraint.init(chainRootNode: chainRootNode)
+            let chainRootNode = self.boneArray[rootLinkNo]
+            print("chainRootNode: \(chainRootNode)")
+            let constraint = SCNIKConstraint.inverseKinematicsConstraintWithChainRootNode(chainRootNode)
             
-            let effectNode = boneArray[effectBoneNo]
-            if effectNode.constraints == nil {
-            effectNode.constraints = [SCNConstraint]()
+            let effectorNode = self.boneArray[effectorBoneNo]
+            if effectorNode.constraints == nil {
+                effectorNode.constraints = [SCNConstraint]()
             }
-            effectNode.constraints!.append(constraint)
+            constraint.targetPosition = SCNVector3(0, 100, 0)
+            effectorNode.constraints!.append(constraint)
+            effectorNode.ikConstraint = constraint
             
-            let targetNode = boneArray[targetBoneNo]
+            let targetNode = self.boneArray[targetBoneNo]
             self.ikArray.append(targetNode)
-            */
+            
+            let targetConstraint = SCNTransformConstraint(inWorldSpace: true, withBlock: { (node, matrix) -> SCNMatrix4 in
+                if let mmdNode = node as? MMDNode {
+                    //print("TransformConstraint")
+                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = matrix.m41
+                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = matrix.m42
+                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = matrix.m43
+                }
+                
+                return matrix
+            })
+
+            if targetNode.constraints == nil {
+                targetNode.constraints = [SCNConstraint]()
+            }
+            targetNode.constraints!.append(targetConstraint)
+            
+            targetNode.ikTargetBone = effectorNode
         }
     }
     
@@ -662,6 +706,9 @@ class MMDPMDReader: MMDReader {
             if boneIndex != 0xFFFF {
                 let bone = self.boneArray[boneIndex]
                 bone.physicsBody = body
+                print("physicsBody: \(name) -> \(bone.name)")
+            }else{
+                print("physicsBody: \(name) -> nil")
             }
             
             self.physicsBodyArray.append(body)
@@ -673,7 +720,30 @@ class MMDPMDReader: MMDReader {
         
         for _ in 0..<constraintCount {
             let name = getString(20)
-            let etcData = getData(104)
+            let bodyANo = Int(getUnsignedInt())
+            let bodyBNo = Int(getUnsignedInt())
+            
+            let bodyA = self.physicsBodyArray[bodyANo]
+            let bodyB = self.physicsBodyArray[bodyBNo]
+            
+            print("name: \(name), bodyA: \(bodyANo), bodyB: \(bodyBNo)")
+            
+            let pos = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+            
+            let pos1 = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let pos2 = SCNVector3(getFloat(), getFloat(), -getFloat())
+            
+            let rot1 = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let rot2 = SCNVector3(getFloat(), getFloat(), -getFloat())
+            
+            let spring_pos = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let sprint_rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+            
+            let constraint = SCNPhysicsBallSocketJoint(bodyA: bodyA, anchorA: pos1, bodyB: bodyB, anchorB: pos2)
+            
+            // FIXME: 
+            //self.workingNode.physicsBehaviors.append(constraint)
         }
     }
     

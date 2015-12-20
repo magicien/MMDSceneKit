@@ -243,4 +243,5 @@ public class MMDSceneSource: SCNSceneSource {
             showBoneTree(child, prefix: "    " + prefix)
         }
     }
+    
 }

@@ -8,7 +8,26 @@
 
 import SceneKit
 
+public enum MMDNodeType {
+    case ROTATE
+    case ROTATE_TRANSLATE
+    case IK
+    case UNKNOWN
+    case IK_CHILD
+    case ROTATE_CHILD
+    case IK_TARGET
+    case HIDDEN
+    case TWIST
+    case ROLL
+}
+
 public class MMDNode: SCNNode {
+    public internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
+    public internal(set) var type: MMDNodeType = .UNKNOWN
+    // FIXME: internal variant
+    public var ikTargetBone: MMDNode? = nil
+    public var ikConstraint: SCNIKConstraint? = nil
+    
     override public func valueForUndefinedKey(key: String) -> AnyObject? {
         if key.hasPrefix("/") {
             let searchKey = (key as NSString).substringFromIndex(1)
