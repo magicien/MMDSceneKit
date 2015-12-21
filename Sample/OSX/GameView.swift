@@ -18,27 +18,9 @@ class GameView: SCNView {
         let geometryNode = scene!.rootNode.childNodeWithName("Geometry", recursively: true)
         let morpher = geometryNode!.morpher
         
-        // morph it
-        SCNTransaction.begin()
-        SCNTransaction.setAnimationDuration(0.5)
-        
-        SCNTransaction.setCompletionBlock() {
-            SCNTransaction.begin()
-            SCNTransaction.setAnimationDuration(0.5)
-            
-            morpher!.setWeight(0.0, forTargetAtIndex: 0)
-            
-            SCNTransaction.commit()
-        }
-        
-        morpher!.setWeight(1.0, forTargetAtIndex: 0)
-        
-        SCNTransaction.commit()
-        
-        
-        
         let childNodes = scene!.rootNode.childNodes
-        
+
+        /*
         SCNTransaction.begin()
         SCNTransaction.setAnimationDuration(0.5)
 
@@ -61,6 +43,7 @@ class GameView: SCNView {
             
             SCNTransaction.commit()
         }
+*/
 
         for node in childNodes {
             if let mmdNode = node as? MMDNode {

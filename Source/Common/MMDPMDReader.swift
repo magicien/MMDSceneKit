@@ -378,8 +378,36 @@ class MMDPMDReader: MMDReader {
         self.boneArray.append(self.rootBone)
         self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
         
+        // set constarint to knees
+        let kneeConstraint = SCNTransformConstraint(inWorldSpace: false, withBlock: { (node, matrix) -> SCNMatrix4 in
+            if let mmdNode = node as? MMDNode {
+                return self.calcKneeConstraint(matrix)
+            }
+            
+            return matrix
+        })
+        
+        let leftKnee = self.rootBone.childNodeWithName("左ひざ", recursively: true)
+        if leftKnee != nil {
+            if leftKnee!.constraints == nil {
+                leftKnee!.constraints = [SCNConstraint]()
+            }
+            leftKnee!.constraints!.append(kneeConstraint)
+        }
+        
+        let rightKnee = self.rootBone.childNodeWithName("右ひざ", recursively: true)
+        if rightKnee != nil {
+            if rightKnee!.constraints == nil {
+                rightKnee!.constraints = [SCNConstraint]()
+            }
+            rightKnee!.constraints!.append(kneeConstraint)
+        }
+        
+        
         self.workingNode.addChildNode(self.rootBone)
     }
+    
+    
     
     private func readIK() {
         self.ikCount = Int(getUnsignedShort())
@@ -408,19 +436,21 @@ class MMDPMDReader: MMDReader {
             if effectorNode.constraints == nil {
                 effectorNode.constraints = [SCNConstraint]()
             }
-            constraint.targetPosition = SCNVector3(0, 100, 0)
+            //constraint.targetPosition = SCNVector3(0, 100, 0)
             effectorNode.constraints!.append(constraint)
-            effectorNode.ikConstraint = constraint
+            //effectorNode.ikConstraint = constraint
             
             let targetNode = self.boneArray[targetBoneNo]
             self.ikArray.append(targetNode)
             
             let targetConstraint = SCNTransformConstraint(inWorldSpace: true, withBlock: { (node, matrix) -> SCNMatrix4 in
                 if let mmdNode = node as? MMDNode {
-                    //print("TransformConstraint")
-                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = matrix.m41
-                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = matrix.m42
-                    mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = matrix.m43
+                    //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = matrix.m41
+                    //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = matrix.m42
+                    //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = matrix.m43
+                    //mmdNode.ikTargetBone!.ikConstraint!.targetPosition = mmdNode.presentationNode.position
+                    
+                    //print("presentation: \(mmdNode.presentationNode.position), matrix: (\(matrix.m41), \(matrix.m42), \(matrix.m43))")
                 }
                 
                 return matrix
@@ -433,6 +463,39 @@ class MMDPMDReader: MMDReader {
             
             targetNode.ikTargetBone = effectorNode
         }
+    }
+    
+    private func calcKneeConstraint(mat: SCNMatrix4) -> SCNMatrix4 {
+        var x = atan2( Double(mat.m23), Double(mat.m33) )
+        //let y: Double = asin( Double(-mat.m13) )
+        //let z: Double = atan2( Double(mat.m12), Double(mat.m11) )
+        
+        //let cosX = cos(x)
+        //let cosY = cos(y)
+        //let cosZ = cos(z)
+        //let sinX = sin(x)
+        //let sinY = sin(y)
+        //let sinZ = sin(z)
+        print("kneeConstraint: before: \(x)")
+
+        let minX = 0.003
+        let maxX = M_PI - 0.003
+        if x < minX {
+            x = minX
+        }
+        if x > maxX {
+            x = maxX
+        }
+        
+        print("kneeConstraint: after: \(x)")
+        
+        var newMat = SCNMatrix4MakeRotation(CGFloat(x), 1, 0, 0)
+        //var newMat = SCNMatrix4MakeRotation(x, 1, 0, 0)
+        newMat.m41 = mat.m41
+        newMat.m42 = mat.m42
+        newMat.m43 = mat.m43
+        
+        return newMat
     }
     
     private func readFace() {
@@ -498,58 +561,18 @@ class MMDPMDReader: MMDReader {
     private func createFaceMorph() {
         let morpher = SCNMorpher()
         morpher.calculationMode = .Additive
-        
-        /*
-        let zeroNormalArray = [Float32](count: self.normalArray.count, repeatedValue: 0)
-        let zeroNormalData = NSData(bytes: zeroNormalArray, length: 4 * 3 * self.vertexCount)
-        let zeroNormalSource = SCNGeometrySource(data: zeroNormalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        
-        let zeroTexcoordArray = [Float32](count: self.texcoordArray.count, repeatedValue: 0)
-        let zeroTexcoordData = NSData(bytes: zeroTexcoordArray, length: 4 * 2 * self.vertexCount)
-        let zeroTexcoordSource = SCNGeometrySource(data: zeroTexcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
-        */
-        
-        //let zeroElementArray = self.elementArray
-        
-        /*
+
         for index in 0..<self.faceCount {
-        let faceVertexData = NSData(bytes: self.faceVertexArray[index], length: 4 * 3 * self.vertexCount)
-        let faceVertexSource = SCNGeometrySource(data: faceVertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        
-        // TODO: create normal source
-        
-        //let faceGeometry = SCNGeometry(sources: [faceVertexSource, zeroNormalSource, zeroTexcoordSource], elements: self.elementArray)
-        let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
-        //faceGeometry.materials = self.materialArray
-        faceGeometry.name = self.faceNameArray[index]
-        
-        morpher.targets.append(faceGeometry)
+            let faceVertexData = NSData(bytes: self.faceVertexArray[index], length: 4 * 3 * self.vertexCount)
+            let faceVertexSource = SCNGeometrySource(data: faceVertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+            
+            let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
+            faceGeometry.name = self.faceNameArray[index]
+            
+            morpher.targets.append(faceGeometry)
         }
-        */
         let geometryNode = self.workingNode.childNodeWithName("Geometry", recursively: true)
-        //geometryNode!.morpher = morpher
-        
-        let vertexCount = self.vertexArray.count
-        let faceVertex = [Float32](count: vertexCount, repeatedValue: 1.0)
-        let faceVertexData = NSData(bytes: faceVertex, length: 4 * vertexCount)
-        let faceVertexSource = SCNGeometrySource(data: faceVertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
-        faceGeometry.name = "faceGeometry"
-        
-        morpher.targets.append(faceGeometry)
         geometryNode!.morpher = morpher
-        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
-        
-        /*
-        for index in 0..<geometryNode!.morpher!.targets.count {
-        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: index)
-        }
-        */
-        /*
-        for index in 0..<geometryNode!.morpher!.targets.count {
-        geometryNode!.morpher!.setWeight(0.0, forTargetAtIndex: index)
-        }
-        */
         
         // for debug
         /*
@@ -564,30 +587,6 @@ class MMDPMDReader: MMDReader {
         }
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
         self.vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        */
-        /*
-        let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
-        geometry.materials = self.materialArray
-        geometry.name = "Geometry"
-        
-        let newGeometryNode = SCNNode(geometry: geometry)
-        newGeometryNode.name = "Geometry"
-        
-        let boneIndicesData = NSData(bytes: self.boneIndicesArray, length: 2 * 2 * self.vertexCount)
-        let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 2 * self.vertexCount)
-        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
-        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
-        
-        let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
-        
-        newGeometryNode.skinner = skinner
-        newGeometryNode.skinner!.skeleton = self.rootBone
-        
-        //self.workingNode.name = "rootNode" // FIXME: set model name or file name
-        geometryNode!.removeFromParentNode()
-        self.workingNode.addChildNode(newGeometryNode)
-        
-        //geometryNode!.geometry = geometry
         */
     }
     

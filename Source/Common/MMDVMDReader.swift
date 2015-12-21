@@ -276,7 +276,7 @@ class MMDVMDReader: MMDReader {
         }
         
         for (_, motion) in self.faceAnimationHash {
-            print("faceAnimation: \(motion.keyPath)")
+            print("faceAnimation: \(motion.keyPath!)")
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
                 motion.keyTimes![num] = NSNumber(float: keyTime)
@@ -285,7 +285,7 @@ class MMDVMDReader: MMDReader {
             motion.duration = duration
             motion.usesSceneTimeBase = false
             
-            //self.workingAnimationGroup.animations!.append(motion)
+            self.workingAnimationGroup.animations!.append(motion)
         }
         
         self.workingAnimationGroup.duration = duration

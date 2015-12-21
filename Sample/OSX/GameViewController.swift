@@ -64,8 +64,8 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         modelNode.addAnimation(motion!, forKey: "happysyn")
         
         
-        let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
-        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
+        //let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
+        //geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
 
         self.gameView!.delegate = self
         
@@ -118,9 +118,9 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
                 //let y = mat.m12 + mat.m22 + mat.m32 + mat.m42
                 //let z = mat.m13 + mat.m23 + mat.m33 + mat.m43
 
-                mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = mat.m41
-                mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = mat.m42
-                mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = mat.m43
+                //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = mat.m41
+                //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = mat.m42
+                //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = mat.m43
             }
         }
         

@@ -1,6 +1,5 @@
 //
 //  RegExp.swift
-//  MMDSceneKit
 //
 // http://qiita.com/tsuruchika/items/9ca9c4811e1f28b9417c
 // http://easyramble.com/swift-regular-expression-utility.html

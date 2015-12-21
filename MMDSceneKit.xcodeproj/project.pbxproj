@@ -43,6 +43,8 @@
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
+		DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +119,7 @@
 		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 		DD41D89F1C24099400A7F834 /* MMDXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDXReader.swift; sourceTree = "<group>"; };
 		DD41D8A21C25354C00A7F834 /* RegExp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegExp.swift; sourceTree = "<group>"; };
+		DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKConstraint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +223,7 @@
 				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
 				DD41D89F1C24099400A7F834 /* MMDXReader.swift */,
 				DD41D8A21C25354C00A7F834 /* RegExp.swift */,
+				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
 			);
 			name = Common;
 			path = Source/Common;
@@ -675,6 +679,7 @@
 			files = (
 				DD41D8A31C25354C00A7F834 /* RegExp.swift in Sources */,
 				DD41D8A01C24099400A7F834 /* MMDXReader.swift in Sources */,
+				DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */,
 				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
@@ -697,6 +702,7 @@
 			files = (
 				DD41D8A41C25354C00A7F834 /* RegExp.swift in Sources */,
 				DD41D8A11C24099400A7F834 /* MMDXReader.swift in Sources */,
+				DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */,
 				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
