@@ -635,7 +635,6 @@ class MMDXReader {
                 self.normalMap[vertexIndex] = normalIndex
             }else if newVertexIndex == nil {
                 // conflict; add vertex data at index(vertexCount)
-                print("conflict!: \(vertexToNormal), normalIndex: \(normalIndex)")
                 self.rawVertexArray.append( self.rawVertexArray[vertexIndex] )
                 self.rawTexcoordArray.append( self.rawTexcoordArray[vertexIndex] )
                 
@@ -680,7 +679,6 @@ class MMDXReader {
         
         self.texcoordArray = [Float32]()
         for i in 0..<self.rawTexcoordArray.count {
-            print("texcoord(\(i)): \(self.rawTexcoordArray[i][0]), \(self.rawTexcoordArray[i][1])")
             self.texcoordArray.append( self.rawTexcoordArray[i][0] )
             self.texcoordArray.append( self.rawTexcoordArray[i][1] )
         }
@@ -696,10 +694,6 @@ class MMDXReader {
             let vertexIndex = flatVertexIndexArray[i]
             
             self.indexArray[materialIndex].append( Int32(vertexIndex) )
-        }
-        
-        for i in 0..<self.indexArray.count {
-            print("indexArray[\(i)].count = \(self.indexArray[i].count)")
         }
     }
     
@@ -854,8 +848,7 @@ class MMDXReader {
     
         self.getCommaOrSemicolon()
 
-        //return NSColor(red: r, green: g, blue: b, alpha: a)
-        return NSColor(red: 0, green: 0, blue: 0, alpha: a)
+        return NSColor(red: r, green: g, blue: b, alpha: a)
     }
 
     /**
@@ -870,8 +863,7 @@ class MMDXReader {
     
         self.getCommaOrSemicolon()
     
-        //return NSColor(red: r, green: g, blue: b, alpha: a)
-        return NSColor(red: 0, green: 0, blue: 0, alpha: a)
+        return NSColor(red: r, green: g, blue: b, alpha: a)
     }
     
     private func IndexedColor() -> NSColor {
@@ -926,7 +918,6 @@ class MMDXReader {
     }
     
     private func Material() -> SCNMaterial {
-        print(" *********** Material ************* ")
         var material = SCNMaterial()
         
         self.getLeftBrace()
@@ -942,10 +933,18 @@ class MMDXReader {
             let textureFilePath = self.TextureFilename()
             if textureFilePath != nil {
                 #if os(iOS)
-                    material.diffuse.contents = UIImage(contentsOfFile: textureFilePath!)
+                    let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0)
+                    let image = UIImage(contentsOfFile: textureFilePath!)
                 #elseif os(OSX)
-                    material.diffuse.contents = NSImage(contentsOfFile: textureFilePath!)
+                    let black = NSColor(red: 0, green: 0, blue: 0, alpha: 0)
+                    let image = NSImage(contentsOfFile: textureFilePath!)
                 #endif
+                
+                if image != nil {
+                    material.ambient.contents = black
+                    material.emission.contents = black
+                    material.diffuse.contents = image
+                }
             }
         }
 
