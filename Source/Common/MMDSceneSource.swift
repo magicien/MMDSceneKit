@@ -63,8 +63,8 @@ public class MMDSceneSource: SCNSceneSource {
                 }
             }
         }else if self.fileType == .X {
-            if let xNode = loadXFile() {
-                self.workingScene.rootNode.addChildNode(xNode)
+            if let xNode = MMDXReader.getNode(data, directoryPath: self.directoryPath) {
+                self.workingNode = xNode
             }
         }else if self.fileType == .PMX {
             //if let pmxNode = loadPMDFile() {
@@ -108,7 +108,7 @@ public class MMDSceneSource: SCNSceneSource {
     public func modelNodes() -> [MMDNode]! {
         var nodeArray = [MMDNode]()
         
-        if self.fileType == .PMD || self.fileType == .PMX {
+        if self.fileType == .PMD || self.fileType == .PMX || self.fileType == .X {
             print("add workingNode: \(self.workingNode)")
             nodeArray.append(self.workingNode) // FIXME: clone node
         }else if self.fileType == .PMM {
@@ -204,20 +204,6 @@ public class MMDSceneSource: SCNSceneSource {
     private func loadPMMFile() -> [MMDNode]? {
         return nil
     }
-    
-    
-    
-    
-    
-
-    // MARK: - Loading X File
-    
-    /**
-    */
-    private func loadXFile() -> MMDNode? {
-        return nil
-    }
-    
     
     // MARK: - Loading PMX File
     

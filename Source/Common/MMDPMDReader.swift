@@ -489,7 +489,7 @@ class MMDPMDReader: MMDReader {
         
         print("kneeConstraint: after: \(x)")
         
-        var newMat = SCNMatrix4MakeRotation(CGFloat(x), 1, 0, 0)
+        var newMat = SCNMatrix4MakeRotation(OSFloat(x), 1, 0, 0)
         //var newMat = SCNMatrix4MakeRotation(x, 1, 0, 0)
         newMat.m41 = mat.m41
         newMat.m42 = mat.m42

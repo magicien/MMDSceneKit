@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
+		DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
 		DD12BF791C1838D700B20F37 /* MMDSceneKit_OSX.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF781C1838D700B20F37 /* MMDSceneKit_OSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD12BF801C1838D700B20F37 /* MMDSceneKit_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */; };
 		DD12BF851C1838D700B20F37 /* MMDSceneKit_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF841C1838D700B20F37 /* MMDSceneKit_OSXTests.swift */; };
@@ -36,10 +38,8 @@
 		DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */; };
 		DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
 		DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
-		DD41D8A01C24099400A7F834 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
-		DD41D8A11C24099400A7F834 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
-		DD41D8A31C25354C00A7F834 /* RegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* RegExp.swift */; };
-		DD41D8A41C25354C00A7F834 /* RegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* RegExp.swift */; };
+		DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
+		DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
@@ -118,7 +118,7 @@
 		DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMDReader.swift; sourceTree = "<group>"; };
 		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 		DD41D89F1C24099400A7F834 /* MMDXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDXReader.swift; sourceTree = "<group>"; };
-		DD41D8A21C25354C00A7F834 /* RegExp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegExp.swift; sourceTree = "<group>"; };
+		DD41D8A21C25354C00A7F834 /* Regexp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regexp.swift; sourceTree = "<group>"; };
 		DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKConstraint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,7 +222,7 @@
 				DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */,
 				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
 				DD41D89F1C24099400A7F834 /* MMDXReader.swift */,
-				DD41D8A21C25354C00A7F834 /* RegExp.swift */,
+				DD41D8A21C25354C00A7F834 /* Regexp.swift */,
 				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
 			);
 			name = Common;
@@ -677,11 +677,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD41D8A31C25354C00A7F834 /* RegExp.swift in Sources */,
-				DD41D8A01C24099400A7F834 /* MMDXReader.swift in Sources */,
+				DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */,
 				DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */,
+				DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */,
 				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
 				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
@@ -700,11 +700,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD41D8A41C25354C00A7F834 /* RegExp.swift in Sources */,
-				DD41D8A11C24099400A7F834 /* MMDXReader.swift in Sources */,
+				DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */,
 				DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */,
+				DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */,
 				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
 				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
