@@ -45,6 +45,7 @@ class GameView: SCNView {
         }
 */
 
+#if false
         for node in childNodes {
             if let mmdNode = node as? MMDNode {
                 if mmdNode.ikTargetBone != nil {
@@ -68,7 +69,7 @@ class GameView: SCNView {
             }
         }
         SCNTransaction.commit()
-
+#endif
         
         
         // check what nodes are clicked

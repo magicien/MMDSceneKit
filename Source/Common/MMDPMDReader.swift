@@ -476,7 +476,7 @@ class MMDPMDReader: MMDReader {
         //let sinX = sin(x)
         //let sinY = sin(y)
         //let sinZ = sin(z)
-        print("kneeConstraint: before: \(x)")
+        //print("kneeConstraint: before: \(x)")
 
         let minX = 0.003
         let maxX = M_PI - 0.003
@@ -487,7 +487,7 @@ class MMDPMDReader: MMDReader {
             x = maxX
         }
         
-        print("kneeConstraint: after: \(x)")
+        //print("kneeConstraint: after: \(x)")
         
         var newMat = SCNMatrix4MakeRotation(OSFloat(x), 1, 0, 0)
         //var newMat = SCNMatrix4MakeRotation(x, 1, 0, 0)

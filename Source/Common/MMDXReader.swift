@@ -10,8 +10,12 @@ import SceneKit
 
 #if os(iOS)
     typealias OSFloat = Float
+    typealias OSColor = UIColor
+    typealias OSImage = UIImage
 #elseif os(OSX)
     typealias OSFloat = CGFloat
+    typealias OSColor = NSColor
+    typealias OSImage = NSImage
 #endif
     
     
@@ -717,6 +721,7 @@ class MMDXReader {
         //let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         
         self.elementArray = [SCNGeometryElement]()
+        var newMaterialArray = [SCNMaterial]()
         for materialNo in 0..<self.materialArray.count {
             let indexArray = self.indexArray[materialNo]
             let indexCount = indexArray.count / 3
@@ -728,11 +733,12 @@ class MMDXReader {
                 let element = SCNGeometryElement(data: indexData, primitiveType: .Triangles, primitiveCount: indexCount, bytesPerIndex: 4)
             
                 self.elementArray.append(element)
+                newMaterialArray.append(self.materialArray[materialNo])
             }
         }
         
         let geometry = SCNGeometry(sources: [vertexSource, normalSource, texcoordSource], elements: self.elementArray)
-        geometry.materials = self.materialArray
+        geometry.materials = newMaterialArray
         geometry.name = "Geometry"
         
         return geometry
@@ -848,7 +854,8 @@ class MMDXReader {
     
         self.getCommaOrSemicolon()
 
-        return NSColor(red: r, green: g, blue: b, alpha: a)
+        //return NSColor(red: r, green: g, blue: b, alpha: a)
+        return NSColor(red: 0, green: 0, blue: 0, alpha: a)
     }
 
     /**
@@ -863,7 +870,8 @@ class MMDXReader {
     
         self.getCommaOrSemicolon()
     
-        return NSColor(red: r, green: g, blue: b, alpha: a)
+        //return NSColor(red: r, green: g, blue: b, alpha: a)
+        return NSColor(red: 0, green: 0, blue: 0, alpha: a)
     }
     
     private func IndexedColor() -> NSColor {

@@ -88,11 +88,11 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
     }
 
     func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
-        print("updateAtTime")
+        //print("updateAtTime")
     }
     func renderer(renderer: SCNSceneRenderer, didApplyAnimationsAtTime time: NSTimeInterval) {
     //func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
-        print("didApplyAnimationsAtTime")
+        //print("didApplyAnimationsAtTime")
         //applyIKRecursive(scene.rootNode)
         
         /*
@@ -135,12 +135,12 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
     }
     
     func renderer(renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: NSTimeInterval) {
-        print("didSimulatePhysicsAtTime")
+        //print("didSimulatePhysicsAtTime")
     }
     func renderer(renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: NSTimeInterval) {
-        print("willRenderScene")
+        //print("willRenderScene")
     }
     func renderer(renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: NSTimeInterval) {
-        print("didRenderScene")
+        //print("didRenderScene")
     }
 }
