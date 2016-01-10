@@ -6,6 +6,9 @@
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
+// define for macro
+public let USE_SCNMORPHER = false
+
 import SceneKit
 
 class MMDPMDReader: MMDReader {
@@ -231,6 +234,7 @@ class MMDPMDReader: MMDReader {
             let index2 = getUnsignedShort()
             let index3 = getUnsignedShort()
             
+            // we have to change the index order because of the coordination difference.
             self.indexArray.append(index1)
             self.indexArray.append(index3)
             self.indexArray.append(index2)
@@ -574,21 +578,15 @@ class MMDPMDReader: MMDReader {
         let geometryNode = self.workingNode.childNodeWithName("Geometry", recursively: true)
         geometryNode!.morpher = morpher
         
-        // for debug
-        /*
-        print("vertexCount = \(self.vertexCount)")
-        print("vertexArray.count = \(self.vertexArray.count)")
-        
-        if self.vertexArray.count != self.faceVertexArray[3].count {
-        print("vertexArray count is different: \(self.vertexArray.count) != \(self.faceVertexArray[3].count)")
-        }
-        for index in 0..<self.vertexArray.count {
-        self.vertexArray[index] += self.faceVertexArray[3][index]
-        }
-        let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
-        self.vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        */
+        // FIXME
+        self.workingNode.geometryMorpher = morpher
     }
+    /*
+    private func createFaceMorph() {
+        let geometryNode = self.workingNode.childNodeWithName("Geometry", recursively: true)
+        geometryNode!.morpher = SCNMorpher()
+    }
+    */
     
     private func readDisplayInfo() {
         // read face display info
@@ -824,6 +822,35 @@ class MMDPMDReader: MMDReader {
             indexPos += length
         }
         
+        //let program = MMDProgram()
+        print("****************** create program start ***************************")
+        let program = MMDProgram()
+        //program.delegate = self.workingNode
+        
+        /*
+        var path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "vsh")
+        let vertexShader = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
+        program.vertexShader = vertexShader
+        
+        path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "fsh")
+        let fragmentShader = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
+        program.fragmentShader = fragmentShader
+        
+        program.setSemantic(SCNModelViewProjectionTransform, forSymbol: "modelViewProjectionTransform", options: nil)
+        program.setSemantic(SCNGeometrySourceSemanticVertex, forSymbol: "aPos", options: nil)
+        */
+        print("****************** create program end ***************************")
+
+
+        
+        
+        
+        /*
+        for material in self.materialArray {
+            material.program = program
+        }
+        */
+        
         let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
         geometry.materials = self.materialArray
         geometry.name = "Geometry"
@@ -835,11 +862,59 @@ class MMDPMDReader: MMDReader {
         
         geometryNode.skinner = skinner
         geometryNode.skinner!.skeleton = self.rootBone
+        geometryNode.castsShadow = true
+        
+        //let program = MMDProgram()
+        //geometryNode.geometry!.program = program
         
         self.workingNode.name = "rootNode" // FIXME: set model name or file name
         self.workingNode.addChildNode(geometryNode)
         self.workingNode.addChildNode(self.rootBone)
         
         //showBoneTree(self.rootBone)
+        
+        // FIXME: use morpher
+        self.workingNode.faceIndexArray = [Int]()
+        self.workingNode.faceDataArray = [[Float32]]()
+        self.workingNode.faceWeights = [MMDFloat]()
+        self.workingNode.vertexArray = self.vertexArray
+        for index in self.faceIndexArray {
+            self.workingNode.faceIndexArray!.append(index * 3 + 0)
+            self.workingNode.faceIndexArray!.append(index * 3 + 1)
+            self.workingNode.faceIndexArray!.append(index * 3 + 2)
+        }
+        for faceNo in 0..<self.faceCount {
+            var orgFaceData = self.faceVertexArray[faceNo]
+            var newFaceData = [Float32]()
+            for i in 0..<self.workingNode.faceIndexArray!.count {
+                let faceIndex = self.workingNode.faceIndexArray![i]
+                //newFaceData[i] = orgFaceData[faceIndex]
+                newFaceData.append(orgFaceData[faceIndex])
+            }
+            self.workingNode.faceDataArray!.append(newFaceData)
+            self.workingNode.faceWeights!.append(MMDFloat())
+        }
+        
+        
+        //self.workingNode.normalSource = self.normalSource
+        //self.workingNode.texcoordSource = self.texcoordSource
+        //self.workingNode.elementArray = self.elementArray
+        //self.workingNode.boneIndicesSource = boneIndicesSource
+        //self.workingNode.boneWeightsSource = boneWeightsSource
+        self.workingNode.boneArray = self.boneArray
+        self.workingNode.boneInverseMatrixArray = self.boneInverseMatrixArray
+        
+        self.workingNode.vertexCount = self.vertexCount
+        self.workingNode.vertexArray = self.vertexArray
+        self.workingNode.normalArray = self.normalArray
+        self.workingNode.texcoordArray = self.texcoordArray
+        self.workingNode.boneIndicesArray = self.boneIndicesArray
+        self.workingNode.boneWeightsArray = self.boneWeightsArray
+        self.workingNode.indexCount = self.indexCount
+        self.workingNode.indexArray = self.indexArray
+        self.workingNode.materialCount = self.materialCount
+        self.workingNode.materialArray = self.materialArray
+        self.workingNode.materialIndexCountArray = self.materialIndexCountArray
+        self.workingNode.rootBone = self.rootBone
     }
 }

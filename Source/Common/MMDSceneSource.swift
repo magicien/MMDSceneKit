@@ -67,9 +67,10 @@ public class MMDSceneSource: SCNSceneSource {
                 self.workingNode = xNode
             }
         }else if self.fileType == .PMX {
-            //if let pmxNode = loadPMDFile() {
-            //    self.workingScene.rootNode.addChildNode(pmxNode)
-            //}
+            if let pmxNode = MMDPMXReader.getNode(data, directoryPath: self.directoryPath) {
+                //self.workingScene.rootNode.addChildNode(pmdNode)
+                self.workingNode = pmxNode
+            }
         }else{
             // unknown file
         }
@@ -204,15 +205,6 @@ public class MMDSceneSource: SCNSceneSource {
     private func loadPMMFile() -> [MMDNode]? {
         return nil
     }
-    
-    // MARK: - Loading PMX File
-    
-    /**
-    */
-    private func loadPMXFile() -> MMDNode? {
-        return nil
-    }
-    
 
     
     // MARK: - for Debug

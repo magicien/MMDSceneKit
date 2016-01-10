@@ -40,11 +40,31 @@
 		DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
 		DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
 		DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
+		DD6296D91C2D120800707364 /* MMDProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296D81C2D120800707364 /* MMDProgram.swift */; };
+		DD6296DA1C2D120800707364 /* MMDProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296D81C2D120800707364 /* MMDProgram.swift */; };
+		DD6296DE1C2D154A00707364 /* MMDShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DC1C2D154A00707364 /* MMDShader.vsh */; };
+		DD6296E11C2E214800707364 /* MMDShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DF1C2E214800707364 /* MMDShader.fsh */; };
+		DD6296E21C2E8AED00707364 /* MMDShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DC1C2D154A00707364 /* MMDShader.vsh */; };
+		DD6296E31C2E8AF100707364 /* MMDShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DF1C2E214800707364 /* MMDShader.fsh */; };
+		DD6296EB1C2FCFC000707364 /* MMDSceneKit_iOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
+		DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
+		DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F31C2FF21E00707364 /* EmptyShader.metal */; };
+		DD6296F61C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
+		DD6296F71C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
+		DD6296F81C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
+		DD6296F91C2FFF9200707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
+		DD6296FA1C2FFF9300707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
+		DD6297001C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
+		DD6297011C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
+		DD6297021C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
+		DDEC598A1C38B4570043F939 /* MMDPMXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC59891C38B4570043F939 /* MMDPMXReader.swift */; };
+		DDEC598B1C38B4570043F939 /* MMDPMXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC59891C38B4570043F939 /* MMDPMXReader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,7 +96,28 @@
 			remoteGlobalIDString = DD12BFE11C1AB85800B20F37;
 			remoteInfo = MMDSceneKitSample_OSX;
 		};
+		DD6296EC1C2FCFC000707364 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD12BF911C18390700B20F37;
+			remoteInfo = MMDSceneKit_iOS;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DD6296EE1C2FCFC000707364 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DD6296EB1C2FCFC000707364 /* MMDSceneKit_iOS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		DD12BF131C1835E000B20F37 /* MMDNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDNode.swift; sourceTree = "<group>"; };
@@ -119,7 +160,15 @@
 		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 		DD41D89F1C24099400A7F834 /* MMDXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDXReader.swift; sourceTree = "<group>"; };
 		DD41D8A21C25354C00A7F834 /* Regexp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regexp.swift; sourceTree = "<group>"; };
+		DD6296D81C2D120800707364 /* MMDProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDProgram.swift; sourceTree = "<group>"; };
+		DD6296DC1C2D154A00707364 /* MMDShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MMDShader.vsh; sourceTree = "<group>"; };
+		DD6296DF1C2E214800707364 /* MMDShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MMDShader.fsh; sourceTree = "<group>"; };
+		DD6296EF1C2FD49400707364 /* MMDShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDShader.metal; sourceTree = "<group>"; };
+		DD6296F31C2FF21E00707364 /* EmptyShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = EmptyShader.metal; sourceTree = "<group>"; };
+		DD6296F51C2FFB9C00707364 /* MMDShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDShader.swift; sourceTree = "<group>"; };
+		DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDShaderZValuePlot.plist; sourceTree = "<group>"; };
 		DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKConstraint.swift; sourceTree = "<group>"; };
+		DDEC59891C38B4570043F939 /* MMDPMXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMXReader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,10 +269,14 @@
 				DD12BF151C18361400B20F37 /* MMDSceneSource.swift */,
 				DD41D8961C23F42500A7F834 /* MMDReader.swift */,
 				DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */,
+				DDEC59891C38B4570043F939 /* MMDPMXReader.swift */,
 				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
 				DD41D89F1C24099400A7F834 /* MMDXReader.swift */,
 				DD41D8A21C25354C00A7F834 /* Regexp.swift */,
 				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
+				DD6296D81C2D120800707364 /* MMDProgram.swift */,
+				DD6296F51C2FFB9C00707364 /* MMDShader.swift */,
+				DD6296DB1C2D14F600707364 /* Shader */,
 			);
 			name = Common;
 			path = Source/Common;
@@ -309,6 +362,7 @@
 				DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */,
 				DD12BFEE1C1AB85800B20F37 /* MainMenu.xib */,
 				DD12BFF11C1AB85800B20F37 /* Info.plist */,
+				DD6296F31C2FF21E00707364 /* EmptyShader.metal */,
 			);
 			path = OSX;
 			sourceTree = "<group>";
@@ -346,6 +400,17 @@
 				DD12BFD41C1AB78000B20F37 /* OSX */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		DD6296DB1C2D14F600707364 /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				DD6296DC1C2D154A00707364 /* MMDShader.vsh */,
+				DD6296DF1C2E214800707364 /* MMDShader.fsh */,
+				DD6296EF1C2FD49400707364 /* MMDShader.metal */,
+				DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */,
+			);
+			name = Shader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -451,10 +516,12 @@
 				DD12BFB81C1AB78000B20F37 /* Sources */,
 				DD12BFB91C1AB78000B20F37 /* Frameworks */,
 				DD12BFBA1C1AB78000B20F37 /* Resources */,
+				DD6296EE1C2FCFC000707364 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DD6296ED1C2FCFC000707364 /* PBXTargetDependency */,
 			);
 			name = MMDSceneKitSample_iOS;
 			productName = MMDSceneKitSample_iOS;
@@ -582,6 +649,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6296E21C2E8AED00707364 /* MMDShader.vsh in Resources */,
+				DD6296E31C2E8AF100707364 /* MMDShader.fsh in Resources */,
+				DD6297001C30067800707364 /* MMDShaderZValuePlot.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,6 +666,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6296DE1C2D154A00707364 /* MMDShader.vsh in Resources */,
+				DD6296E11C2E214800707364 /* MMDShader.fsh in Resources */,
+				DD6297011C30067800707364 /* MMDShaderZValuePlot.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,6 +703,7 @@
 			files = (
 				DD12BFED1C1AB85800B20F37 /* Assets.xcassets in Resources */,
 				DD12C0041C1AB95A00B20F37 /* art.scnassets in Resources */,
+				DD6297021C30067800707364 /* MMDShaderZValuePlot.plist in Resources */,
 				DD12BFF01C1AB85800B20F37 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -680,11 +754,15 @@
 				DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */,
 				DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
+				DD6296D91C2D120800707364 /* MMDProgram.swift in Sources */,
+				DD6296F61C2FFB9C00707364 /* MMDShader.swift in Sources */,
 				DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */,
 				DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */,
+				DDEC598A1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
 				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
+				DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,11 +781,15 @@
 				DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */,
 				DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
+				DD6296DA1C2D120800707364 /* MMDProgram.swift in Sources */,
+				DD6296F71C2FFB9C00707364 /* MMDShader.swift in Sources */,
 				DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */,
 				DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */,
+				DDEC598B1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
 				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
+				DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,6 +805,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6296FA1C2FFF9300707364 /* MMDShader.metal in Sources */,
 				DD12BFC31C1AB78000B20F37 /* GameViewController.swift in Sources */,
 				DD12BFBF1C1AB78000B20F37 /* AppDelegate.swift in Sources */,
 			);
@@ -740,7 +823,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD6296F81C2FFB9C00707364 /* MMDShader.swift in Sources */,
+				DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */,
 				DD12BFE71C1AB85800B20F37 /* GameView.swift in Sources */,
+				DD6296F91C2FFF9200707364 /* MMDShader.metal in Sources */,
 				DD12BFE91C1AB85800B20F37 /* GameViewController.swift in Sources */,
 				DD12BFE51C1AB85800B20F37 /* AppDelegate.swift in Sources */,
 			);
@@ -776,6 +862,11 @@
 			isa = PBXTargetDependency;
 			target = DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_OSX */;
 			targetProxy = DD12BFF71C1AB85800B20F37 /* PBXContainerItemProxy */;
+		};
+		DD6296ED1C2FCFC000707364 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD12BF911C18390700B20F37 /* MMDSceneKit_iOS */;
+			targetProxy = DD6296EC1C2FCFC000707364 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -969,6 +1060,7 @@
 		DD12BFA41C18390800B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -985,6 +1077,7 @@
 		DD12BFA51C18390800B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1022,7 +1115,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
@@ -1034,6 +1129,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";

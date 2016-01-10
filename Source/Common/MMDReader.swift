@@ -8,7 +8,7 @@
 
 import SceneKit
 
-internal class MMDReader {
+internal class MMDReader: NSObject {
     internal var directoryPath: String! = ""
     internal var binaryData: NSData! = nil
     internal var length = 0
@@ -35,10 +35,12 @@ internal class MMDReader {
         var chars = Array<Int8>(count: length, repeatedValue: 0)
         self.binaryData.getBytes(&chars, range: NSRange.init(location: self.pos, length: length))
         
-        for index in 0..<length {
-            if (chars[index] == 0) {
-                strlen = index
-                break
+        if encoding != NSUTF16LittleEndianStringEncoding {
+            for index in 0..<length {
+                if (chars[index] == 0) {
+                    strlen = index
+                    break
+                }
             }
         }
         
@@ -99,6 +101,19 @@ internal class MMDReader {
         let token = self.binaryData.subdataWithRange(NSRange.init(location: self.pos, length: 4))
         token.getBytes(&num, length: 4)
         self.pos += 4
+        
+        return num
+    }
+    
+    /**
+     read Int data and return Int value from file
+     - returns: Signed Int data
+     */
+    internal func getIntOfLength(length: Int) -> Int {
+        var num: Int = 0
+        let token = self.binaryData.subdataWithRange(NSRange.init(location: self.pos, length: length))
+        token.getBytes(&num, length: length)
+        self.pos += length
         
         return num
     }

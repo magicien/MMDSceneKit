@@ -288,6 +288,17 @@ class MMDVMDReader: MMDReader {
             self.workingAnimationGroup.animations!.append(motion)
         }
         
+        /*
+        let motion = CAKeyframeAnimation(keyPath: "faceAnimation")
+        let timing = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
+        motion.values = [NSNumber(float: 0), NSNumber(float: 1)]
+        motion.keyTimes = [NSNumber(float: 0), NSNumber(float: 1)]
+        motion.timingFunctions = [timing, timing]
+        motion.duration = duration
+        motion.usesSceneTimeBase = false
+        self.workingAnimationGroup.animations!.append(motion)
+        */
+        
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
     }

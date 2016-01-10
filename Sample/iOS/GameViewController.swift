@@ -55,11 +55,7 @@ class GameViewController: UIViewController {
         let motion = motionSceneSource?.animations().first?.1
         motion!.removedOnCompletion = false
         motion!.repeatCount = Float.infinity
-        modelNode.addAnimation(motion!, forKey: "happysyn")
-
-        let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
-        geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 7)
-        
+        modelNode.addAnimation(motion!, forKey: "happysyn")        
         
         // retrieve the SCNView
         let scnView = self.view as! SCNView

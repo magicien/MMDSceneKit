@@ -34,6 +34,7 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         lightNode.light = SCNLight()
         lightNode.light!.type = SCNLightTypeOmni
         lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+        lightNode.castsShadow = true
         scene.rootNode.addChildNode(lightNode)
         
         // create and add an ambient light to the scene
@@ -42,18 +43,18 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         ambientLightNode.light!.type = SCNLightTypeAmbient
         ambientLightNode.light!.color = NSColor.darkGrayColor()
         scene.rootNode.addChildNode(ambientLightNode)
-        
-        // retrieve the ship node
-        //let ship = scene.rootNode.childNodeWithName("ship", recursively: true)!
+
         let modelPath = NSBundle.mainBundle().pathForResource("art.scnassets/miku", ofType: ".pmd")
         let modelSceneSource = MMDSceneSource(path: modelPath!)
         let modelNode = modelSceneSource!.modelNodes().first!
         scene.rootNode.addChildNode(modelNode)
         
+        /*
         let xPath = NSBundle.mainBundle().pathForResource("art.scnassets/ゲキド街v3.0", ofType: ".x")
         let xSceneSource = MMDSceneSource(path: xPath!)
         let xNode = xSceneSource!.modelNodes().first!
         scene.rootNode.addChildNode(xNode)
+        */
         
         let behaviors = modelNode.physicsBehaviors
         for behavior in behaviors {
@@ -67,7 +68,6 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         let motion = motionSceneSource?.animations().first?.1
         motion!.repeatCount = Float.infinity
         modelNode.addAnimation(motion!, forKey: "happysyn")
-        
         
         //let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
         //geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
@@ -91,7 +91,6 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         //print("updateAtTime")
     }
     func renderer(renderer: SCNSceneRenderer, didApplyAnimationsAtTime time: NSTimeInterval) {
-    //func renderer(renderer: SCNSceneRenderer, updateAtTime time: NSTimeInterval) {
         //print("didApplyAnimationsAtTime")
         //applyIKRecursive(scene.rootNode)
         
@@ -112,6 +111,13 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
             }
         }
         */
+        
+        
+        for node in scene.rootNode.childNodes {
+            if let mmdNode = node as? MMDNode {
+                //mmdNode.updateFace()
+            }
+        }
     }
 
     func applyIKRecursive(node: SCNNode) {
