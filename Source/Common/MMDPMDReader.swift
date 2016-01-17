@@ -46,7 +46,7 @@ class MMDPMDReader: MMDReader {
     
     // MARK: IK data
     private var ikCount = 0
-    private var ikArray: [MMDNode]! = nil
+    //private var ikArray: [MMDNode]! = nil
     
     // MARK: face data
     private var faceCount = 0
@@ -109,7 +109,8 @@ class MMDPMDReader: MMDReader {
         self.rootBone = MMDNode()
         
         self.ikCount = 0
-        self.ikArray = [MMDNode]()
+        //self.ikArray = [MMDNode]()
+        self.workingNode.ikArray = [MMDIKConstraint]()
         
         self.physicsBodyCount = 0
         self.physicsBodyArray = [SCNPhysicsBody]()
@@ -303,6 +304,16 @@ class MMDPMDReader: MMDReader {
         for index in 0..<self.boneCount {
             let boneNode = MMDNode()
             boneNode.name = String(getString(20)!)
+
+            if let boneName = boneNode.name {
+                let maxLen = boneName.characters.count
+                if maxLen >= 3 {
+                    let kneeName = (boneName as NSString).substringToIndex(3)
+                    if kneeName == "右ひざ" || kneeName == "左ひざ" {
+                        boneNode.isKnee = true
+                    }
+                }
+            }
             
             let parentNo = Int(getUnsignedShort())
             parentNoArray.append(parentNo)
@@ -381,8 +392,12 @@ class MMDPMDReader: MMDReader {
         
         self.boneArray.append(self.rootBone)
         self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
+
+        //self.boneArray.append(self.workingNode)
+        //self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
         
         // set constarint to knees
+        /*
         let kneeConstraint = SCNTransformConstraint(inWorldSpace: false, withBlock: { (node, matrix) -> SCNMatrix4 in
             if let mmdNode = node as? MMDNode {
                 return self.calcKneeConstraint(matrix)
@@ -406,7 +421,7 @@ class MMDPMDReader: MMDReader {
             }
             rightKnee!.constraints!.append(kneeConstraint)
         }
-        
+        */
         
         self.workingNode.addChildNode(self.rootBone)
     }
@@ -417,30 +432,46 @@ class MMDPMDReader: MMDReader {
         self.ikCount = Int(getUnsignedShort())
         
         for _ in 0..<self.ikCount {
+            let ik = MMDIKConstraint()
+            
+            let ikBoneNo = Int(getUnsignedShort())
             let targetBoneNo = Int(getUnsignedShort())
-            let effectorBoneNo = Int(getUnsignedShort())
             let numLink = getUnsignedByte()
             let iteration = getUnsignedShort()
-            let weight = getUnsignedInt()
+            let weight = getFloat()
+
+            ik.ikBone = self.boneArray[ikBoneNo]
+            ik.targetBone = self.boneArray[targetBoneNo]
+            ik.iteration = Int(iteration)
+            ik.weight = Float(Double(weight) * M_PI)
+            ik.boneArray = [MMDNode]()
             
-            print("targetBoneNo: \(targetBoneNo), effectorBoneNo: \(effectorBoneNo)")
-            for _ in 0..<numLink-1 {
+            print("targetBoneNo: \(targetBoneNo) \(ik.targetBone.name!), ikBoneNo: \(ikBoneNo) \(ik.ikBone.name!)")
+            for _ in 0..<numLink {
                 let linkNo = Int(getUnsignedShort())
-                print("linkNo: \(linkNo), \(boneArray[linkNo])")
+                let bone = self.boneArray[linkNo]
+
+                print("linkNo: \(linkNo), \(bone.name!)")
+
+                ik.boneArray.append(bone)
             }
+            self.workingNode.ikArray!.append(ik)
             
+            /*
             let rootLinkNo = Int(getUnsignedShort())
             print("rootLinkNo: \(rootLinkNo)")
             
             let chainRootNode = self.boneArray[rootLinkNo]
             print("chainRootNode: \(chainRootNode)")
             let constraint = SCNIKConstraint.inverseKinematicsConstraintWithChainRootNode(chainRootNode)
+            */
+            let constraint = SCNIKConstraint.inverseKinematicsConstraintWithChainRootNode(ik.boneArray.last!)
             
+            /*
             let effectorNode = self.boneArray[effectorBoneNo]
             if effectorNode.constraints == nil {
                 effectorNode.constraints = [SCNConstraint]()
             }
-            //constraint.targetPosition = SCNVector3(0, 100, 0)
             effectorNode.constraints!.append(constraint)
             //effectorNode.ikConstraint = constraint
             
@@ -466,6 +497,8 @@ class MMDPMDReader: MMDReader {
             targetNode.constraints!.append(targetConstraint)
             
             targetNode.ikTargetBone = effectorNode
+            */
+            
         }
     }
     
@@ -745,22 +778,6 @@ class MMDPMDReader: MMDReader {
     }
     
     private func createGeometry() {
-        // FIXME: delete  debug
-        /*
-        for index in 0..<self.vertexArray.count {
-        let d = self.faceVertexArray[8][index]
-        
-        if d != 0 {
-        print("[\(index)]: \(d)")
-        print("  before: \(self.vertexArray[index])")
-        
-        self.vertexArray[index] += d
-        
-        print("  after : \(self.vertexArray[index])")
-        }
-        }
-        */
-        
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
@@ -858,18 +875,21 @@ class MMDPMDReader: MMDReader {
         let geometryNode = SCNNode(geometry: geometry)
         geometryNode.name = "Geometry"
         
+        //self.workingNode.addChildNode(self.rootBone)
+
         let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
         
         geometryNode.skinner = skinner
         geometryNode.skinner!.skeleton = self.rootBone
+        //geometryNode.skinner!.skeleton = self.workingNode
         geometryNode.castsShadow = true
         
         //let program = MMDProgram()
         //geometryNode.geometry!.program = program
         
         self.workingNode.name = "rootNode" // FIXME: set model name or file name
+        self.workingNode.castsShadow = true
         self.workingNode.addChildNode(geometryNode)
-        self.workingNode.addChildNode(self.rootBone)
         
         //showBoneTree(self.rootBone)
         

@@ -18,12 +18,12 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
     
     override func awakeFromNib(){
         // create a new scene
-        //let scene = SCNScene(named: "art.scnassets/ship.scn")!
         scene = SCNScene()
         
         // create and add a camera to the scene
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
+        cameraNode.camera?.automaticallyAdjustsZRange = true
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
@@ -33,7 +33,7 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = SCNLightTypeOmni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+        lightNode.position = SCNVector3(x: 0, y: 100, z: 10)
         lightNode.castsShadow = true
         scene.rootNode.addChildNode(lightNode)
         
@@ -47,14 +47,14 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         let modelPath = NSBundle.mainBundle().pathForResource("art.scnassets/miku", ofType: ".pmd")
         let modelSceneSource = MMDSceneSource(path: modelPath!)
         let modelNode = modelSceneSource!.modelNodes().first!
+        modelNode.position = SCNVector3Make(0, 50.0, 0.0)
         scene.rootNode.addChildNode(modelNode)
         
-        /*
         let xPath = NSBundle.mainBundle().pathForResource("art.scnassets/ゲキド街v3.0", ofType: ".x")
         let xSceneSource = MMDSceneSource(path: xPath!)
         let xNode = xSceneSource!.modelNodes().first!
+        xNode.scale = SCNVector3Make(10.0, 10.0, 10.0)
         scene.rootNode.addChildNode(xNode)
-        */
         
         let behaviors = modelNode.physicsBehaviors
         for behavior in behaviors {
@@ -68,10 +68,7 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         let motion = motionSceneSource?.animations().first?.1
         motion!.repeatCount = Float.infinity
         modelNode.addAnimation(motion!, forKey: "happysyn")
-        
-        //let geometryNode = modelNode.childNodeWithName("Geometry", recursively: true)
-        //geometryNode!.morpher!.setWeight(1.0, forTargetAtIndex: 0)
-
+                
         self.gameView!.delegate = self
         
         // set the scene to the view
@@ -112,6 +109,8 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         }
         */
         
+
+        applyIKRecursive(scene.rootNode)
         
         for node in scene.rootNode.childNodes {
             if let mmdNode = node as? MMDNode {
@@ -122,9 +121,10 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
 
     func applyIKRecursive(node: SCNNode) {
         if let mmdNode = node as? MMDNode {
+            /*
             if mmdNode.ikTargetBone != nil {
-                print("IK: \(mmdNode.ikTargetBone)")
-                let mat = mmdNode.worldTransform
+                //print("IK: \(mmdNode.ikTargetBone)")
+                //let mat = mmdNode.worldTransform
                 //let x = mat.m11 + mat.m21 + mat.m31 + mat.m41
                 //let y = mat.m12 + mat.m22 + mat.m32 + mat.m42
                 //let z = mat.m13 + mat.m23 + mat.m33 + mat.m43
@@ -132,7 +132,8 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
                 //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.x = mat.m41
                 //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.y = mat.m42
                 //mmdNode.ikTargetBone!.ikConstraint!.targetPosition.z = mat.m43
-            }
+            }*/
+            mmdNode.updateIK()
         }
         
         for childNode in node.childNodes {

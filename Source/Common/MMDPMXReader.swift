@@ -768,6 +768,12 @@ class MMDPMXReader: MMDReader {
         self.boneArray.append(self.rootBone)
         self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
         
+        /*
+        self.workingNode.position = SCNVector3Make(0, 0, 0)
+        self.boneArray.append(self.workingNode)
+        self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
+        */
+        
         // set constarint to knees
         /*
         let kneeConstraint = SCNTransformConstraint(inWorldSpace: false, withBlock: { (node, matrix) -> SCNMatrix4 in
@@ -1054,7 +1060,8 @@ class MMDPMXReader: MMDReader {
         let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
         
         geometryNode.skinner = skinner
-        geometryNode.skinner!.skeleton = self.rootBone
+        //geometryNode.skinner!.skeleton = self.rootBone
+        geometryNode.skinner!.skeleton = self.workingNode
         geometryNode.castsShadow = true
         
         //let program = MMDProgram()

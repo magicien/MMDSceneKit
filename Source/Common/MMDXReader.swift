@@ -130,8 +130,10 @@ class MMDXReader {
         self.workingGeometry = self.createGeometry()
         self.workingGeometryNode = SCNNode(geometry: self.workingGeometry)
         self.workingGeometryNode.name = "Geometry"
+        self.workingGeometryNode.castsShadow = true
         
         self.workingNode.addChildNode(self.workingGeometryNode)
+        self.workingNode.castsShadow = true
         
         return self.workingNode
     }

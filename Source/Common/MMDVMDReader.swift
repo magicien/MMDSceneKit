@@ -306,6 +306,7 @@ class MMDVMDReader: MMDReader {
     /**
      */
     private func readCameraMotion() {
+        
     }
     
     /**

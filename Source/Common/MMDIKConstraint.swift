@@ -8,15 +8,16 @@
 
 import SceneKit
 
-class MMDIKConstraint {
+public class MMDIKConstraint {
     var boneArray: [MMDNode]! = []
     var minAngleArray: [Float]! = []
     var maxAngleArray: [Float]! = []
+    var ikBone: MMDNode! = nil
     var targetBone: MMDNode! = nil
-    var effectorBone: MMDNode! = nil
     var iteration: Int = 0
     var weight: Float = 0.0
     var linkNo: Int = -1
+    var isEnable: Bool = true
     
     var angle: SCNVector3! = SCNVector3()
     var orgTargetPos: SCNVector3! = SCNVector3()

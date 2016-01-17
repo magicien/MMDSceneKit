@@ -11,7 +11,7 @@ import SceneKit
 public class MMDProgram: SCNProgram, SCNProgramDelegate {
     override public init() {
         super.init()
-        
+        /*
         self.delegate = self
         
         var path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "vsh")
@@ -31,6 +31,7 @@ public class MMDProgram: SCNProgram, SCNProgramDelegate {
         }
         self.vertexFunctionName = "mmdVertex"
         self.fragmentFunctionName = "mmdFragment"
+        */
         
         /*
         let device = MTLCreateSystemDefaultDevice()

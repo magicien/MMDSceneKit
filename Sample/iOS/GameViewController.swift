@@ -17,22 +17,22 @@ class GameViewController: UIViewController {
         super.viewDidLoad()
         
         // create a new scene
-        //let scene = SCNScene(named: "art.scnassets/ship.scn")!
         let scene = SCNScene()
         
         // create and add a camera to the scene
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
+        cameraNode.camera?.automaticallyAdjustsZRange = true
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 40)
+        cameraNode.position = SCNVector3(x: 0, y: 50, z: 40)
         
         // create and add a light to the scene
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = SCNLightTypeOmni
-        lightNode.position = SCNVector3(x: 0, y: 10, z: 10)
+        lightNode.position = SCNVector3(x: 0, y: 100, z: 10)
         scene.rootNode.addChildNode(lightNode)
         
         // create and add an ambient light to the scene
@@ -48,14 +48,24 @@ class GameViewController: UIViewController {
         let modelNode = modelSceneSource!.modelNodes().first!
         scene.rootNode.addChildNode(modelNode)
         
+        let xPath = NSBundle.mainBundle().pathForResource("art.scnassets/ゲキド街v3.0", ofType: ".x")
+        let xSceneSource = MMDSceneSource(path: xPath!)
+        let xNode = xSceneSource!.modelNodes().first!
+        xNode.scale = SCNVector3Make(10.0, 10.0, 10.0)
+        scene.rootNode.addChildNode(xNode)
+        
         // animate the 3d object
-        let motionPath = NSBundle.mainBundle().pathForResource("art.scnassets/happysyn", ofType: ".vmd")
+        let motionPath = NSBundle.mainBundle().pathForResource("art.scnassets/running", ofType: ".vmd")
         let motionSceneSource = MMDSceneSource(path: motionPath!)
-        let animations = motionSceneSource?.animations()
+        //let animations = motionSceneSource?.animations()
         let motion = motionSceneSource?.animations().first?.1
         motion!.removedOnCompletion = false
         motion!.repeatCount = Float.infinity
-        modelNode.addAnimation(motion!, forKey: "happysyn")        
+        modelNode.addAnimation(motion!, forKey: "happysyn")
+        
+        //modelNode.position = SCNVector3Make(100.0, 100.0, 0.0)
+        modelNode.childNodes[0].position = SCNVector3Make(0, 50.0, 0.0)
+
         
         // retrieve the SCNView
         let scnView = self.view as! SCNView
