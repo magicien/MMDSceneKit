@@ -49,13 +49,13 @@ class GameViewController: NSViewController, SCNSceneRendererDelegate {
         let modelNode = modelSceneSource!.modelNodes().first!
         modelNode.position = SCNVector3Make(0, 50.0, 0.0)
         scene.rootNode.addChildNode(modelNode)
-        
+        /*
         let xPath = NSBundle.mainBundle().pathForResource("art.scnassets/ゲキド街v3.0", ofType: ".x")
         let xSceneSource = MMDSceneSource(path: xPath!)
         let xNode = xSceneSource!.modelNodes().first!
         xNode.scale = SCNVector3Make(10.0, 10.0, 10.0)
         scene.rootNode.addChildNode(xNode)
-        
+        */
         let behaviors = modelNode.physicsBehaviors
         for behavior in behaviors {
             scene.physicsWorld.addBehavior(behavior)

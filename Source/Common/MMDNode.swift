@@ -25,6 +25,13 @@ public class MMDFloat: NSObject {
     public var value: Float = 0.0
 }
 
+public class DummyNode: NSObject {
+    override public func valueForUndefinedKey(key: String) -> AnyObject? {
+        print("unknown key: \(key)")
+        return self
+    }
+}
+
 public class MMDNode: SCNNode, SCNProgramDelegate {
     public internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
     public internal(set) var type: MMDNodeType = .UNKNOWN
@@ -35,6 +42,49 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
     //public var ikConstraint: SCNIKConstraint? = nil
     internal var ikConstraint: MMDIKConstraint? = nil
     public var ikArray: [MMDIKConstraint]? = nil
+
+    /*
+    public var ikAnim: Float = 0.0 {
+        didSet {
+            print("ikAnim didSet: \(self.name)")
+            self.updateIK()
+        }
+    }
+*/
+    
+    /*
+    private var _ikOn: Bool = false
+    public var ikOn: Bool {
+        get {
+            return self._ikOn
+        }
+        set(newValue) {
+            if !self._ikOn && newValue {
+                // start IK
+                let ikAction = SCNAction.runBlock() { (node:SCNNode) in
+                    print("ikAction: \(self.name!)")
+                    //if let mmdNode = node as? MMDNode {
+                        // print("  ikAnimValue: \(mmdNode.ikAnim)")
+                        //let ikAnimValue = node.valueForKey("ikAnim")
+                        //print("  ikAnimValue: \(ikAnimValue)")
+                        //mmdNode.updateIK()
+                        //mmdNode
+                    //}
+                    self.updateIK()
+                }
+                let wait = SCNAction.waitForDuration(1)
+                let sequence = SCNAction.sequence([ikAction, wait])
+                let repeatAction = SCNAction.repeatActionForever(sequence)
+                
+                self.runAction(repeatAction, forKey: nil)
+            } else if self._ikOn && !newValue {
+                // stop IK
+                self.removeActionForKey("IKAction")
+            }
+            self._ikOn = newValue
+        }
+    }
+    */
     
     // FIXME: use morpher
     public var vertexCount = 0
@@ -53,7 +103,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
     public var boneInverseMatrixArray: [NSValue]! = nil
     public var rootBone: MMDNode! = nil
 
-    private var dummyNode: SCNNode = SCNNode()
+    private var dummyNode: DummyNode = DummyNode()
     
     // FIXME: use morpher
     public var faceIndexArray: [Int]? = nil
@@ -62,6 +112,24 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
     public var geometryMorpher: SCNMorpher! = nil
 
     private let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
+    
+    /*
+    override public init() {
+        super.init()
+        
+        let ikAnimation = CABasicAnimation(keyPath: "self.ikAnim")
+        ikAnimation.fromValue = 0.0
+        ikAnimation.toValue = 100.0
+        ikAnimation.duration = 1000.0
+        ikAnimation.repeatCount = Float.infinity
+        ikAnimation.usesSceneTimeBase = false
+        self.addAnimation(ikAnimation, forKey: "aaa")
+        //self.ikOn = true
+    }
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+*/
     
     // FIXME: use morpher
     public func updateFace() {
@@ -189,8 +257,6 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         print("GLSL compile error: \(error)")
     }
     
-    
-    
     override public func valueForUndefinedKey(key: String) -> AnyObject? {
         if key.hasPrefix("/") {
             let searchKey = (key as NSString).substringFromIndex(1)
@@ -198,18 +264,23 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                 return node
             }
             return self.dummyNode
-        } else {
-            print("unknown key: \(key)")
-            
-            let result = self.faceWeightsPattern.matches(key)
-            if result != nil {
-                let index = Int(result![1])
-                let value = self.faceWeights[index!]
-                print("match: \(value)")
-                return value
-            }
         }
         
+        print("unknown key: \(key)")
+            
+        let result = self.faceWeightsPattern.matches(key)
+        if result != nil {
+            let index = Int(result![1])
+            let value = self.faceWeights[index!]
+            print("match: \(value)")
+            return value
+        }
+        
+        if key == "kPivotKey" {
+            return nil
+        }
+    
+        //return self.dummyNode
         return super.valueForUndefinedKey(key)
     }
     
@@ -222,10 +293,14 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         
         // FIXME: clone values
         if let group = animation as? CAAnimationGroup {
+            let newGroup = group.copy() as! CAAnimationGroup
+            newGroup.animations = [CAAnimation]()
             
             if let animations = group.animations {
                 for anim in animations {
-                    if let keyAnim = anim as? CAKeyframeAnimation {
+                    let newAnim = anim.copy()
+                    
+                    if let keyAnim = newAnim as? CAKeyframeAnimation {
                         let boneNameKey = keyAnim.keyPath!.componentsSeparatedByString(".")[0]
                         let boneName = (boneNameKey as NSString).substringFromIndex(1)
                         let bone = self.childNodeWithName(boneName, recursively: true)
@@ -313,10 +388,13 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                         }
                     }else{
                     }
+                    newGroup.animations!.append(newAnim as! CAAnimation)
                 }
             }
+            super.addAnimation(newGroup, forKey: key)
+        }else{
+            super.addAnimation(animation, forKey: key)
         }
-        super.addAnimation(animation, forKey: key)
     }
     
     public func updateIK() {
@@ -441,17 +519,17 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                     bone.rotation = quatToRotation(quat)
                     //printRotation(bone.presentationNode)
 
-                    /*
+                    
                     if bone.isKnee {
                         if bone.eulerAngles.x < 0 {
                             quat.x = -quat.x
                             bone.rotation = quatToRotation(quat)
                             if bone.eulerAngles.x < 0 {
-                                print("***************** ERROR *****************")
+                                //print("***************** ERROR *****************")
                             }
                         }
                     }
-                    */
+                    
                     
                     if index == ik.boneArray.count-1 {
                         //print("***** after bone *****")

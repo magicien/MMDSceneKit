@@ -82,6 +82,7 @@ class MMDPMDReader: MMDReader {
     private func loadPMDFile() -> MMDNode? {
         // initialize working variables
         self.workingNode = MMDNode()
+        //self.workingNode.ikOn = true
         
         self.pmdMagic = ""
         self.version = 0.0

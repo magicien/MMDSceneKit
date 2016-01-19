@@ -167,7 +167,7 @@ class MMDVMDReader: MMDReader {
             //let position = SCNVector3.init(getFloat(), getFloat(), getFloat())
             let posX = NSNumber(float: getFloat())
             let posY = NSNumber(float: getFloat())
-            let posZ = NSNumber(float: getFloat())
+            let posZ = NSNumber(float: -getFloat())
             var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
             
             normalize(&rotate)
