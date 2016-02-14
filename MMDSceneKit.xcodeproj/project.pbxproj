@@ -63,6 +63,8 @@
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
+		DDE586CE1C7123D900CF3B48 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
+		DDE586CF1C7123DB00CF3B48 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
 		DDEC598A1C38B4570043F939 /* MMDPMXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC59891C38B4570043F939 /* MMDPMXReader.swift */; };
 		DDEC598B1C38B4570043F939 /* MMDPMXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC59891C38B4570043F939 /* MMDPMXReader.swift */; };
 /* End PBXBuildFile section */
@@ -168,6 +170,7 @@
 		DD6296F51C2FFB9C00707364 /* MMDShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDShader.swift; sourceTree = "<group>"; };
 		DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDShaderZValuePlot.plist; sourceTree = "<group>"; };
 		DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKConstraint.swift; sourceTree = "<group>"; };
+		DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneViewController.swift; sourceTree = "<group>"; };
 		DDEC59891C38B4570043F939 /* MMDPMXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMXReader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -380,6 +383,7 @@
 			isa = PBXGroup;
 			children = (
 				DD12BFC01C1AB78000B20F37 /* art.scnassets */,
+				DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -729,7 +733,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/OSX\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\nmkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/OSX\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
 		};
 		DDAE3ACD1C1D4E150014F375 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -805,6 +809,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDE586CE1C7123D900CF3B48 /* MMDSceneViewController.swift in Sources */,
 				DD6296FA1C2FFF9300707364 /* MMDShader.metal in Sources */,
 				DD12BFC31C1AB78000B20F37 /* GameViewController.swift in Sources */,
 				DD12BFBF1C1AB78000B20F37 /* AppDelegate.swift in Sources */,
@@ -824,6 +829,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD6296F81C2FFB9C00707364 /* MMDShader.swift in Sources */,
+				DDE586CF1C7123DB00CF3B48 /* MMDSceneViewController.swift in Sources */,
 				DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */,
 				DD12BFE71C1AB85800B20F37 /* GameView.swift in Sources */,
 				DD6296F91C2FFF9200707364 /* MMDShader.metal in Sources */,
@@ -1061,6 +1067,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1068,6 +1075,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Source/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1078,6 +1086,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

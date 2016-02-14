@@ -70,6 +70,7 @@ class MMDPMDReader: MMDReader {
     private var elementArray: [SCNGeometryElement]! = nil
     
     /**
+     
     */
     static func getNode(data: NSData, directoryPath: String! = "") -> MMDNode? {
         let reader = MMDPMDReader(data: data, directoryPath: directoryPath)
@@ -79,6 +80,10 @@ class MMDPMDReader: MMDReader {
     }
     
     // MARK: - Loading PMD File
+    /**
+     * load .pmd file
+     * - return: 
+     */
     private func loadPMDFile() -> MMDNode? {
         // initialize working variables
         self.workingNode = MMDNode()
@@ -737,7 +742,7 @@ class MMDPMDReader: MMDReader {
             if boneIndex != 0xFFFF {
                 let bone = self.boneArray[boneIndex]
                 bone.physicsBody = body
-                print("physicsBody: \(name) -> \(bone.name)")
+                print("physicsBody: \(name) -> \(bone.name!)")
             }else{
                 print("physicsBody: \(name) -> nil")
             }

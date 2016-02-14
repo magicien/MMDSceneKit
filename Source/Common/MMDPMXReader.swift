@@ -263,11 +263,12 @@ class MMDPMXReader: MMDReader {
             var noBone = 0
             switch(self.boneIndexSize) {
             case 1:
-                noBone = 0xFF
+                noBone = Int(0xFF)
             case 2:
-                noBone = 0xFFFF
+                noBone = Int(0xFFFF)
             case 4:
-                noBone = 0xFFFFFFFF
+                //noBone = Int(0xFFFFFFFF)
+                noBone = -1 // FIXME:
             default: break
                 // unknown size
             }
@@ -736,7 +737,8 @@ class MMDPMXReader: MMDReader {
         } else if self.boneIndexSize == 2 {
             noParent = 0xFFFF
         } else if self.boneIndexSize == 4 {
-            noParent = 0xFFFFFFFF
+            //noParent = 0xFFFFFFFF
+            noParent = -1 // FIXME: 
         }
         
         for index in 0..<self.boneCount {

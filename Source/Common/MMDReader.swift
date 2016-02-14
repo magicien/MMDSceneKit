@@ -14,6 +14,11 @@ internal class MMDReader: NSObject {
     internal var length = 0
     internal var pos = 0
     
+    /**
+     * 
+     * - parameter data: 
+     * - parameter directoryPath:
+     */
     internal init(data: NSData!, directoryPath: String! = "") {
         self.directoryPath = directoryPath
         self.binaryData = data
@@ -24,11 +29,19 @@ internal class MMDReader: NSObject {
     // MARK: - Utility functions
     
     /**
-    get String data from MMD/PMD/VMD file
-    - parameter length: length of data you want to get (unit is byte)
-    - parameter encoding: encoding of string data. Default encoding of .mmd file is ShiftJIS
-    - returns: String data
-    */
+     * skip data
+     * - parameter length: length of data you want to skip
+     */
+    internal func skip(length: Int) {
+        self.pos += length
+    }
+    
+    /**
+     * get String data from MMD/PMD/VMD file
+     * - parameter length: length of data you want to get (unit is byte)
+     * - parameter encoding: encoding of string data. Default encoding of .mmd file is ShiftJIS
+     * - returns: String data
+     */
     internal func getString(length: Int, encoding: UInt = NSShiftJISStringEncoding) -> NSString? {
         // check where null char is
         var strlen = length
@@ -54,8 +67,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read UInt8 data and return Int value from file
-     - returns: UInt8 data
+     * read UInt8 data and return Int value from file
+     * - returns: UInt8 data
      */
     internal func getUnsignedByte() -> UInt8 {
         var num: UInt8 = 0
@@ -67,8 +80,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read UInt8 data and return Int value from file
-     - returns: UInt16 data
+     * read UInt8 data and return Int value from file
+     * - returns: UInt16 data
      */
     internal func getUnsignedShort() -> UInt16 {
         var num: UInt16 = 0
@@ -80,8 +93,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read UInt32 data and return Int value from file
-     - returns: UInt32 data
+     * read UInt32 data and return Int value from file
+     * - returns: UInt32 data
      */
     internal func getUnsignedInt() -> UInt32 {
         var num: UInt32 = 0
@@ -93,8 +106,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read Int32 data and return Int value from file
-     - returns: Signed Int32 data
+     * read Int32 data and return Int value from file
+     * - returns: Signed Int32 data
      */
     internal func getInt() -> Int32 {
         var num: Int32 = 0
@@ -106,8 +119,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read Int data and return Int value from file
-     - returns: Signed Int data
+     * read Int data and return Int value from file
+     * - returns: Signed Int data
      */
     internal func getIntOfLength(length: Int) -> Int {
         var num: Int = 0
@@ -119,8 +132,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read Float32 data and return Int value from file
-     - returns: Float data
+     * read Float32 data and return Int value from file
+     * - returns: Float data
      */
     internal func getFloat() -> Float32 {
         var num: Float32 = 0
@@ -132,9 +145,9 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     read binary data and return NSData from file
-     - parameter length: length of data you want to get (unit is byte)
-     - returns: NSData value
+     * read binary data and return NSData from file
+     * - parameter length: length of data you want to get (unit is byte)
+     * - returns: NSData value
      */
     internal func getData(length: Int) -> NSData {
         let data = self.binaryData.subdataWithRange(NSRange.init(location: self.pos, length: length))
@@ -144,8 +157,8 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     normalize SCNVector4 or SCNQuaternion value.
-     - parameter quat: data which has to be normalized. This variable is changed by this function.
+     * normalize SCNVector4 or SCNQuaternion value.
+     * - parameter quat: data which has to be normalized. This variable is changed by this function.
      */
     internal func normalize(inout quat: SCNVector4) {
         let x2 = quat.x * quat.x

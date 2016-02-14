@@ -397,6 +397,9 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         }
     }
     
+    /**
+    update IK bone
+    */
     public func updateIK() {
         if self.ikArray == nil {
             return

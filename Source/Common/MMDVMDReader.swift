@@ -100,8 +100,15 @@ class MMDVMDReader: MMDReader {
         self.frameCount = Int(getUnsignedInt())
         self.frameLength = 0
         
-        for _ in 0..<frameCount {
-            let boneName: String! = getString(15) as! String
+        for index in 0..<frameCount {
+            let boneNameStr = getString(15) as String?
+            if boneNameStr == nil {
+                print("motion(\(index)): skip because of broken bone name")
+                // skip data
+                skip(96)
+                continue
+            }
+            let boneName = boneNameStr!
             
             var posXMotion = self.animationHash["posX:\(boneName)"]
             var posYMotion = self.animationHash["posY:\(boneName)"]
