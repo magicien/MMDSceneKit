@@ -83,7 +83,7 @@ public class MMDProgram: SCNProgram, SCNProgramDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func program(_ program: SCNProgram, handleError error: NSError) {
+    @nonobjc public func program(_ program: SCNProgram, handleError error: NSError) {
         print("***** GLSL compile error: \(error)")
     }
 }

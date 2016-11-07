@@ -17,7 +17,7 @@ class GameInterfaceController: MMDSceneViewController {
     
     @IBOutlet var sceneInterface: WKInterfaceSCNScene!
 
-    override func awake(withContext context: AnyObject?) {
+    override func awake(withContext context: Any?) {
         print("***** GameInterfaceController awake *****")
         super.awake(withContext: context)
         return

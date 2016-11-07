@@ -54,7 +54,7 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         #if os(OSX)
             ambientLightNode.light!.color = NSColor.darkGray
         #elseif os(iOS) || os(watchOS)
-            ambientLightNode.light!.color = UIColor.darkGray()
+            ambientLightNode.light!.color = UIColor.darkGray
         #endif
 
         scene.rootNode.addChildNode(ambientLightNode)
@@ -105,7 +105,7 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         #if os(OSX)
             view.backgroundColor = NSColor.black
         #elseif os(iOS)
-            view.backgroundColor = UIColor.black()
+            view.backgroundColor = UIColor.black
         #endif
     }
     

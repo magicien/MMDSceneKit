@@ -53,27 +53,27 @@ class GameViewController: MMDSceneViewController {
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = 0.5
                 
-                material.emission.contents = UIColor.black()
+                material.emission.contents = UIColor.black
                 
                 SCNTransaction.commit()
             }
             
-            material.emission.contents = UIColor.red()
+            material.emission.contents = UIColor.red
             
             SCNTransaction.commit()
         }
     }
     
-    override func shouldAutorotate() -> Bool {
+    override var shouldAutorotate: Bool {
         return true
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden: Bool {
         return true
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.current().userInterfaceIdiom == .phone {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
             return .allButUpsideDown
         } else {
             return .all

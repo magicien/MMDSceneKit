@@ -30,6 +30,7 @@
 		DD12C00A1C1ABE4200B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
 		DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; };
 		DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DD24DACF1DD10BA90086FAE8 /* MMDSceneKit_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */; };
 		DD3313351D39C0A30027FCA9 /* MMDSceneKit_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD3313931D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DD3313921D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DD3313A41D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DD3313861D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app */; };
@@ -324,6 +325,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD24DACF1DD10BA90086FAE8 /* MMDSceneKit_watchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -839,6 +841,7 @@
 				TargetAttributes = {
 					DD12BF751C1838D700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
 					};
 					DD12BF7E1C1838D700B20F37 = {
@@ -847,18 +850,24 @@
 					};
 					DD12BF911C18390700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					DD12BF9A1C18390700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
 					};
 					DD12BFBB1C1AB78000B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					DD12BFD01C1AB78000B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						DevelopmentTeam = EF37D6UQZ9;
 						TestTargetID = DD12BFBB1C1AB78000B20F37;
 					};
 					DD12BFE11C1AB85800B20F37 = {
@@ -870,14 +879,18 @@
 					};
 					DD3313111D39BF020027FCA9 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
 					};
 					DD3313851D39C2D90027FCA9 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					DD3313911D39C2D90027FCA9 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -1328,9 +1341,10 @@
 		DD12BF881C1838D700B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1351,9 +1365,10 @@
 		DD12BF891C1838D700B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1410,13 +1425,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
@@ -1430,13 +1448,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1449,6 +1470,7 @@
 		DD12BFA71C18390800B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-iOSTests";
@@ -1460,6 +1482,7 @@
 		DD12BFA81C18390800B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-iOSTests";
@@ -1475,8 +1498,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1490,7 +1516,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1503,10 +1532,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = Sample/Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_iOS.app/MMDSceneKitSample_iOS";
 			};
 			name = Debug;
@@ -1515,11 +1546,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = Sample/Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_iOS.app/MMDSceneKitSample_iOS";
 			};
 			name = Release;
@@ -1570,6 +1603,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-OSXTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_OSX.app/Contents/MacOS/MMDSceneKitSample_OSX";
 			};
 			name = Debug;
@@ -1587,6 +1621,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_OSX.app/Contents/MacOS/MMDSceneKitSample_OSX";
 			};
 			name = Release;
@@ -1596,7 +1631,9 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1619,6 +1656,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1640,6 +1678,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
@@ -1656,6 +1695,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
@@ -1677,6 +1717,8 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -1699,6 +1741,8 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
