@@ -9,88 +9,88 @@
 import SceneKit
 
 class MMDPMXReader: MMDReader {
-    private var workingNode: MMDNode! = nil
+    fileprivate var workingNode: MMDNode! = nil
     
     // MARK: PMD header data
-    private var pmxMagic: String! = ""
-    private var version: Float = 0.0
-    private var encoding: UInt = NSUTF8StringEncoding
-    private var numUV: Int = 1
-    private var indexSize: Int = 1
-    private var textureIndexSize: Int = 1
-    private var materialIndexSize: Int = 1
-    private var boneIndexSize: Int = 1
-    private var morphIndexSize: Int = 1
-    private var physicsBodyIndexSize: Int = 1
-    private var modelName: String! = ""
-    private var englishModelName: String! = ""
-    private var comment: String! = ""
-    private var englishComment: String! = ""
+    fileprivate var pmxMagic: String! = ""
+    fileprivate var version: Float = 0.0
+    fileprivate var encoding: String.Encoding = String.Encoding.utf8
+    fileprivate var numUV: Int = 1
+    fileprivate var indexSize: Int = 1
+    fileprivate var textureIndexSize: Int = 1
+    fileprivate var materialIndexSize: Int = 1
+    fileprivate var boneIndexSize: Int = 1
+    fileprivate var morphIndexSize: Int = 1
+    fileprivate var physicsBodyIndexSize: Int = 1
+    fileprivate var modelName: String! = ""
+    fileprivate var englishModelName: String! = ""
+    fileprivate var comment: String! = ""
+    fileprivate var englishComment: String! = ""
     
     // MARK: vertex data
-    private var vertexCount = 0
-    private var vertexArray: [Float32]! = nil
-    private var normalArray: [Float32]! = nil
-    private var texcoordArray: [Float32]! = nil
-    private var boneIndicesArray: [Int]! = nil
-    private var boneWeightsArray: [Float32]! = nil
-    private var edgeArray: [Float32]! = nil
+    fileprivate var vertexCount = 0
+    fileprivate var vertexArray: [Float32]! = nil
+    fileprivate var normalArray: [Float32]! = nil
+    fileprivate var texcoordArray: [Float32]! = nil
+    fileprivate var boneIndicesArray: [Int]! = nil
+    fileprivate var boneWeightsArray: [Float32]! = nil
+    fileprivate var edgeArray: [Float32]! = nil
     
     // MARK: index data
-    private var indexCount = 0
-    private var indexArray: [Int]! = nil
-    private var separatedIndexArray: [[Int]]! = nil
+    fileprivate var indexCount = 0
+    fileprivate var indexArray: [Int]! = nil
+    fileprivate var separatedIndexArray: [[Int]]! = nil
     
     // MARK: texture data
-    private var textureCount = 0
-#if os(iOS)
-    private var textureArray: [UIImage]! = nil
-#elseif os(OSX)
-    private var textureArray: [NSImage]! = nil
-#endif
+    fileprivate var textureCount = 0
+    #if os(iOS) || os(watchOS)
+        fileprivate var textureArray: [UIImage]! = nil
+    #elseif os(OSX)
+        private var textureArray: [NSImage]! = nil
+    #endif
     
     // MARK: material data
-    private var materialCount = 0
-    private var materialArray: [SCNMaterial]! = nil
-    private var materialIndexCountArray: [Int]! = nil
-    private var materialShapeArray: [SCNGeometryPrimitiveType]! = nil
+    fileprivate var materialCount = 0
+    fileprivate var materialArray: [SCNMaterial]! = nil
+    fileprivate var materialIndexCountArray: [Int]! = nil
+    fileprivate var materialShapeArray: [SCNGeometryPrimitiveType]! = nil
     
     // MARK: bone data
-    private var boneCount = 0
-    private var boneArray: [MMDNode]! = nil
-    private var boneInverseMatrixArray: [NSValue]! = nil
-    private var rootBone: MMDNode! = nil
-    private var boneHash: [String:MMDNode]! = nil
+    fileprivate var boneCount = 0
+    fileprivate var boneArray: [MMDNode]! = nil
+    fileprivate var boneInverseMatrixArray: [NSValue]! = nil
+    fileprivate var rootBone: MMDNode! = nil
+    fileprivate var boneHash: [String:MMDNode]! = nil
     
     // MARK: IK data
-    private var ikCount = 0
-    private var ikArray: [MMDNode]! = nil
+    fileprivate var ikCount = 0
+    fileprivate var ikArray: [MMDNode]! = nil
     
     // MARK: face data
-    private var faceCount = 0
-    private var faceIndexArray: [Int]! = nil
-    private var faceNameArray: [String]! = nil
-    private var faceVertexArray: [[Float32]]! = nil
+    fileprivate var faceCount = 0
+    fileprivate var faceIndexArray: [Int]! = nil
+    fileprivate var faceNameArray: [String]! = nil
+    fileprivate var faceVertexArray: [[Float32]]! = nil
     
     // MARK: display info data
-    private var faceDisplayCount = 0
-    private var boneDisplayNameCount = 0
-    private var boneDisplayCount = 0
+    fileprivate var faceDisplayCount = 0
+    fileprivate var boneDisplayNameCount = 0
+    fileprivate var boneDisplayCount = 0
     
     // MARK: physics body data
-    private var physicsBodyCount = 0
-    private var physicsBodyArray: [SCNPhysicsBody]! = nil
+    fileprivate var physicsBodyCount = 0
+    fileprivate var physicsBodyArray: [SCNPhysicsBody]! = nil
     
     // MARK: geometry data
-    private var vertexSource: SCNGeometrySource! = nil
-    private var normalSource: SCNGeometrySource! = nil
-    private var texcoordSource: SCNGeometrySource! = nil
-    private var elementArray: [SCNGeometryElement]! = nil
-    private var separatedIndexData: [NSData]! = nil
+    fileprivate var vertexSource: SCNGeometrySource! = nil
+    fileprivate var normalSource: SCNGeometrySource! = nil
+    fileprivate var texcoordSource: SCNGeometrySource! = nil
+    fileprivate var elementArray: [SCNGeometryElement]! = nil
+    fileprivate var separatedIndexData: [Data]! = nil
     
     /**
      */
-    static func getNode(data: NSData, directoryPath: String! = "") -> MMDNode? {
+    static func getNode(_ data: Data, directoryPath: String! = "") -> MMDNode? {
         let reader = MMDPMXReader(data: data, directoryPath: directoryPath)
         let node = reader.loadPMXFile()
         
@@ -98,7 +98,7 @@ class MMDPMXReader: MMDReader {
     }
     
     // MARK: - Loading PMX File
-    private func loadPMXFile() -> MMDNode? {
+    fileprivate func loadPMXFile() -> MMDNode? {
         // initialize working variables
         self.workingNode = MMDNode()
         
@@ -126,7 +126,7 @@ class MMDPMXReader: MMDReader {
         self.materialIndexCountArray = [Int]()
         self.materialShapeArray = [SCNGeometryPrimitiveType]()
         
-        #if os(iOS)
+        #if os(iOS) || os(watchOS)
             self.textureArray = [UIImage]()
         #elseif os(OSX)
             self.textureArray = [NSImage]()
@@ -179,7 +179,7 @@ class MMDPMXReader: MMDReader {
         return self.workingNode
     }
     
-    private func getTextBuffer() -> NSString {
+    fileprivate func getTextBuffer() -> NSString {
         let strlen = Int(getUnsignedInt())
 //        return getString(strlen, encoding: self.encoding)!
 
@@ -193,7 +193,7 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX header data
      */
-    private func readPMXHeader() {
+    fileprivate func readPMXHeader() {
         self.pmxMagic = String(getString(4)!)
         print("pmxMagic: \(pmxMagic)") // suppose to be "PMX "
         self.version = Float(getFloat())
@@ -203,9 +203,9 @@ class MMDPMXReader: MMDReader {
         let encodingNo = getUnsignedByte()
         switch(encodingNo) {
         case 0:
-            self.encoding = NSUTF16LittleEndianStringEncoding
+            self.encoding = String.Encoding.utf16LittleEndian
         case 1:
-            self.encoding = NSUTF8StringEncoding
+            self.encoding = String.Encoding.utf8
         default:
             print("unknown encoding number: \(encodingNo)")
         }
@@ -227,7 +227,7 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX vertex data
      */
-    private func readVertex() {
+    fileprivate func readVertex() {
         self.vertexCount = Int(getInt())
         
         for _ in 0..<self.vertexCount {
@@ -397,7 +397,7 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX index data
      */
-    private func readIndex() {
+    fileprivate func readIndex() {
         self.indexCount = Int(getUnsignedInt())
         
         for _ in 0..<self.indexCount {
@@ -408,16 +408,16 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX texture data
      */
-    private func readTexture() {
+    fileprivate func readTexture() {
         self.textureCount = Int(getUnsignedInt())
         
         for _ in 0..<self.textureCount {
             let textureFile = getTextBuffer()
-            let fileName = (self.directoryPath as NSString).stringByAppendingPathComponent(String(textureFile))
+            let fileName = (self.directoryPath as NSString).appendingPathComponent(String(textureFile))
 
             print("***** textureName: \(textureFile) *****")
             
-            #if os(iOS)
+            #if os(iOS) || os(watchOS)
                 var image = UIImage(contentsOfFile: fileName as String)
                 if image == nil {
                     image = UIImage()
@@ -436,7 +436,7 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX material data
      */
-    private func readMaterial() {
+    fileprivate func readMaterial() {
         self.materialCount = Int(getUnsignedInt())
         
         var indexPos = 0
@@ -447,7 +447,7 @@ class MMDPMXReader: MMDReader {
             
             let englishName = getTextBuffer()
             
-            #if os(iOS)
+            #if os(iOS) || os(watchOS)
                 
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
@@ -501,22 +501,22 @@ class MMDPMXReader: MMDReader {
             }
             
             if noCulling {
-                material.doubleSided = true
+                material.isDoubleSided = true
             } else {
-                material.doubleSided = false
+                material.isDoubleSided = false
             }
             
             // FIXME: use floorShadow, shadowMap property
             // FIXME: use drawEdge property
             // FIXME: use vertexColor
 
-            var shape: SCNGeometryPrimitiveType = .Triangles
+            var shape: SCNGeometryPrimitiveType = .triangles
             if drawPoint {
-                shape = .Point
+                shape = .point
             } else if drawLine {
-                shape = .Line
+                shape = .line
             } else {
-                shape = .Triangles
+                shape = .triangles
             }
             self.materialShapeArray.append(shape)
             
@@ -530,7 +530,7 @@ class MMDPMXReader: MMDReader {
             
             var arrayPos = 0
             var newIndexCount = 0
-            if shape == .Point {
+            if shape == .point {
                 while arrayPos < materialIndexCount {
                     let index1 = orgArray[arrayPos + 0]
                     let index2 = orgArray[arrayPos + 1]
@@ -550,7 +550,7 @@ class MMDPMXReader: MMDReader {
                     
                     arrayPos += 3
                 }
-            } else if shape == .Line {
+            } else if shape == .line {
                 while arrayPos < materialIndexCount {
                     let index1 = orgArray[arrayPos + 0]
                     let index2 = orgArray[arrayPos + 1]
@@ -576,7 +576,7 @@ class MMDPMXReader: MMDReader {
                     
                     arrayPos += 3
                 }
-            } else if shape == .Triangles {
+            } else if shape == .triangles {
                 while arrayPos < materialIndexCount {
                     let index1 = orgArray[arrayPos + 0]
                     let index2 = orgArray[arrayPos + 1]
@@ -600,7 +600,7 @@ class MMDPMXReader: MMDReader {
     /**
      read PMX bone data
      */
-    private func readBone() {
+    fileprivate func readBone() {
         var bonePositionArray = [SCNVector3]()
         var parentNoArray = [Int]()
         var ikTargetNoArray = [Int]()
@@ -621,7 +621,7 @@ class MMDPMXReader: MMDReader {
             boneNode.name = getTextBuffer() as String
             let englishName = getTextBuffer()
             
-            #if os(iOS)
+            #if os(iOS) || os(watchOS)
                 let x = getFloat()
                 let y = getFloat()
                 let z = -getFloat()
@@ -718,7 +718,7 @@ class MMDPMXReader: MMDReader {
                 }
                 
                 let chainRootNode = self.boneArray[ linkBoneNoArray[linkCount-1] ]
-                let constraint = SCNIKConstraint.inverseKinematicsConstraintWithChainRootNode(chainRootNode)
+                let constraint = SCNIKConstraint.inverseKinematicsConstraint(chainRootNode: chainRootNode)
                 
                 if targetBone.constraints == nil {
                     targetBone.constraints = [SCNConstraint]()
@@ -764,11 +764,11 @@ class MMDPMXReader: MMDReader {
             let bonePos = bonePositionArray[index]
             let matrix = SCNMatrix4MakeTranslation(-bonePos.x, -bonePos.y, -bonePos.z)
             
-            self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: matrix))
+            self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: matrix))
         }
         
         self.boneArray.append(self.rootBone)
-        self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
+        self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: SCNMatrix4Identity))
         
         /*
         self.workingNode.position = SCNVector3Make(0, 0, 0)
@@ -845,7 +845,7 @@ class MMDPMXReader: MMDReader {
         }
     }
     
-    func readVertexMorph(count: Int) {
+    func readVertexMorph(_ count: Int) {
         for _ in 0..<count {
             let index = getIntOfLength(self.indexSize)
             let x = getFloat()
@@ -854,7 +854,7 @@ class MMDPMXReader: MMDReader {
         }
     }
     
-    func readUVMorph(count: Int, textureNo: Int) {
+    func readUVMorph(_ count: Int, textureNo: Int) {
         for _ in 0..<count {
             let index = getIntOfLength(self.indexSize)
             let x = getFloat()
@@ -864,7 +864,7 @@ class MMDPMXReader: MMDReader {
         }
     }
     
-    func readBoneMorph(count: Int) {
+    func readBoneMorph(_ count: Int) {
         for _ in 0..<count {
             let index = getIntOfLength(self.indexSize)
             let posX = getFloat()
@@ -878,12 +878,12 @@ class MMDPMXReader: MMDReader {
         }
     }
     
-    func readMaterialMorph(count: Int) {
+    func readMaterialMorph(_ count: Int) {
         for _ in 0..<count {
             let index = getIntOfLength(self.materialIndexSize)
             let addColor = getUnsignedByte()
             
-            #if os(iOS)
+            #if os(iOS) || os(watchOS)
                 
                 let diffuseColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 let SpecularColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
@@ -919,7 +919,7 @@ class MMDPMXReader: MMDReader {
         
     }
     
-    func readGroupMorph(count: Int) {
+    func readGroupMorph(_ count: Int) {
         for _ in 0..<count {
             let morphIndex = getIntOfLength(self.morphIndexSize)
             let rate = getFloat()
@@ -951,79 +951,84 @@ class MMDPMXReader: MMDReader {
     }
     
     func createGeometry() {
+        //let vertexData = Data(bytes: UnsafePointer<UInt8>(self.vertexArray), count: 4 * 3 * self.vertexCount)
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
+        //let normalData = Data(bytes: UnsafePointer<UInt8>(self.normalArray), count: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
+        //let texcoordData = Data(bytes: UnsafePointer<UInt8>(self.texcoordArray), count: 4 * 2 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
+        //let boneWeightsData = Data(bytes: UnsafePointer<UInt8>(self.boneWeightsArray), count: 4 * 4 * self.vertexCount)
         let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 4 * self.vertexCount)
         //let edgeData = NSData(bytes: self.edgeArray, length: 1 * 1 * self.vertexCount)
         
-        var boneIndicesData: NSData! = nil
+        var boneIndicesData: Data! = nil
         switch(self.boneIndexSize) {
         case 1:
             var array = [UInt8]()
             for data in self.boneIndicesArray {
                 array.append(UInt8(data))
             }
-            boneIndicesData = NSData(bytes: array, length: 1 * 4 * self.vertexCount)
+            boneIndicesData = Data(bytes: UnsafePointer<UInt8>(array), count: 1 * 4 * self.vertexCount)
         case 2:
             var array = [UInt16]()
             for data in self.boneIndicesArray {
                 array.append(UInt16(data))
             }
-            boneIndicesData = NSData(bytes: array, length: 2 * 4 * self.vertexCount)
+            boneIndicesData = NSData(bytes: array, length: 2 * 4 * self.vertexCount) as Data!
         case 4:
             var array = [UInt32]()
             for data in self.boneIndicesArray {
                 array.append(UInt32(data))
             }
-            boneIndicesData = NSData(bytes: array, length: 4 * 4 * self.vertexCount)
+            boneIndicesData = NSData(bytes: array, length: 4 * 4 * self.vertexCount) as Data!
         default: break
             // unknown size
         }
         
         
-        self.vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        self.normalSource = SCNGeometrySource(data: normalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        self.texcoordSource = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        self.vertexSource = SCNGeometrySource(data: vertexData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        self.normalSource = SCNGeometrySource(data: normalData as Data, semantic: SCNGeometrySource.Semantic.normal, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        self.texcoordSource = SCNGeometrySource(data: texcoordData as Data, semantic: SCNGeometrySource.Semantic.texcoord, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         
-        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 4, bytesPerComponent: self.boneIndexSize, dataOffset: 0, dataStride: 4 * self.boneIndexSize)
-        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 4, bytesPerComponent: 4, dataOffset: 0, dataStride: 16)
+        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySource.Semantic.boneIndices, vectorCount: Int(vertexCount), usesFloatComponents: false, componentsPerVector: 4, bytesPerComponent: self.boneIndexSize, dataOffset: 0, dataStride: 4 * self.boneIndexSize)
+        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData as Data, semantic: SCNGeometrySource.Semantic.boneWeights, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 4, bytesPerComponent: 4, dataOffset: 0, dataStride: 16)
         
         for index in 0..<self.materialCount {
             let count = materialIndexCountArray[index]
             
-            var indexArray = self.separatedIndexArray[index]
-            var indexData: NSData! = nil
+            let indexArray = self.separatedIndexArray[index]
+            var indexData: Data! = nil
             switch(self.indexSize) {
             case 1:
                 var array = [UInt8]()
                 for data in indexArray {
                     array.append(UInt8(data))
                 }
-                indexData = NSData(bytes: array, length: 1 * indexArray.count)
+                indexData = NSData(bytes: array, length: 1 * indexArray.count) as Data!
             case 2:
                 var array = [UInt16]()
                 for data in indexArray {
                     array.append(UInt16(data))
                 }
-                indexData = NSData(bytes: array, length: 2 * indexArray.count)
+                indexData = NSData(bytes: array, length: 2 * indexArray.count) as Data!
             case 4:
                 var array = [UInt32]()
                 for data in indexArray {
                     array.append(UInt32(data))
                 }
-                indexData = NSData(bytes: array, length: 4 * indexArray.count)
+                indexData = NSData(bytes: array, length: 4 * indexArray.count) as Data!
             default: break
                 // unknown size
             }
             
             let primitiveType = self.materialShapeArray[index]
             let element = SCNGeometryElement(data: indexData, primitiveType: primitiveType, primitiveCount: count, bytesPerIndex: self.indexSize)
-            print("***** Element ***** \(indexData.length), \(primitiveType), \(count), \(self.indexSize)")
+            print("***** Element ***** \(indexData.count), \(primitiveType), \(count), \(self.indexSize)")
 
             self.elementArray.append(element)
         }
         
+#if !os(watchOS)
         print("****************** create program start ***************************")
         let program = MMDProgram()
         //program.delegate = self.workingNode
@@ -1051,6 +1056,7 @@ class MMDPMXReader: MMDReader {
         material.program = program
         }
         */
+#endif
         
         let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
         geometry.materials = self.materialArray
@@ -1151,13 +1157,13 @@ class MMDPMXReader: MMDReader {
             
             var bodyType: SCNPhysicsBodyType! = nil
             if type == 0 {
-                bodyType = SCNPhysicsBodyType.Kinematic
+                bodyType = SCNPhysicsBodyType.kinematic
             } else if type == 1 {
-                bodyType = SCNPhysicsBodyType.Dynamic
+                bodyType = SCNPhysicsBodyType.dynamic
             } else if type == 2 {
-                bodyType = SCNPhysicsBodyType.Dynamic
+                bodyType = SCNPhysicsBodyType.dynamic
             }
-            bodyType = SCNPhysicsBodyType.Kinematic // for debug
+            bodyType = SCNPhysicsBodyType.kinematic // for debug
             
             var shape: SCNGeometry! = nil
             if shapeType == 0 {
@@ -1173,7 +1179,7 @@ class MMDPMXReader: MMDReader {
             
             let body = SCNPhysicsBody(type: bodyType, shape: SCNPhysicsShape(geometry: shape, options: nil))
             
-            body.affectedByGravity = true
+            body.isAffectedByGravity = true
             body.mass = weight
             body.friction = friction
             body.rollingFriction = rotateDim
@@ -1226,7 +1232,7 @@ class MMDPMXReader: MMDReader {
         }
     }
     
-    func showBoneTree(bone: SCNNode, prefix: String = "") {
+    func showBoneTree(_ bone: SCNNode, prefix: String = "") {
         print("\(prefix)\(bone.name)")
         let newPrefix = "\(prefix)    "
         for child in bone.childNodes {

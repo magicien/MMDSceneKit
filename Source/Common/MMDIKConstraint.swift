@@ -8,7 +8,7 @@
 
 import SceneKit
 
-public class MMDIKConstraint {
+open class MMDIKConstraint {
     var boneArray: [MMDNode]! = []
     var minAngleArray: [Float]! = []
     var maxAngleArray: [Float]! = []

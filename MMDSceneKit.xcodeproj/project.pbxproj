@@ -9,9 +9,7 @@
 /* Begin PBXBuildFile section */
 		DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
 		DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
-		DD12BF791C1838D700B20F37 /* MMDSceneKit_OSX.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF781C1838D700B20F37 /* MMDSceneKit_OSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DD12BF801C1838D700B20F37 /* MMDSceneKit_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */; };
-		DD12BF851C1838D700B20F37 /* MMDSceneKit_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF841C1838D700B20F37 /* MMDSceneKit_OSXTests.swift */; };
+		DD12BF801C1838D700B20F37 /* MMDSceneKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; };
 		DD12BF951C18390700B20F37 /* MMDSceneKit_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF941C18390700B20F37 /* MMDSceneKit_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD12BF9C1C18390700B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
 		DD12BFA11C18390800B20F37 /* MMDSceneKit_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFA01C18390800B20F37 /* MMDSceneKit_iOSTests.swift */; };
@@ -28,10 +26,35 @@
 		DD12BFF01C1AB85800B20F37 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFEE1C1AB85800B20F37 /* MainMenu.xib */; };
 		DD12C0041C1AB95A00B20F37 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art.scnassets */; };
 		DD12C0081C1ABE1700B20F37 /* MMDSceneKitSample_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFFA1C1AB85800B20F37 /* MMDSceneKitSample_iOSTests.swift */; };
-		DD12C0091C1ABE2B00B20F37 /* MMDSceneKitSample_OSXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_OSXTests.swift */; };
+		DD12C0091C1ABE2B00B20F37 /* MMDSceneKitSample_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_macOSTests.swift */; };
 		DD12C00A1C1ABE4200B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
-		DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_OSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */; };
+		DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; };
 		DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DD3313351D39C0A30027FCA9 /* MMDSceneKit_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DD3313931D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DD3313921D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DD3313A41D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DD3313861D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app */; };
+		DD3313AD1D39C2F70027FCA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD33137E1D39C2300027FCA9 /* Assets.xcassets */; };
+		DD3313AE1D39C2FB0027FCA9 /* Base.lproj in Resources */ = {isa = PBXBuildFile; fileRef = DD33137F1D39C2300027FCA9 /* Base.lproj */; };
+		DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DD3313BB1D39C3160027FCA9 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
+		DD3313BC1D39C3160027FCA9 /* MMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8961C23F42500A7F834 /* MMDReader.swift */; };
+		DD3313BD1D39C3160027FCA9 /* MMDPMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */; };
+		DD3313BE1D39C3160027FCA9 /* MMDPMXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEC59891C38B4570043F939 /* MMDPMXReader.swift */; };
+		DD3313BF1D39C3160027FCA9 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
+		DD3313C01D39C3160027FCA9 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
+		DD3313C11D39C3160027FCA9 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
+		DD3313C21D39C3160027FCA9 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
+		DD3313C31D39C3160027FCA9 /* MMDProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296D81C2D120800707364 /* MMDProgram.swift */; };
+		DD3313C41D39C3160027FCA9 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
+		DD3313C51D39C32A0027FCA9 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
+		DD3313C61D39C3350027FCA9 /* MMDShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DC1C2D154A00707364 /* MMDShader.vsh */; };
+		DD3313C71D39C3350027FCA9 /* MMDShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DF1C2E214800707364 /* MMDShader.fsh */; };
+		DD3313C81D39C3380027FCA9 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
+		DD3313D01D39C9D00027FCA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD3313CA1D39C9D00027FCA9 /* Assets.xcassets */; };
+		DD3313D11D39C9D00027FCA9 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3313CB1D39C9D00027FCA9 /* ExtensionDelegate.swift */; };
+		DD3313D31D39C9D00027FCA9 /* GameInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3313CD1D39C9D00027FCA9 /* GameInterfaceController.swift */; };
+		DD3313D41D39C9D00027FCA9 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3313CE1D39C9D00027FCA9 /* NotificationController.swift */; };
+		DD3313D51D39C9D00027FCA9 /* PushNotificationPayload.apns in Resources */ = {isa = PBXBuildFile; fileRef = DD3313CF1D39C9D00027FCA9 /* PushNotificationPayload.apns */; };
 		DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8961C23F42500A7F834 /* MMDReader.swift */; };
 		DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8961C23F42500A7F834 /* MMDReader.swift */; };
 		DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */; };
@@ -40,6 +63,11 @@
 		DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
 		DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
 		DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
+		DD4C6AA61D3AD7C300FE57DD /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art.scnassets */; };
+		DD6094981D3A26F600CA22C7 /* MMDSceneKit_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF781C1838D700B20F37 /* MMDSceneKit_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DD60949D1D3A27D200CA22C7 /* MMDNode_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */; };
+		DD60949E1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */; };
+		DD6095061D3A4DB000CA22C7 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
 		DD6296D91C2D120800707364 /* MMDProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296D81C2D120800707364 /* MMDProgram.swift */; };
 		DD6296DA1C2D120800707364 /* MMDProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296D81C2D120800707364 /* MMDProgram.swift */; };
 		DD6296DE1C2D154A00707364 /* MMDShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = DD6296DC1C2D154A00707364 /* MMDShader.vsh */; };
@@ -52,7 +80,6 @@
 		DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F31C2FF21E00707364 /* EmptyShader.metal */; };
 		DD6296F61C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
 		DD6296F71C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
-		DD6296F81C2FFB9C00707364 /* MMDShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F51C2FFB9C00707364 /* MMDShader.swift */; };
 		DD6296F91C2FFF9200707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
 		DD6296FA1C2FFF9300707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
 		DD6297001C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
@@ -98,6 +125,20 @@
 			remoteGlobalIDString = DD12BFE11C1AB85800B20F37;
 			remoteInfo = MMDSceneKitSample_OSX;
 		};
+		DD3313941D39C2D90027FCA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD3313911D39C2D90027FCA9;
+			remoteInfo = "MMDSceneKitSample_WatchOS Extension";
+		};
+		DD3313A21D39C2D90027FCA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD3313851D39C2D90027FCA9;
+			remoteInfo = MMDSceneKitSample_WatchOS;
+		};
 		DD6296EC1C2FCFC000707364 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
@@ -108,6 +149,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		DD3313A81D39C2D90027FCA9 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				DD3313931D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD3313AC1D39C2D90027FCA9 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				DD3313A41D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DD6296EE1C2FCFC000707364 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,12 +187,10 @@
 /* Begin PBXFileReference section */
 		DD12BF131C1835E000B20F37 /* MMDNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDNode.swift; sourceTree = "<group>"; };
 		DD12BF151C18361400B20F37 /* MMDSceneSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneSource.swift; sourceTree = "<group>"; };
-		DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_OSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD12BF781C1838D700B20F37 /* MMDSceneKit_OSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDSceneKit_OSX.h; sourceTree = "<group>"; };
+		DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD12BF781C1838D700B20F37 /* MMDSceneKit_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDSceneKit_macOS.h; sourceTree = "<group>"; };
 		DD12BF7A1C1838D700B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DD12BF7F1C1838D700B20F37 /* MMDSceneKit_OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKit_OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD12BF841C1838D700B20F37 /* MMDSceneKit_OSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKit_OSXTests.swift; sourceTree = "<group>"; };
-		DD12BF861C1838D700B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD12BF7F1C1838D700B20F37 /* MMDSceneKit_macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKit_macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD12BF941C18390700B20F37 /* MMDSceneKit_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMDSceneKit_iOS.h; sourceTree = "<group>"; };
 		DD12BF961C18390700B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -145,23 +206,40 @@
 		DD12BFCA1C1AB78000B20F37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DD12BFCC1C1AB78000B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD12BFD11C1AB78000B20F37 /* MMDSceneKitSample_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKitSample_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_OSXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_OSXTests.swift; sourceTree = "<group>"; };
+		DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_macOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_macOSTests.swift; sourceTree = "<group>"; };
 		DD12BFD71C1AB78000B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_OSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD12BFE41C1AB85800B20F37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DD12BFE61C1AB85800B20F37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
-		DD12BFE81C1AB85800B20F37 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
-		DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD12BFE41C1AB85800B20F37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../macOS/AppDelegate.swift; sourceTree = "<group>"; };
+		DD12BFE61C1AB85800B20F37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameView.swift; path = ../macOS/GameView.swift; sourceTree = "<group>"; };
+		DD12BFE81C1AB85800B20F37 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameViewController.swift; path = ../macOS/GameViewController.swift; sourceTree = "<group>"; };
+		DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../macOS/Assets.xcassets; sourceTree = "<group>"; };
 		DD12BFEF1C1AB85800B20F37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		DD12BFF11C1AB85800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKitSample_OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKitSample_macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD12BFFA1C1AB85800B20F37 /* MMDSceneKitSample_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_iOSTests.swift; sourceTree = "<group>"; };
 		DD12BFFC1C1AB85800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD3313321D39C0A30027FCA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMDSceneKit_watchOS.h; sourceTree = "<group>"; };
+		DD33137E1D39C2300027FCA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DD33137F1D39C2300027FCA9 /* Base.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Base.lproj; sourceTree = "<group>"; };
+		DD3313801D39C2300027FCA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD3313861D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_watchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD3313921D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MMDSceneKitSample_watchOS Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD3313CA1D39C9D00027FCA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DD3313CB1D39C9D00027FCA9 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		DD3313CC1D39C9D00027FCA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD3313CD1D39C9D00027FCA9 /* GameInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameInterfaceController.swift; sourceTree = "<group>"; };
+		DD3313CE1D39C9D00027FCA9 /* NotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		DD3313CF1D39C9D00027FCA9 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		DD41D8961C23F42500A7F834 /* MMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDReader.swift; sourceTree = "<group>"; };
 		DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMDReader.swift; sourceTree = "<group>"; };
 		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 		DD41D89F1C24099400A7F834 /* MMDXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDXReader.swift; sourceTree = "<group>"; };
 		DD41D8A21C25354C00A7F834 /* Regexp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regexp.swift; sourceTree = "<group>"; };
+		DD6094991D3A27D200CA22C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDNode_Tests.swift; sourceTree = "<group>"; };
+		DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneKit_macOSTests.swift; sourceTree = "<group>"; };
 		DD6296D81C2D120800707364 /* MMDProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDProgram.swift; sourceTree = "<group>"; };
 		DD6296DC1C2D154A00707364 /* MMDShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MMDShader.vsh; sourceTree = "<group>"; };
 		DD6296DF1C2E214800707364 /* MMDShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MMDShader.fsh; sourceTree = "<group>"; };
@@ -186,7 +264,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12BF801C1838D700B20F37 /* MMDSceneKit_OSX.framework in Frameworks */,
+				DD12BF801C1838D700B20F37 /* MMDSceneKit_macOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,11 +302,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_OSX.framework in Frameworks */,
+				DD12C00C1C1ABE4D00B20F37 /* MMDSceneKit_macOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		DD12BFF31C1AB85800B20F37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD33130E1D39BF020027FCA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD33138F1D39C2D90027FCA9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -242,8 +334,10 @@
 			isa = PBXGroup;
 			children = (
 				DD12BEFB1C18359600B20F37 /* Common */,
-				DD12BF771C1838D700B20F37 /* OSX */,
+				DD12BF771C1838D700B20F37 /* macOS */,
 				DD12BF931C18390700B20F37 /* iOS */,
+				DD33143D1D39CB630027FCA9 /* tvOS */,
+				DD33131A1D39BF400027FCA9 /* watchOS */,
 				DD12C0051C1ABA2200B20F37 /* Tests */,
 				DD12BFB41C1839EE00B20F37 /* Sample */,
 				DD12BEFA1C18359600B20F37 /* Products */,
@@ -253,14 +347,17 @@
 		DD12BEFA1C18359600B20F37 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */,
-				DD12BF7F1C1838D700B20F37 /* MMDSceneKit_OSXTests.xctest */,
+				DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */,
+				DD12BF7F1C1838D700B20F37 /* MMDSceneKit_macOSTests.xctest */,
 				DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */,
 				DD12BF9B1C18390700B20F37 /* MMDSceneKit_iOSTests.xctest */,
 				DD12BFBC1C1AB78000B20F37 /* MMDSceneKitSample_iOS.app */,
 				DD12BFD11C1AB78000B20F37 /* MMDSceneKitSample_iOSTests.xctest */,
-				DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_OSX.app */,
-				DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_OSXTests.xctest */,
+				DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_macOS.app */,
+				DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_macOSTests.xctest */,
+				DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */,
+				DD3313861D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app */,
+				DD3313921D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -285,23 +382,24 @@
 			path = Source/Common;
 			sourceTree = "<group>";
 		};
-		DD12BF771C1838D700B20F37 /* OSX */ = {
+		DD12BF771C1838D700B20F37 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				DD12BF781C1838D700B20F37 /* MMDSceneKit_OSX.h */,
+				DD12BF781C1838D700B20F37 /* MMDSceneKit_macOS.h */,
 				DD12BF7A1C1838D700B20F37 /* Info.plist */,
 			);
-			name = OSX;
-			path = Source/OSX;
+			name = macOS;
+			path = Source/macOS;
 			sourceTree = "<group>";
 		};
-		DD12BF831C1838D700B20F37 /* OSX */ = {
+		DD12BF831C1838D700B20F37 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				DD12BF841C1838D700B20F37 /* MMDSceneKit_OSXTests.swift */,
-				DD12BF861C1838D700B20F37 /* Info.plist */,
+				DD6094991D3A27D200CA22C7 /* Info.plist */,
+				DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */,
+				DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */,
 			);
-			path = OSX;
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		DD12BF931C18390700B20F37 /* iOS */ = {
@@ -327,8 +425,10 @@
 			isa = PBXGroup;
 			children = (
 				DD12C0031C1AB92000B20F37 /* Common */,
+				DD12BFE31C1AB85800B20F37 /* macOS */,
 				DD12BFBD1C1AB78000B20F37 /* iOS */,
-				DD12BFE31C1AB85800B20F37 /* OSX */,
+				DD33143C1D39CB520027FCA9 /* tvOS */,
+				DD33137D1D39C2070027FCA9 /* watchOS */,
 				DD12C0061C1ABA6B00B20F37 /* Tests */,
 			);
 			path = Sample;
@@ -347,16 +447,16 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		DD12BFD41C1AB78000B20F37 /* OSX */ = {
+		DD12BFD41C1AB78000B20F37 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_OSXTests.swift */,
+				DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_macOSTests.swift */,
 				DD12BFD71C1AB78000B20F37 /* Info.plist */,
 			);
-			path = OSX;
+			path = macOS;
 			sourceTree = "<group>";
 		};
-		DD12BFE31C1AB85800B20F37 /* OSX */ = {
+		DD12BFE31C1AB85800B20F37 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
 				DD12BFE41C1AB85800B20F37 /* AppDelegate.swift */,
@@ -367,7 +467,7 @@
 				DD12BFF11C1AB85800B20F37 /* Info.plist */,
 				DD6296F31C2FF21E00707364 /* EmptyShader.metal */,
 			);
-			path = OSX;
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		DD12BFF91C1AB85800B20F37 /* iOS */ = {
@@ -391,8 +491,10 @@
 		DD12C0051C1ABA2200B20F37 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				DD12BF831C1838D700B20F37 /* macOS */,
 				DD12BF9F1C18390700B20F37 /* iOS */,
-				DD12BF831C1838D700B20F37 /* OSX */,
+				DD33143B1D39CB280027FCA9 /* tvOS */,
+				DD33143A1D39CB220027FCA9 /* watchOS */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -400,10 +502,88 @@
 		DD12C0061C1ABA6B00B20F37 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				DD12BFD41C1AB78000B20F37 /* macOS */,
 				DD12BFF91C1AB85800B20F37 /* iOS */,
-				DD12BFD41C1AB78000B20F37 /* OSX */,
+				DD33143E1D39CD2C0027FCA9 /* tvOS */,
+				DD3313D61D39CA0E0027FCA9 /* watchOS */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		DD33131A1D39BF400027FCA9 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				DD3313321D39C0A30027FCA9 /* Info.plist */,
+				DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */,
+			);
+			name = watchOS;
+			path = Source/watchOS;
+			sourceTree = "<group>";
+		};
+		DD33137D1D39C2070027FCA9 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				DD3313C91D39C9BC0027FCA9 /* Extension */,
+				DD33137E1D39C2300027FCA9 /* Assets.xcassets */,
+				DD33137F1D39C2300027FCA9 /* Base.lproj */,
+				DD3313801D39C2300027FCA9 /* Info.plist */,
+			);
+			path = watchOS;
+			sourceTree = "<group>";
+		};
+		DD3313C91D39C9BC0027FCA9 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				DD3313CA1D39C9D00027FCA9 /* Assets.xcassets */,
+				DD3313CB1D39C9D00027FCA9 /* ExtensionDelegate.swift */,
+				DD3313CC1D39C9D00027FCA9 /* Info.plist */,
+				DD3313CD1D39C9D00027FCA9 /* GameInterfaceController.swift */,
+				DD3313CE1D39C9D00027FCA9 /* NotificationController.swift */,
+				DD3313CF1D39C9D00027FCA9 /* PushNotificationPayload.apns */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		DD3313D61D39CA0E0027FCA9 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = watchOS;
+			sourceTree = "<group>";
+		};
+		DD33143A1D39CB220027FCA9 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = watchOS;
+			sourceTree = "<group>";
+		};
+		DD33143B1D39CB280027FCA9 /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tvOS;
+			sourceTree = "<group>";
+		};
+		DD33143C1D39CB520027FCA9 /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tvOS;
+			sourceTree = "<group>";
+		};
+		DD33143D1D39CB630027FCA9 /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = tvOS;
+			sourceTree = "<group>";
+		};
+		DD33143E1D39CD2C0027FCA9 /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tvOS;
 			sourceTree = "<group>";
 		};
 		DD6296DB1C2D14F600707364 /* Shader */ = {
@@ -424,7 +604,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12BF791C1838D700B20F37 /* MMDSceneKit_OSX.h in Headers */,
+				DD6094981D3A26F600CA22C7 /* MMDSceneKit_macOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,12 +616,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD33130F1D39BF020027FCA9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313351D39C0A30027FCA9 /* MMDSceneKit_watchOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		DD12BF751C1838D700B20F37 /* MMDSceneKit_OSX */ = {
+		DD12BF751C1838D700B20F37 /* MMDSceneKit_macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD12BF871C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_OSX" */;
+			buildConfigurationList = DD12BF871C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_macOS" */;
 			buildPhases = (
 				DD12BF711C1838D700B20F37 /* Sources */,
 				DD12BF721C1838D700B20F37 /* Frameworks */,
@@ -453,14 +641,14 @@
 			);
 			dependencies = (
 			);
-			name = MMDSceneKit_OSX;
+			name = MMDSceneKit_macOS;
 			productName = MMDSceneKit_OSX;
-			productReference = DD12BF761C1838D700B20F37 /* MMDSceneKit_OSX.framework */;
+			productReference = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DD12BF7E1C1838D700B20F37 /* MMDSceneKit_OSXTests */ = {
+		DD12BF7E1C1838D700B20F37 /* MMDSceneKit_macOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD12BF8A1C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_OSXTests" */;
+			buildConfigurationList = DD12BF8A1C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_macOSTests" */;
 			buildPhases = (
 				DD12BF7B1C1838D700B20F37 /* Sources */,
 				DD12BF7C1C1838D700B20F37 /* Frameworks */,
@@ -471,9 +659,9 @@
 			dependencies = (
 				DD12BF821C1838D700B20F37 /* PBXTargetDependency */,
 			);
-			name = MMDSceneKit_OSXTests;
+			name = MMDSceneKit_macOSTests;
 			productName = MMDSceneKit_OSXTests;
-			productReference = DD12BF7F1C1838D700B20F37 /* MMDSceneKit_OSXTests.xctest */;
+			productReference = DD12BF7F1C1838D700B20F37 /* MMDSceneKit_macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		DD12BF911C18390700B20F37 /* MMDSceneKit_iOS */ = {
@@ -521,11 +709,13 @@
 				DD12BFB91C1AB78000B20F37 /* Frameworks */,
 				DD12BFBA1C1AB78000B20F37 /* Resources */,
 				DD6296EE1C2FCFC000707364 /* Embed Frameworks */,
+				DD3313AC1D39C2D90027FCA9 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DD6296ED1C2FCFC000707364 /* PBXTargetDependency */,
+				DD3313A31D39C2D90027FCA9 /* PBXTargetDependency */,
 			);
 			name = MMDSceneKitSample_iOS;
 			productName = MMDSceneKitSample_iOS;
@@ -550,9 +740,9 @@
 			productReference = DD12BFD11C1AB78000B20F37 /* MMDSceneKitSample_iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_OSX */ = {
+		DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD12BFFD1C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_OSX" */;
+			buildConfigurationList = DD12BFFD1C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_macOS" */;
 			buildPhases = (
 				DD12BFDE1C1AB85800B20F37 /* Sources */,
 				DD12BFDF1C1AB85800B20F37 /* Frameworks */,
@@ -562,14 +752,14 @@
 			);
 			dependencies = (
 			);
-			name = MMDSceneKitSample_OSX;
+			name = MMDSceneKitSample_macOS;
 			productName = MMDSceneKitSample_OSX;
-			productReference = DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_OSX.app */;
+			productReference = DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_macOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DD12BFF51C1AB85800B20F37 /* MMDSceneKitSample_OSXTests */ = {
+		DD12BFF51C1AB85800B20F37 /* MMDSceneKitSample_macOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD12C0001C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_OSXTests" */;
+			buildConfigurationList = DD12C0001C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_macOSTests" */;
 			buildPhases = (
 				DD12BFF21C1AB85800B20F37 /* Sources */,
 				DD12BFF31C1AB85800B20F37 /* Frameworks */,
@@ -580,10 +770,62 @@
 			dependencies = (
 				DD12BFF81C1AB85800B20F37 /* PBXTargetDependency */,
 			);
-			name = MMDSceneKitSample_OSXTests;
+			name = MMDSceneKitSample_macOSTests;
 			productName = MMDSceneKitSample_OSXTests;
-			productReference = DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_OSXTests.xctest */;
+			productReference = DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DD3313111D39BF020027FCA9 /* MMDSceneKit_watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD3313191D39BF020027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKit_watchOS" */;
+			buildPhases = (
+				DD33130D1D39BF020027FCA9 /* Sources */,
+				DD33130E1D39BF020027FCA9 /* Frameworks */,
+				DD33130F1D39BF020027FCA9 /* Headers */,
+				DD3313101D39BF020027FCA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MMDSceneKit_watchOS;
+			productName = MMDSceneKit_WatchOS;
+			productReference = DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		DD3313851D39C2D90027FCA9 /* MMDSceneKitSample_watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD3313A91D39C2D90027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS" */;
+			buildPhases = (
+				DD3313841D39C2D90027FCA9 /* Resources */,
+				DD3313A81D39C2D90027FCA9 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DD3313951D39C2D90027FCA9 /* PBXTargetDependency */,
+			);
+			name = MMDSceneKitSample_watchOS;
+			productName = MMDSceneKitSample_WatchOS;
+			productReference = DD3313861D39C2D90027FCA9 /* MMDSceneKitSample_watchOS.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		DD3313911D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DD3313A51D39C2D90027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS Extension" */;
+			buildPhases = (
+				DD33138E1D39C2D90027FCA9 /* Sources */,
+				DD33138F1D39C2D90027FCA9 /* Frameworks */,
+				DD3313901D39C2D90027FCA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MMDSceneKitSample_watchOS Extension";
+			productName = "MMDSceneKitSample_WatchOS Extension";
+			productReference = DD3313921D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -591,24 +833,29 @@
 		DD12BEF01C18359600B20F37 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0710;
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = DarkHorse;
 				TargetAttributes = {
 					DD12BF751C1838D700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 					};
 					DD12BF7E1C1838D700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 					};
 					DD12BF911C18390700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 					};
 					DD12BF9A1C18390700B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 					};
 					DD12BFBB1C1AB78000B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 					};
 					DD12BFD01C1AB78000B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -620,6 +867,18 @@
 					DD12BFF51C1AB85800B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
 						TestTargetID = DD12BFE11C1AB85800B20F37;
+					};
+					DD3313111D39BF020027FCA9 = {
+						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
+					};
+					DD3313851D39C2D90027FCA9 = {
+						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
+					};
+					DD3313911D39C2D90027FCA9 = {
+						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -636,14 +895,17 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DD12BF751C1838D700B20F37 /* MMDSceneKit_OSX */,
-				DD12BF7E1C1838D700B20F37 /* MMDSceneKit_OSXTests */,
+				DD12BF751C1838D700B20F37 /* MMDSceneKit_macOS */,
+				DD12BF7E1C1838D700B20F37 /* MMDSceneKit_macOSTests */,
 				DD12BF911C18390700B20F37 /* MMDSceneKit_iOS */,
 				DD12BF9A1C18390700B20F37 /* MMDSceneKit_iOSTests */,
+				DD3313111D39BF020027FCA9 /* MMDSceneKit_watchOS */,
 				DD12BFBB1C1AB78000B20F37 /* MMDSceneKitSample_iOS */,
 				DD12BFD01C1AB78000B20F37 /* MMDSceneKitSample_iOSTests */,
-				DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_OSX */,
-				DD12BFF51C1AB85800B20F37 /* MMDSceneKitSample_OSXTests */,
+				DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_macOS */,
+				DD12BFF51C1AB85800B20F37 /* MMDSceneKitSample_macOSTests */,
+				DD3313851D39C2D90027FCA9 /* MMDSceneKitSample_watchOS */,
+				DD3313911D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -719,6 +981,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DD3313101D39BF020027FCA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313C61D39C3350027FCA9 /* MMDShader.vsh in Resources */,
+				DD3313C81D39C3380027FCA9 /* MMDShaderZValuePlot.plist in Resources */,
+				DD3313C71D39C3350027FCA9 /* MMDShader.fsh in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD3313841D39C2D90027FCA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313AD1D39C2F70027FCA9 /* Assets.xcassets in Resources */,
+				DD3313AE1D39C2FB0027FCA9 /* Base.lproj in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD3313901D39C2D90027FCA9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313D01D39C9D00027FCA9 /* Assets.xcassets in Resources */,
+				DD3313D51D39C9D00027FCA9 /* PushNotificationPayload.apns in Resources */,
+				DD4C6AA61D3AD7C300FE57DD /* art.scnassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -733,7 +1024,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/OSX\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/macOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
 		};
 		DDAE3ACD1C1D4E150014F375 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -774,7 +1065,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12BF851C1838D700B20F37 /* MMDSceneKit_OSXTests.swift in Sources */,
+				DD60949E1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift in Sources */,
+				DD60949D1D3A27D200CA22C7 /* MMDNode_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,7 +1120,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD6296F81C2FFB9C00707364 /* MMDShader.swift in Sources */,
 				DDE586CF1C7123DB00CF3B48 /* MMDSceneViewController.swift in Sources */,
 				DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */,
 				DD12BFE71C1AB85800B20F37 /* GameView.swift in Sources */,
@@ -842,7 +1133,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12C0091C1ABE2B00B20F37 /* MMDSceneKitSample_OSXTests.swift in Sources */,
+				DD12C0091C1ABE2B00B20F37 /* MMDSceneKitSample_macOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD33130D1D39BF020027FCA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313C01D39C3160027FCA9 /* MMDXReader.swift in Sources */,
+				DD3313BB1D39C3160027FCA9 /* MMDSceneSource.swift in Sources */,
+				DD3313C11D39C3160027FCA9 /* Regexp.swift in Sources */,
+				DD3313BE1D39C3160027FCA9 /* MMDPMXReader.swift in Sources */,
+				DD3313C41D39C3160027FCA9 /* MMDShader.swift in Sources */,
+				DD3313C21D39C3160027FCA9 /* MMDIKConstraint.swift in Sources */,
+				DD3313BC1D39C3160027FCA9 /* MMDReader.swift in Sources */,
+				DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */,
+				DD3313BD1D39C3160027FCA9 /* MMDPMDReader.swift in Sources */,
+				DD3313C51D39C32A0027FCA9 /* MMDShader.metal in Sources */,
+				DD3313BF1D39C3160027FCA9 /* MMDVMDReader.swift in Sources */,
+				DD3313C31D39C3160027FCA9 /* MMDProgram.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD33138E1D39C2D90027FCA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD3313D41D39C9D00027FCA9 /* NotificationController.swift in Sources */,
+				DD6095061D3A4DB000CA22C7 /* MMDSceneViewController.swift in Sources */,
+				DD3313D31D39C9D00027FCA9 /* GameInterfaceController.swift in Sources */,
+				DD3313D11D39C9D00027FCA9 /* ExtensionDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -851,7 +1172,7 @@
 /* Begin PBXTargetDependency section */
 		DD12BF821C1838D700B20F37 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DD12BF751C1838D700B20F37 /* MMDSceneKit_OSX */;
+			target = DD12BF751C1838D700B20F37 /* MMDSceneKit_macOS */;
 			targetProxy = DD12BF811C1838D700B20F37 /* PBXContainerItemProxy */;
 		};
 		DD12BF9E1C18390700B20F37 /* PBXTargetDependency */ = {
@@ -866,8 +1187,18 @@
 		};
 		DD12BFF81C1AB85800B20F37 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_OSX */;
+			target = DD12BFE11C1AB85800B20F37 /* MMDSceneKitSample_macOS */;
 			targetProxy = DD12BFF71C1AB85800B20F37 /* PBXContainerItemProxy */;
+		};
+		DD3313951D39C2D90027FCA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD3313911D39C2D90027FCA9 /* MMDSceneKitSample_watchOS Extension */;
+			targetProxy = DD3313941D39C2D90027FCA9 /* PBXContainerItemProxy */;
+		};
+		DD3313A31D39C2D90027FCA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD3313851D39C2D90027FCA9 /* MMDSceneKitSample_watchOS */;
+			targetProxy = DD3313A21D39C2D90027FCA9 /* PBXContainerItemProxy */;
 		};
 		DD6296ED1C2FCFC000707364 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -899,6 +1230,7 @@
 				DD12BFEF1C1AB85800B20F37 /* Base */,
 			);
 			name = MainMenu.xib;
+			path = ../macOS;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1003,14 +1335,16 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/OSX/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1024,42 +1358,51 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/OSX/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		DD12BF8B1C1838D700B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MMDSceneKit_OSXTests/Info.plist;
+				INFOPLIST_FILE = Tests/macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-OSXTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		DD12BF8C1C1838D700B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MMDSceneKit_OSXTests/Info.plist;
+				INFOPLIST_FILE = Tests/macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-OSXTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1079,6 +1422,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1097,53 +1441,61 @@
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		DD12BFA71C18390800B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = MMDSceneKit_iOSTests/Info.plist;
+				INFOPLIST_FILE = Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		DD12BFA81C18390800B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = MMDSceneKit_iOSTests/Info.plist;
+				INFOPLIST_FILE = Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKit-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		DD12BFD91C1AB78000B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		DD12BFDA1C1AB78000B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1151,7 +1503,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = MMDSceneKitSample_iOSTests/Info.plist;
+				INFOPLIST_FILE = Sample/Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1163,10 +1515,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				INFOPLIST_FILE = MMDSceneKitSample_iOSTests/Info.plist;
+				INFOPLIST_FILE = Sample/Tests/iOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_iOS.app/MMDSceneKitSample_iOS";
 			};
 			name = Release;
@@ -1178,12 +1531,13 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/OSX/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-OSX";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1193,12 +1547,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/OSX/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-OSX";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1208,7 +1564,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MMDSceneKitSample_OSXTests/Info.plist;
+				INFOPLIST_FILE = Sample/Tests/macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-OSXTests";
@@ -1224,13 +1580,135 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = MMDSceneKitSample_OSXTests/Info.plist;
+				INFOPLIST_FILE = Sample/Tests/macOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-OSXTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MMDSceneKitSample_OSX.app/Contents/MacOS/MMDSceneKitSample_OSX";
+			};
+			name = Release;
+		};
+		DD3313171D39BF020027FCA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+			};
+			name = Debug;
+		};
+		DD3313181D39BF020027FCA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "$(SRCROOT)/Source/watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+			};
+			name = Release;
+		};
+		DD3313A61D39C2D90027FCA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Debug;
+		};
+		DD3313A71D39C2D90027FCA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Release;
+		};
+		DD3313AA1D39C2D90027FCA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
+			};
+			name = Debug;
+		};
+		DD3313AB1D39C2D90027FCA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
+				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1246,7 +1724,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD12BF871C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_OSX" */ = {
+		DD12BF871C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD12BF881C1838D700B20F37 /* Debug */,
@@ -1255,7 +1733,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD12BF8A1C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_OSXTests" */ = {
+		DD12BF8A1C1838D700B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKit_macOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD12BF8B1C1838D700B20F37 /* Debug */,
@@ -1300,7 +1778,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD12BFFD1C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_OSX" */ = {
+		DD12BFFD1C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD12BFFE1C1AB85800B20F37 /* Debug */,
@@ -1309,11 +1787,38 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD12C0001C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_OSXTests" */ = {
+		DD12C0001C1AB85800B20F37 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_macOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD12C0011C1AB85800B20F37 /* Debug */,
 				DD12C0021C1AB85800B20F37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD3313191D39BF020027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKit_watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD3313171D39BF020027FCA9 /* Debug */,
+				DD3313181D39BF020027FCA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD3313A51D39C2D90027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD3313A61D39C2D90027FCA9 /* Debug */,
+				DD3313A71D39C2D90027FCA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD3313A91D39C2D90027FCA9 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD3313AA1D39C2D90027FCA9 /* Debug */,
+				DD3313AB1D39C2D90027FCA9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

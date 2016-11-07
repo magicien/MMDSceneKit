@@ -1,15 +1,15 @@
 //
-//  MMDSceneKit_iOSTests.swift
-//  MMDSceneKit_iOSTests
+//  MMDSceneKit_macOSTests.swift
+//  MMDSceneKit_macOSTests
 //
 //  Created by magicien on 12/9/15.
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
 import XCTest
-@testable import MMDSceneKit_iOS
+@testable import MMDSceneKit_macOS
 
-class MMDSceneKit_iOSTests: XCTestCase {
+class MMDSceneKit_macOSTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -28,7 +28,7 @@ class MMDSceneKit_iOSTests: XCTestCase {
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measure {
+        self.measureBlock {
             // Put the code you want to measure the time of here.
         }
     }

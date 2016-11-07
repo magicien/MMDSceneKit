@@ -8,6 +8,8 @@
 
 import SceneKit
 
+#if !os(watchOS)
+    
 public class MMDProgram: SCNProgram, SCNProgramDelegate {
     override public init() {
         super.init()
@@ -81,7 +83,9 @@ public class MMDProgram: SCNProgram, SCNProgramDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func program(program: SCNProgram, handleError error: NSError) {
+    public func program(_ program: SCNProgram, handleError error: NSError) {
         print("***** GLSL compile error: \(error)")
     }
 }
+
+#endif

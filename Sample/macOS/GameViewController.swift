@@ -8,13 +8,9 @@
 
 import SceneKit
 import QuartzCore
-import MMDSceneKit_OSX
+import MMDSceneKit_macOS
 
 var scene: SCNScene! = nil
-
-//let BitmaskStatic: Int = 1 << 1
-//let BitmaskCollision: Int = 1 << 2
-
 
 class GameViewController: MMDSceneViewController {
     

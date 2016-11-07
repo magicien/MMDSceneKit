@@ -9,39 +9,48 @@
 import SceneKit
 
 public enum MMDNodeType {
-    case ROTATE
-    case ROTATE_TRANSLATE
-    case IK
-    case UNKNOWN
-    case IK_CHILD
-    case ROTATE_CHILD
-    case IK_TARGET
-    case HIDDEN
-    case TWIST
-    case ROLL
+    case rotate
+    case rotate_TRANSLATE
+    case ik
+    case unknown
+    case ik_CHILD
+    case rotate_CHILD
+    case ik_TARGET
+    case hidden
+    case twist
+    case roll
 }
 
-public class MMDFloat: NSObject {
-    public var value: Float = 0.0
+open class MMDFloat: NSObject {
+    open var value: Float = 0.0
 }
 
-public class DummyNode: NSObject {
-    override public func valueForUndefinedKey(key: String) -> AnyObject? {
+open class DummyNode: NSObject {
+    override open func value(forUndefinedKey key: String) -> Any? {
         print("unknown key: \(key)")
         return self
     }
 }
 
-public class MMDNode: SCNNode, SCNProgramDelegate {
-    public internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
-    public internal(set) var type: MMDNodeType = .UNKNOWN
-    public internal(set) var isKnee: Bool = false
+#if os(watchOS)
+    @objc public protocol EmptyDelegate {
+        // nothing to do
+    }
+    public typealias MMDNodeProgramDelegate = EmptyDelegate
+#else
+    public typealias MMDNodeProgramDelegate = SCNProgramDelegate
+#endif
+
+open class MMDNode: SCNNode, MMDNodeProgramDelegate {
+    open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
+    open internal(set) var type: MMDNodeType = .unknown
+    open internal(set) var isKnee: Bool = false
     
     // FIXME: internal variant
-    public var ikTargetBone: MMDNode? = nil
+    open var ikTargetBone: MMDNode? = nil
     //public var ikConstraint: SCNIKConstraint? = nil
     internal var ikConstraint: MMDIKConstraint? = nil
-    public var ikArray: [MMDIKConstraint]? = nil
+    open var ikArray: [MMDIKConstraint]? = nil
 
     /*
     public var ikAnim: Float = 0.0 {
@@ -87,31 +96,31 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
     */
     
     // FIXME: use morpher
-    public var vertexCount = 0
-    public var vertexArray: [Float32]! = nil
-    public var normalArray: [Float32]! = nil
-    public var texcoordArray: [Float32]! = nil
-    public var boneIndicesArray: [UInt16]! = nil
-    public var boneWeightsArray: [Float32]! = nil
-    public var indexCount = 0
-    public var indexArray: [UInt16]! = nil
-    public var materialCount = 0
-    public var materialArray: [SCNMaterial]! = nil
-    public var materialIndexCountArray: [Int]! = nil
-    public var elementArray: [SCNGeometryElement]? = nil
-    public var boneArray: [MMDNode]! = nil
-    public var boneInverseMatrixArray: [NSValue]! = nil
-    public var rootBone: MMDNode! = nil
+    open var vertexCount = 0
+    open var vertexArray: [Float32]! = nil
+    open var normalArray: [Float32]! = nil
+    open var texcoordArray: [Float32]! = nil
+    open var boneIndicesArray: [UInt16]! = nil
+    open var boneWeightsArray: [Float32]! = nil
+    open var indexCount = 0
+    open var indexArray: [UInt16]! = nil
+    open var materialCount = 0
+    open var materialArray: [SCNMaterial]! = nil
+    open var materialIndexCountArray: [Int]! = nil
+    open var elementArray: [SCNGeometryElement]? = nil
+    open var boneArray: [MMDNode]! = nil
+    open var boneInverseMatrixArray: [NSValue]! = nil
+    open var rootBone: MMDNode! = nil
 
-    private var dummyNode: DummyNode = DummyNode()
+    fileprivate var dummyNode: DummyNode = DummyNode()
     
     // FIXME: use morpher
-    public var faceIndexArray: [Int]? = nil
-    public var faceDataArray: [[Float32]]? = nil
-    public var faceWeights: [MMDFloat]! = nil
-    public var geometryMorpher: SCNMorpher! = nil
+    open var faceIndexArray: [Int]? = nil
+    open var faceDataArray: [[Float32]]? = nil
+    open var faceWeights: [MMDFloat]! = nil
+    open var geometryMorpher: SCNMorpher! = nil
 
-    private let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
+    fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
     
     /*
     override public init() {
@@ -132,7 +141,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
 */
     
     // FIXME: use morpher
-    public func updateFace() {
+    open func updateFace() {
         if self.faceDataArray == nil {
             return
         }
@@ -176,28 +185,35 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         //self.updateVertexData()
     }
     
-    public func updateVertexData() {
+    open func updateVertexData() {
+        //let vertexData = Data(bytes: UnsafePointer<UInt8>(self.vertexArray), count: 4 * 3 * self.vertexCount)
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
+        //let normalData = Data(bytes: UnsafePointer<UInt8>(self.normalArray), count: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
+        //let texcoordData = Data(bytes: UnsafePointer<UInt8>(self.texcoordArray), count: 4 * 2 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
+        //let boneIndicesData = Data(bytes: UnsafePointer<UInt8>(self.boneIndicesArray), count: 2 * 2 * self.vertexCount)
         let boneIndicesData = NSData(bytes: self.boneIndicesArray, length: 2 * 2 * self.vertexCount)
+        //let boneWeightsData = Data(bytes: UnsafePointer<UInt8>(self.boneWeightsArray), count: 4 * 2 * self.vertexCount)
         let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 2 * self.vertexCount)
+        //let indexData = Data(bytes: UnsafePointer<UInt8>(self.indexArray), count: 2 * self.indexCount)
         let indexData = NSData(bytes: self.indexArray, length: 2 * self.indexCount)
         
-        let vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let normalSource = SCNGeometrySource(data: normalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let texcoordSource = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
-        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
-        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        let vertexSource = SCNGeometrySource(data: vertexData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let normalSource = SCNGeometrySource(data: normalData as Data, semantic: SCNGeometrySource.Semantic.normal, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let texcoordSource = SCNGeometrySource(data: texcoordData as Data, semantic: SCNGeometrySource.Semantic.texcoord, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        let boneIndicesSource = SCNGeometrySource(data: boneIndicesData as Data, semantic: SCNGeometrySource.Semantic.boneIndices, vectorCount: Int(vertexCount), usesFloatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
+        let boneWeightsSource = SCNGeometrySource(data: boneWeightsData as Data, semantic: SCNGeometrySource.Semantic.boneWeights, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         
         var elementArray = [SCNGeometryElement]()
         var indexPos = 0
         for index in 0..<self.materialCount {
             let count = materialIndexCountArray[index]
             let length = count * 2
-            let data =  indexData.subdataWithRange(NSRange.init(location: indexPos, length: length))
+            //let data =  indexData.subdata(with: Range(indexPos..<indexPos+length))
+            let data =  indexData.subdata(with: NSRange(indexPos..<indexPos+length))
             
-            let element = SCNGeometryElement(data: data, primitiveType: .Triangles, primitiveCount: count / 3, bytesPerIndex: 2)
+            let element = SCNGeometryElement(data: data, primitiveType: .triangles, primitiveCount: count / 3, bytesPerIndex: 2)
             
             elementArray.append(element)
             
@@ -217,7 +233,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         newGeometryNode.skinner!.skeleton = self.rootBone
         newGeometryNode.morpher = self.geometryMorpher
         
-        let oldGeometryNode = self.childNodeWithName("Geometry", recursively: true)
+        let oldGeometryNode = self.childNode(withName: "Geometry", recursively: true)
         self.replaceChildNode(oldGeometryNode!, with: newGeometryNode)
     }
     
@@ -252,15 +268,17 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         //geometryNode!.geometry = geometry
     }
 */
-    
-    public func program(program: SCNProgram, handleError error: NSError) {
+
+#if !os(watchOS)
+    @nonobjc public func program(_ program: SCNProgram, handleError error: NSError) {
         print("GLSL compile error: \(error)")
     }
+#endif
     
-    override public func valueForUndefinedKey(key: String) -> AnyObject? {
+    override open func value(forUndefinedKey key: String) -> Any? {
         if key.hasPrefix("/") {
-            let searchKey = (key as NSString).substringFromIndex(1)
-            if let node = self.childNodeWithName(searchKey, recursively: true) {
+            let searchKey = (key as NSString).substring(from: 1)
+            if let node = self.childNode(withName: searchKey, recursively: true) {
                 return node
             }
             return self.dummyNode
@@ -281,15 +299,16 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         }
     
         //return self.dummyNode
-        return super.valueForUndefinedKey(key)
+        return super.value(forUndefinedKey: key) as AnyObject?
     }
     
-    override public func setValue(value: AnyObject?, forUndefinedKey key: String) {
+    override open func setValue(_ value: Any?, forUndefinedKey key: String) {
         print("setValueForUndefinedKey: \(key)")
     }
-    
-    override public func addAnimation(animation: CAAnimation, forKey key: String?) {
-        let geometryNode = self.childNodeWithName("Geometry", recursively: true)
+
+#if !os(watchOS)
+    override open func addAnimation(_ animation: CAAnimation, forKey key: String?) {
+        let geometryNode = self.childNode(withName: "Geometry", recursively: true)
         
         // FIXME: clone values
         if let group = animation as? CAAnimationGroup {
@@ -301,9 +320,9 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                     let newAnim = anim.copy()
                     
                     if let keyAnim = newAnim as? CAKeyframeAnimation {
-                        let boneNameKey = keyAnim.keyPath!.componentsSeparatedByString(".")[0]
-                        let boneName = (boneNameKey as NSString).substringFromIndex(1)
-                        let bone = self.childNodeWithName(boneName, recursively: true)
+                        let boneNameKey = keyAnim.keyPath!.components(separatedBy: ".")[0]
+                        let boneName = (boneNameKey as NSString).substring(from: 1)
+                        let bone = self.childNode(withName: boneName, recursively: true)
                         
                         if boneNameKey == "morpher" {
                             /*
@@ -333,7 +352,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                             
                             if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
                                 print("+++++ morpher Animation - \(keyAnim.keyPath!)")
-                                let faceName = (keyAnim.keyPath! as NSString).substringFromIndex(16)
+                                let faceName = (keyAnim.keyPath! as NSString).substring(from: 16)
                                 var faceIndex = -1
                                 
                                 // search face name from geometry node
@@ -396,11 +415,12 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
             super.addAnimation(animation, forKey: key)
         }
     }
+#endif
     
     /**
     update IK bone
     */
-    public func updateIK() {
+    open func updateIK() {
         if self.ikArray == nil {
             return
         }
@@ -421,9 +441,9 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                     
                     // <update targetBone>
                     // <update bone>
-                    let bonePosition = getWorldPosition(bone.presentationNode)
-                    let targetPosition = getWorldPosition(targetBone.presentationNode)
-                    let ikPosition = getWorldPosition(ikBone.presentationNode)
+                    let bonePosition = getWorldPosition(bone.presentation)
+                    let targetPosition = getWorldPosition(targetBone?.presentation)
+                    let ikPosition = getWorldPosition(ikBone?.presentation)
                     
                     var v1 = sub(bonePosition, targetPosition)
                     var v2 = sub(bonePosition, ikPosition)
@@ -431,7 +451,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                     v1 = normalize(v1)
                     v2 = normalize(v2)
                     
-                    var diff = sub(v1, v2)
+                    let diff = sub(v1, v2)
                     let x2 = diff.x * diff.x
                     let y2 = diff.y * diff.y
                     let z2 = diff.z * diff.z
@@ -443,7 +463,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
 
                     var v = cross(v1, v2)
                     // worldTransform -> localTransform (rotation)
-                    v = inverseCross(v, bone.parentNode!.presentationNode.worldTransform)
+                    v = inverseCross(v, bone.parent!.presentation.worldTransform)
                     v = normalize(v)
                     
                     if bone.isKnee {
@@ -503,7 +523,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                     //rot = cross(quat, bone.rotation)
                     
                     //printRotation(bone.presentationNode)
-                    var orgQuat = rotationToQuat(bone.presentationNode.rotation)
+                    let orgQuat = rotationToQuat(bone.presentation.rotation)
                     quat = cross(quat, orgQuat)
                     
                     /*
@@ -590,7 +610,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         } // ikArray
     }
     
-    private func sub(v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
+    fileprivate func sub(_ v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
         var v = SCNVector3()
         v.x = v1.x - v2.x
         v.y = v1.y - v2.y
@@ -599,11 +619,11 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    private func dot(v1: SCNVector3, _ v2: SCNVector3) -> Float {
+    fileprivate func dot(_ v1: SCNVector3, _ v2: SCNVector3) -> Float {
         return Float(v1.x * v2.x + v1.y * v2.y + v1.z * v2.z)
     }
     
-    private func cross(v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
+    fileprivate func cross(_ v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
         var v = SCNVector3()
         v.x = v1.y * v2.z - v1.z * v2.y
         v.y = v1.z * v2.x - v1.x * v2.z
@@ -612,7 +632,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    private func normalize(v1: SCNVector3) -> SCNVector3 {
+    fileprivate func normalize(_ v1: SCNVector3) -> SCNVector3 {
         var v = SCNVector3()
         let r = 1.0 / sqrt(v1.x * v1.x + v1.y * v1.y + v1.z * v1.z)
         
@@ -623,7 +643,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    private func cross(q1: SCNVector4, _ q2: SCNVector4) -> SCNVector4 {
+    fileprivate func cross(_ q1: SCNVector4, _ q2: SCNVector4) -> SCNVector4 {
         var q = SCNVector4()
         q.x = q1.x * q2.w + q1.w * q2.x + q1.y * q2.z - q1.z * q2.y
         q.y = q1.y * q2.w + q1.w * q2.y + q1.z * q2.x - q1.x * q2.z
@@ -633,7 +653,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return q
     }
     
-    private func cross(v1: SCNVector3, _ mat: SCNMatrix4, includeTranslate: Bool = false) -> SCNVector3 {
+    fileprivate func cross(_ v1: SCNVector3, _ mat: SCNMatrix4, includeTranslate: Bool = false) -> SCNVector3 {
         var v = SCNVector3()
         
         v.x = v1.x * mat.m11 + v1.y * mat.m21 + v1.z * mat.m31
@@ -649,7 +669,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    private func inverseCross(v1: SCNVector3, _ mat: SCNMatrix4, includeTranslate: Bool = false) -> SCNVector3 {
+    fileprivate func inverseCross(_ v1: SCNVector3, _ mat: SCNMatrix4, includeTranslate: Bool = false) -> SCNVector3 {
         var v = SCNVector3()
         
         v.x = v1.x * mat.m11 + v1.y * mat.m12 + v1.z * mat.m13
@@ -665,7 +685,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    func printWorldTransform(n: SCNNode! = nil) {
+    func printWorldTransform(_ n: SCNNode! = nil) {
         //var m = self.presentationNode.worldTransform
         var m = self.worldTransform
         if n != nil {
@@ -678,13 +698,13 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         print("\(m.m41) \(m.m42) \(m.m43) \(m.m44)")
     }
     
-    func printWorldPosition(n: SCNNode! = nil) {
+    func printWorldPosition(_ n: SCNNode! = nil) {
         let pos = getWorldPosition(n)
         
         print("\(pos.x) \(pos.y) \(pos.z)")
     }
     
-    func getWorldPosition(n: SCNNode! = nil) -> SCNVector3 {
+    func getWorldPosition(_ n: SCNNode! = nil) -> SCNVector3 {
         var m: SCNMatrix4
         if n == nil {
             m = self.worldTransform
@@ -700,7 +720,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return v
     }
     
-    func printRotation(n: SCNNode! = nil) {
+    func printRotation(_ n: SCNNode! = nil) {
         var v: SCNVector4
         if n == nil {
             v = self.rotation
@@ -710,7 +730,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         print("\(v.x) \(v.y) \(v.z) \(v.w)")
     }
     
-    func rotationToQuat(rot: SCNVector4) -> SCNVector4 {
+    func rotationToQuat(_ rot: SCNVector4) -> SCNVector4 {
         var quat = SCNVector4()
         if rot.x == 0 && rot.y == 0 && rot.z == 0 {
             quat.x = 0
@@ -730,7 +750,8 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         return quat
     }
     
-    func quatToRotation(var quat: SCNVector4) -> SCNVector4 {
+    func quatToRotation(_ quat: SCNVector4) -> SCNVector4 {
+        var quat = quat
         var rot = SCNVector4()
         
         if quat.x == 0 && quat.y == 0 && quat.z == 0 {
@@ -778,25 +799,25 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
     var checkChildPresentWorldPosition: SCNVector3 = SCNVector3()
     var checkGrandChildWorldPosition: SCNVector3 = SCNVector3()
 
-    func beforeCheck(n: SCNNode) {
-        checkParentPosition = (n.parentNode?.position)!
-        checkParentRotation = (n.parentNode?.rotation)!
-        checkParentPresentPosition = (n.parentNode?.presentationNode.position)!
-        checkParentPresentRotation = (n.parentNode?.presentationNode.rotation)!
+    func beforeCheck(_ n: SCNNode) {
+        checkParentPosition = (n.parent?.position)!
+        checkParentRotation = (n.parent?.rotation)!
+        checkParentPresentPosition = (n.parent?.presentation.position)!
+        checkParentPresentRotation = (n.parent?.presentation.rotation)!
         checkBonePosition = n.position
         checkBoneRotation = n.rotation
-        checkBonePresentPosition = n.presentationNode.position
-        checkBonePresentRotation = n.presentationNode.rotation
+        checkBonePresentPosition = n.presentation.position
+        checkBonePresentRotation = n.presentation.rotation
         checkBoneWorldPosition = getWorldPosition(n)
         
         if n.childNodes.count > 0 {
             let child = n.childNodes[0]
             checkChildPosition = child.position
             checkChildRotation = child.rotation
-            checkChildPresentPosition = child.presentationNode.position
-            checkChildPresentRotation = child.presentationNode.rotation
+            checkChildPresentPosition = child.presentation.position
+            checkChildPresentRotation = child.presentation.rotation
             checkChildWorldPosition = getWorldPosition(child)
-            checkChildPresentWorldPosition = getWorldPosition(child.presentationNode)
+            checkChildPresentWorldPosition = getWorldPosition(child.presentation)
             
             if child.childNodes.count > 0 {
                 let grandChild = child.childNodes[0]
@@ -805,23 +826,23 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         }
     }
     
-    func afterCheck(n: SCNNode) {
-        let a_checkParentPosition = (n.parentNode?.position)!
+    func afterCheck(_ n: SCNNode) {
+        let a_checkParentPosition = (n.parent?.position)!
         if !equalV3(checkParentPosition, a_checkParentPosition) {
             print("***** checkParentPosition *****")
         }
         
-        let a_checkParentRotation = (n.parentNode?.rotation)!
+        let a_checkParentRotation = (n.parent?.rotation)!
         if !equalV4(checkParentRotation, a_checkParentRotation) {
             print("***** checkParentRotation *****")
         }
         
-        let a_checkParentPresentPosition = (n.parentNode?.presentationNode.position)!
+        let a_checkParentPresentPosition = (n.parent?.presentation.position)!
         if !equalV3(checkParentPresentPosition, a_checkParentPresentPosition) {
             print("***** checkParentPresentPosition *****")
         }
         
-        let a_checkParentPresentRotation = (n.parentNode?.presentationNode.rotation)!
+        let a_checkParentPresentRotation = (n.parent?.presentation.rotation)!
         if !equalV4(checkParentPresentRotation, a_checkParentPresentRotation) {
             print("***** checkParentPresentRotation *****")
         }
@@ -836,12 +857,12 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
             print("***** checkBoneRotation *****")
         }
         
-        let a_checkBonePresentPosition = n.presentationNode.position
+        let a_checkBonePresentPosition = n.presentation.position
         if !equalV3(checkBonePresentPosition, a_checkBonePresentPosition) {
             print("***** checkBonePresentPosition *****")
         }
         
-        let a_checkBonePresentRotation = n.presentationNode.rotation
+        let a_checkBonePresentRotation = n.presentation.rotation
         if !equalV4(checkBonePresentRotation, a_checkBonePresentRotation) {
             print("***** checkBonePresentRotation *****")
         }
@@ -863,12 +884,12 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                 print("***** checkChildRotation *****")
             }
             
-            let a_checkChildPresentPosition = child.presentationNode.position
+            let a_checkChildPresentPosition = child.presentation.position
             if !equalV3(checkChildPresentPosition, a_checkChildPresentPosition) {
                 print("***** checkChildPresentPosition *****")
             }
             
-            let a_checkChildPresentRotation = child.presentationNode.rotation
+            let a_checkChildPresentRotation = child.presentation.rotation
             if !equalV4(checkChildPresentRotation, a_checkChildPresentRotation) {
                 print("***** checkChildPresentRotation *****")
             }
@@ -878,7 +899,7 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
                 print("***** checkChildWorldPosition *****")
             }
             
-            let a_checkChildPresentWorldPosition = getWorldPosition(child.presentationNode)
+            let a_checkChildPresentWorldPosition = getWorldPosition(child.presentation)
             if !equalV3(checkChildPresentWorldPosition, a_checkChildPresentWorldPosition) {
                 print("***** checkChildPresentWorldPosition *****")
             }
@@ -895,11 +916,11 @@ public class MMDNode: SCNNode, SCNProgramDelegate {
         
     }
     
-    func equalV3(v1: SCNVector3, _ v2: SCNVector3) -> Bool {
+    func equalV3(_ v1: SCNVector3, _ v2: SCNVector3) -> Bool {
         return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z
     }
     
-    func equalV4(v1: SCNVector4, _ v2: SCNVector4) -> Bool {
+    func equalV4(_ v1: SCNVector4, _ v2: SCNVector4) -> Bool {
         return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w
     }
 }

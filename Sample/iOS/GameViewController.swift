@@ -29,12 +29,12 @@ class GameViewController: MMDSceneViewController {
         scnView.addGestureRecognizer(tapGesture)
     }
     
-    func handleTap(gestureRecognize: UIGestureRecognizer) {
+    func handleTap(_ gestureRecognize: UIGestureRecognizer) {
         // retrieve the SCNView
         let scnView = self.view as! SCNView
         
         // check what nodes are tapped
-        let p = gestureRecognize.locationInView(scnView)
+        let p = gestureRecognize.location(in: scnView)
         let hitResults = scnView.hitTest(p, options: nil)
         // check that we clicked on at least one object
         if hitResults.count > 0 {
@@ -46,19 +46,19 @@ class GameViewController: MMDSceneViewController {
             
             // highlight it
             SCNTransaction.begin()
-            SCNTransaction.setAnimationDuration(0.5)
+            SCNTransaction.animationDuration = 0.5
             
             // on completion - unhighlight
-            SCNTransaction.setCompletionBlock {
+            SCNTransaction.completionBlock = {
                 SCNTransaction.begin()
-                SCNTransaction.setAnimationDuration(0.5)
+                SCNTransaction.animationDuration = 0.5
                 
-                material.emission.contents = UIColor.blackColor()
+                material.emission.contents = UIColor.black()
                 
                 SCNTransaction.commit()
             }
             
-            material.emission.contents = UIColor.redColor()
+            material.emission.contents = UIColor.red()
             
             SCNTransaction.commit()
         }
@@ -73,10 +73,10 @@ class GameViewController: MMDSceneViewController {
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+        if UIDevice.current().userInterfaceIdiom == .phone {
+            return .allButUpsideDown
         } else {
-            return .All
+            return .all
         }
     }
     

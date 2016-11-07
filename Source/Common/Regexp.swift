@@ -22,7 +22,7 @@ class Regexp {
         }
     }
     
-    func isMatch(input: String, startIndex: Int = 0, matchLength: Int = 100) -> Bool {
+    func isMatch(_ input: String, startIndex: Int = 0, matchLength: Int = 100) -> Bool {
         let nsString = input as NSString
         let maxIndex = nsString.length
         
@@ -31,12 +31,12 @@ class Regexp {
             length = maxIndex - startIndex
         }
 
-        let matches = self.internalRegexp.matchesInString(input, options:[], range:NSMakeRange(startIndex, length))
+        let matches = self.internalRegexp.matches(in: input, options:[], range:NSMakeRange(startIndex, length))
         
         return matches.count > 0
     }
     
-    func matches(input: String, startIndex: Int = 0, matchLength: Int = 100) -> [String]? {
+    func matches(_ input: String, startIndex: Int = 0, matchLength: Int = 100) -> [String]? {
         let nsString = input as NSString
         let maxIndex = nsString.length
         
@@ -45,7 +45,7 @@ class Regexp {
             length = maxIndex - startIndex
         }
         
-        let matches = self.internalRegexp.matchesInString( input, options: [], range:NSMakeRange(startIndex, length) )
+        let matches = self.internalRegexp.matches( in: input, options: [], range:NSMakeRange(startIndex, length) )
         var results: [String] = []
 
         if matches.count == 0 {
@@ -56,21 +56,21 @@ class Regexp {
             let rangeCount = match.numberOfRanges
             
             for group in 0..<rangeCount {
-                let range = match.rangeAtIndex(group)
+                let range = match.rangeAt(group)
                 if range.length > 0 {
-                    results.append(nsString.substringWithRange(range))
+                    results.append(nsString.substring(with: range))
                 }
             }
         }
         return results
     }
     
-    func delMatches(input:String) -> String {
+    func delMatches(_ input:String) -> String {
         var strRet:String = input
         if self.isMatch(input) {
             let matchList = self.matches(input)
-            for var i = 0; i < matchList!.count; i++ {
-                strRet = strRet.stringByReplacingOccurrencesOfString(matchList![i], withString: "", options: [], range: nil)
+            for i in 0 ..< matchList!.count {
+                strRet = strRet.replacingOccurrences(of: matchList![i], with: "", options: [], range: nil)
             }
         }
         return strRet

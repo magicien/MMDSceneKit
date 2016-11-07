@@ -2,13 +2,13 @@
 //  MMDXReader.swift
 //  MMDSceneKit
 //
-//  Created by Yuki OHNO on 12/18/15.
+//  Created by magicien on 12/18/15.
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
 import SceneKit
 
-#if os(iOS)
+#if os(iOS) || os(watchOS)
     typealias OSFloat = Float
     typealias OSColor = UIColor
     typealias OSImage = UIImage
@@ -21,77 +21,86 @@ import SceneKit
     
 
 class MMDXReader {
-    private var workingNode: MMDNode! = nil
-    private var workingGeometry: SCNGeometry! = nil
-    private var workingGeometryNode: SCNNode! = nil
+    fileprivate var workingNode: MMDNode! = nil
+    fileprivate var workingGeometry: SCNGeometry! = nil
+    fileprivate var workingGeometryNode: SCNNode! = nil
     
-    private var text: String! = nil
-    private var subText: String! = nil
-    private var totalOffset = 0
-    private var offset = 0
-    private var err = 0
+    fileprivate var text: String! = nil
+    fileprivate var subText: String! = nil
+    fileprivate var offset = 0
+    fileprivate var err = 0
     
-    private let chunk = 1000000
-    private let buffer = 100000
+    fileprivate let chunk = 1000000
+    fileprivate let buffer = 100000
     
-    private var materialIndex = 0
+    fileprivate var materialIndex = 0
     //private var normalArray = [SCNVector3]()
     
-    private var version: String! = ""
-    private var format: String! = ""
-    private var floatSize: String! = ""
+    fileprivate var version: String! = ""
+    fileprivate var format: String! = ""
+    fileprivate var floatSize: String! = ""
     
     // raw data
-    private var rawVertexArray = [SCNVector3]()
-    private var rawNormalArray = [SCNVector3]()
-    private var rawSortedNormalArray = [SCNVector3]()
-    private var rawTexcoordArray = [[Float32]]()
-    private var rawVertexIndexArray = [[Int]]()
-    private var rawNormalIndexArray = [[Int]]()
-    private var rawMaterialIndexArray = [Int]()
+    fileprivate var rawVertexArray = [SCNVector3]()
+    fileprivate var rawNormalArray = [SCNVector3]()
+    fileprivate var rawSortedNormalArray = [SCNVector3]()
+    fileprivate var rawTexcoordArray = [[Float32]]()
+    fileprivate var rawVertexIndexArray = [[Int]]()
+    fileprivate var rawNormalIndexArray = [[Int]]()
+    fileprivate var rawMaterialIndexArray = [Int]()
 
-    private var materialArray = [SCNMaterial]()
+    fileprivate var materialArray = [SCNMaterial]()
 
     // vertexIndex => normalIndex
-    private var normalMap = [Int: Int]()
+    fileprivate var normalMap = [Int: Int]()
     
     // vertexIndex => normalIndex => vertexIndex
-    private var vertexNormalMap = [Int: [Int: Int]]()
+    fileprivate var vertexNormalMap = [Int: [Int: Int]]()
 
     // vertex data
-    private var vertexCount = 0
-    private var vertexArray = [Float32]()
-    private var normalArray = [Float32]()
-    private var texcoordArray = [Float32]()
+    fileprivate var vertexCount = 0
+    fileprivate var vertexArray = [Float32]()
+    fileprivate var normalArray = [Float32]()
+    fileprivate var texcoordArray = [Float32]()
 
     // index data
-    private var indexCount = 0
-    private var indexArray = [[Int32]]()
+    fileprivate var indexCount = 0
+    fileprivate var indexArray = [[Int32]]()
     
     // geometry data
-    private var elementArray: [SCNGeometryElement]! = nil
+    fileprivate var elementArray: [SCNGeometryElement]! = nil
     
     internal var directoryPath: String! = ""
-    internal var binaryData: NSData! = nil
+    internal var binaryData: Data! = nil
     internal var length = 0
     
-    internal init(data: NSData!, directoryPath: String! = "") {
+    internal init(data: Data!, directoryPath: String! = "") {
         self.directoryPath = directoryPath
         self.binaryData = data
-        //self.length = data.length
         self.offset = 0
-        self.totalOffset = 0
-
-        let nsString = NSString(data: self.binaryData, encoding: NSShiftJISStringEncoding)
+        
+        let nsString = NSString(data: self.binaryData, encoding: String.Encoding.shiftJIS.rawValue)
         self.length = nsString!.length
         self.text = nsString as! String
         
         self.subText = self.text
+        /*
+        self.subText = self.text.substringWithRange(
+            Range(
+                start: self.text.startIndex,
+                end: self.text.startIndex.advancedBy(self.maxChunkLength)
+            )
+        )
+
+        print("--------------------- subText changed ---------------------------")
+        print(self.subText)
+        print("-----------------------------------------------------------------")
+        */
     }
     
     /**
      */
-    static func getNode(data: NSData, directoryPath: String! = "") -> MMDNode? {
+    static func getNode(_ data: Data, directoryPath: String! = "") -> MMDNode? {
         let reader = MMDXReader(data: data, directoryPath: directoryPath)
         let node = reader.loadXFile()
         
@@ -99,7 +108,7 @@ class MMDXReader {
     }
     
     // MARK: - Loading X File
-    private func loadXFile() -> MMDNode? {
+    fileprivate func loadXFile() -> MMDNode? {
         // initialize working variables
         self.workingNode = MMDNode()
         
@@ -142,26 +151,74 @@ class MMDXReader {
         move start position of text
         - parameter len: string length to move
      */
+    fileprivate func moveIndex(_ len: Int) {
+        self.offset += len
+    }
+    
+    /*
     private func moveIndex(len: Int) {
         //self.text = self.text.substringFromIndex( self.text.startIndex.advancedBy(len) )
         self.offset += len
         //self.subText = self.text.substringFromIndex( self.text.startIndex.advancedBy(self.offset) )
         
         //if (self.offset > self.chunk) {
-            /*
-            self.totalOffset += chunk
-            self.subText = self.text.substringFromIndex( self.text.startIndex.advancedBy(self.totalOffset) )
-            self.offset -= chunk
-            print("totalOffset: \(totalOffset), offset: \(offset)")
-            */
-            //self.getStringChunk(self.chunk)
+        /*
+        self.totalOffset += chunk
+        self.subText = self.text.substringFromIndex( self.text.startIndex.advancedBy(self.totalOffset) )
+        self.offset -= chunk
+        print("totalOffset: \(totalOffset), offset: \(offset)")
+        */
+        //self.getStringChunk(self.chunk)
         //}
     }
+    */
     
-    private func getMatches(pattern: Regexp!) -> [String]? {
+    /*
+    private let minChunkLength = 50
+    private let maxChunkLength = 200
+    private var chunkStartPos = 0
+    private var chunkEndPos = 200
+    private var totalOffset = 0
+    private func moveIndex(len: Int) {
+        self.offset += len
+        //self.subText = self.text.substringFromIndex( self.text.startIndex.advancedBy(self.offset) )
+        
+        if self.offset + self.minChunkLength > self.chunkEndPos {
+            if self.chunkEndPos != self.length {
+                self.chunkStartPos = self.offset
+                self.chunkEndPos = self.offset + self.maxChunkLength
+                
+                if self.chunkEndPos > self.length {
+                    self.chunkEndPos = self.length
+                }
+                self.subText = self.text.substringWithRange(
+                    Range(
+                        start: self.text.startIndex.advancedBy(self.chunkStartPos),
+                        end: self.text.startIndex.advancedBy(self.chunkEndPos)
+                    )
+                )
+                print("--------------------- subText changed ---------------------------")
+                print(self.subText)
+                print("-----------------------------------------------------------------")
+            }
+        }
+        //if (self.offset > self.chunk) {
+        /*
+        self.totalOffset += chunk
+        self.subText = self.text.substringFromIndex( self.text.startIndex.advancedBy(self.totalOffset) )
+        self.offset -= chunk
+        print("totalOffset: \(totalOffset), offset: \(offset)")
+        */
+        //self.getStringChunk(self.chunk)
+        //}
+    }
+     */
+    
+    fileprivate func getMatches(_ pattern: Regexp!) -> [String]? {
         self.skip()
         
         let str = pattern.matches(self.subText, startIndex: self.offset)
+        //let str = pattern.matches(self.subText, startIndex: self.offset - chunkStartPos)
         
         if let matches = str as [String]! {
             self.moveIndex((matches[0] as NSString).length)
@@ -177,7 +234,7 @@ class MMDXReader {
         - parameter: regexp pattern
         - returns: string
     */
-    private func getString(pattern: Regexp!) -> String? {
+    fileprivate func getString(_ pattern: Regexp!) -> String? {
         let matches = self.getMatches(pattern)
         
         if matches == nil {
@@ -221,7 +278,7 @@ class MMDXReader {
         }
     }
      */
-    private func skip() {
+    fileprivate func skip() {
         let str = skipPattern.matches(self.subText, startIndex: self.offset)
         
         if let matches = str as [String]! {
@@ -235,7 +292,7 @@ class MMDXReader {
         get Int value
         - returns: Int value
     */
-    private func getInt() -> Int? {
+    fileprivate func getInt() -> Int? {
         let str = self.getMatches(integerPattern)
 
         if str == nil {
@@ -251,7 +308,7 @@ class MMDXReader {
      get Int32 value
      - returns: Int32 value
      */
-    private func getInt32() -> Int32? {
+    fileprivate func getInt32() -> Int32? {
         let str = self.getMatches(integerPattern)
         
         if str == nil {
@@ -268,7 +325,7 @@ class MMDXReader {
         get Float value
         - returns: Float value
     */
-    private func getFloat() -> Float? {
+    fileprivate func getFloat() -> Float? {
         let str = self.getMatches(floatPattern)
         
         if str == nil {
@@ -284,7 +341,7 @@ class MMDXReader {
      get CGFloat value
      - returns: CGFloat value
      */
-    private func getCGFloat() -> CGFloat? {
+    fileprivate func getCGFloat() -> CGFloat? {
         let str = self.getMatches(floatPattern)
         
         if str == nil {
@@ -300,7 +357,7 @@ class MMDXReader {
      get Float32 value
      - returns: Float32 value
      */
-    private func getFloat32() -> Float32? {
+    fileprivate func getFloat32() -> Float32? {
         let str = self.getMatches(floatPattern)
         
         if str == nil {
@@ -312,7 +369,7 @@ class MMDXReader {
         return val
     }
 
-    private func getOSFloat() -> OSFloat? {
+    fileprivate func getOSFloat() -> OSFloat? {
         return OSFloat(self.getFloat()!)
     }
 
@@ -320,7 +377,7 @@ class MMDXReader {
     /**
         skip "," or ";"
     */
-    private func getCommaOrSemicolon() {
+    fileprivate func getCommaOrSemicolon() {
         /*
         let nsString = self.subText as NSString
         let code = nsString.characterAtIndex(0)
@@ -337,7 +394,7 @@ class MMDXReader {
         get string value
         - returns: word
     */
-    private func getWord() -> String? {
+    fileprivate func getWord() -> String? {
         return self.getString(wordPattern)
     }
 
@@ -346,7 +403,7 @@ class MMDXReader {
         get UUID
         - returns: UUID string
     */
-    private func getUUID() -> String? {
+    fileprivate func getUUID() -> String? {
         return self.getString(uuidPattern)
     }
     
@@ -355,7 +412,7 @@ class MMDXReader {
         get "{"
         - returns: "{" if it matches. nil if it doesn't match
     */
-    private func getLeftBrace() -> String? {
+    fileprivate func getLeftBrace() -> String? {
         return self.getString(leftBracePattern)
     }
     
@@ -364,7 +421,7 @@ class MMDXReader {
         get "}"
         - returns: "}" if it matches. nil if it doesn't match
     */
-    private func getRightBrace() -> String? {
+    fileprivate func getRightBrace() -> String? {
         return self.getString(rightBracePattern)
     }
     
@@ -373,7 +430,7 @@ class MMDXReader {
         get member string
         - returns: member string
     */
-    private func getMember() -> String? {
+    fileprivate func getMember() -> String? {
         return self.getString(memberPattern)
     }
 
@@ -382,7 +439,7 @@ class MMDXReader {
         get filename string
         - returns: file name
     */
-    private func getFilename() -> String? {
+    fileprivate func getFilename() -> String? {
         let str = self.getMatches(filenamePattern)
         
         if str == nil {
@@ -396,7 +453,7 @@ class MMDXReader {
         get integer array
         - returns: integer array
     */
-    private func getIntArray() -> [Int]? {
+    fileprivate func getIntArray() -> [Int]? {
         let n = self.getInt()!
         var arr = [Int]()
         
@@ -412,7 +469,7 @@ class MMDXReader {
         get Int32 array
         - returns: Int32 array
      */
-    private func getInt32Array() -> [Int32]? {
+    fileprivate func getInt32Array() -> [Int32]? {
         let n = self.getInt()!
         var arr = [Int32]()
         
@@ -428,7 +485,7 @@ class MMDXReader {
         get float array
         - returns: float array
     */
-    private func getFloatArray() -> [Float]? {
+    fileprivate func getFloatArray() -> [Float]? {
         let n = self.getInt()!
         var arr = [Float]()
         
@@ -445,7 +502,7 @@ class MMDXReader {
         - parameter invertZSign: if it's true, invert z sign (+/-)
         - returns: SCNVector3 value
     */
-    private func getVector3(invertZSign: Bool = false) -> SCNVector3 {
+    fileprivate func getVector3(_ invertZSign: Bool = false) -> SCNVector3 {
         var v = SCNVector3()
         v.x = self.getOSFloat()!
         v.y = self.getOSFloat()!
@@ -464,7 +521,7 @@ class MMDXReader {
         get Vector4 value
         - returns: SCNVector4 value
     */
-    private func getVector4() -> SCNVector4 {
+    fileprivate func getVector4() -> SCNVector4 {
         var v = SCNVector4()
         v.x = self.getOSFloat()!
         v.y = self.getOSFloat()!
@@ -480,7 +537,7 @@ class MMDXReader {
     /**
         calculate normal vector from 3 vertices
     */
-    private func calcNormal(v1: SCNVector3, _ v2: SCNVector3, _ v3: SCNVector3) -> SCNVector3 {
+    fileprivate func calcNormal(_ v1: SCNVector3, _ v2: SCNVector3, _ v3: SCNVector3) -> SCNVector3 {
         let ax = v3.x - v1.x
         let ay = v3.y - v1.y
         let az = v3.z - v1.z
@@ -550,13 +607,13 @@ class MMDXReader {
         1. flatten vertexIndexArray and normalIndexArray
         2. copy vertex/normal/texcoord if different normals refer the same vertex
     */
-    private func splitFaceNormals() {
+    fileprivate func splitFaceNormals() {
         let numFaces = self.rawVertexIndexArray.count
 
         print("rawTexcoordArray.count = \(self.rawTexcoordArray.count)")
         // set texcoord
         if self.rawTexcoordArray.count == 0 {
-            let float32Pairs = [Float32](count: 2, repeatedValue: 0.0)
+            let float32Pairs = [Float32](repeating: 0.0, count: 2)
             
             for _ in 0..<numFaces {
                 self.rawTexcoordArray.append(float32Pairs)
@@ -576,10 +633,10 @@ class MMDXReader {
                     self.rawVertexArray[vertexIndex[angles-1]]
                 )
                 
-                self.rawNormalArray.insert(normal, atIndex: i)
+                self.rawNormalArray.insert(normal, at: i)
 
-                let normalIndex = [Int](count: angles, repeatedValue: i)
-                self.rawNormalIndexArray.insert(normalIndex, atIndex: i)
+                let normalIndex = [Int](repeating: i, count: angles)
+                self.rawNormalIndexArray.insert(normalIndex, at: i)
             }
         }
         
@@ -612,13 +669,13 @@ class MMDXReader {
                 flatMaterialIndexArray.append(materialIndex)
                 flatMaterialIndexArray.append(materialIndex)
                 
-                self.indexCount++
+                self.indexCount += 1
             }
         }
         
         // make map of vertex to normal
         var vertexCount = self.rawVertexArray.count
-        let zeroVector3 = SCNVector3Make(0, 0, 0)
+        //let zeroVector3 = SCNVector3Make(0, 0, 0)
         
         let flatArrayCount = flatVertexIndexArray.count
         for i in 0..<flatArrayCount {
@@ -645,7 +702,7 @@ class MMDXReader {
                 
                 flatVertexIndexArray[i] = vertexCount
                 
-                vertexCount++
+                vertexCount += 1
             }else{
                 // reuse
                 flatVertexIndexArray[i] = newVertexIndex!
@@ -699,9 +756,14 @@ class MMDXReader {
         }
     }
     
-    private func createGeometry() -> SCNGeometry {
+    fileprivate func createGeometry() -> SCNGeometry {
+        //let vertexData = Data(bytes: UnsafePointer<UInt8>(self.vertexArray), count: 4 * 3 * self.vertexCount)
+        
+        //let vertexData = NSData(bytes: UnsafePointer<UInt8>(self.vertexArray), length: 4 * 3 * self.vertexCount)
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
+        //let normalData = Data(bytes: UnsafePointer<UInt8>(self.normalArray), count: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
+        //let texcoordData = Data(bytes: UnsafePointer<UInt8>(self.texcoordArray), count: 4 * 2 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
         
         // FIXME: implement bones
@@ -710,9 +772,10 @@ class MMDXReader {
         //let edgeData = NSData(bytes: self.edgeArray, length: 1 * 1 * self.vertexCount)
         //let indexData = NSData(bytes: self.indexArray, length: 2 * self.indexCount)
         
-        let vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let normalSource = SCNGeometrySource(data: normalData, semantic: SCNGeometrySourceSemanticNormal, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        let texcoordSource = SCNGeometrySource(data: texcoordData, semantic: SCNGeometrySourceSemanticTexcoord, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
+        //let vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(self.vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let vertexSource = SCNGeometrySource(data: vertexData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: Int(self.vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let normalSource = SCNGeometrySource(data: normalData as Data, semantic: SCNGeometrySource.Semantic.normal, vectorCount: Int(self.vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+        let texcoordSource = SCNGeometrySource(data: texcoordData as Data, semantic: SCNGeometrySource.Semantic.texcoord, vectorCount: Int(self.vertexCount), usesFloatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         //let boneIndicesSource = SCNGeometrySource(data: boneIndicesData, semantic: SCNGeometrySourceSemanticBoneIndices, vectorCount: Int(vertexCount), floatComponents: false, componentsPerVector: 2, bytesPerComponent: 2, dataOffset: 0, dataStride: 4)
         //let boneWeightsSource = SCNGeometrySource(data: boneWeightsData, semantic: SCNGeometrySourceSemanticBoneWeights, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 2, bytesPerComponent: 4, dataOffset: 0, dataStride: 8)
         
@@ -723,10 +786,11 @@ class MMDXReader {
             let indexCount = indexArray.count / 3
             
             if indexCount > 0 {
+                //let indexData = Data(bytes: UnsafePointer<UInt8>(indexArray), count: 4 * 3 * indexCount)
                 let indexData = NSData(bytes: indexArray, length: 4 * 3 * indexCount)
                 var indices = [Int32]()
             
-                let element = SCNGeometryElement(data: indexData, primitiveType: .Triangles, primitiveCount: indexCount, bytesPerIndex: 4)
+                let element = SCNGeometryElement(data: indexData as Data, primitiveType: .triangles, primitiveCount: indexCount, bytesPerIndex: 4)
             
                 self.elementArray.append(element)
                 newMaterialArray.append(self.materialArray[materialNo])
@@ -747,7 +811,7 @@ class MMDXReader {
         check header format
         - returns: true if right header format
     */
-    private func XFileHeader() -> Bool {
+    fileprivate func XFileHeader() -> Bool {
         //let matches = self.headerPattern.matches(self.subText, startIndex: self.offset)
         let matches = self.getMatches(headerPattern)
         if matches == nil {
@@ -767,7 +831,7 @@ class MMDXReader {
         read Object value
         - returns: XObject
     */
-    private func XObjectLong() -> AnyObject? {
+    fileprivate func XObjectLong() -> AnyObject? {
         let id = self.getWord()
         
         if id == nil {
@@ -778,19 +842,19 @@ class MMDXReader {
 
         switch(id!) {
         case "template":
-            return self.Template()
+            return self.Template() as AnyObject?
         case "Header":
-            return self.Header()
+            return self.Header() as AnyObject?
         case "Mesh":
-            return self.Mesh()
+            return self.Mesh() as AnyObject?
         case "MeshMaterialList":
-            return self.MeshMaterialList()
+            return self.MeshMaterialList() as AnyObject?
         case "MeshNormals":
-            return self.MeshNormals()
+            return self.MeshNormals() as AnyObject?
         case "MeshTextureCoords":
-            return self.MeshTextureCoords()
+            return self.MeshTextureCoords() as AnyObject?
         case "MeshVertexColors":
-            return self.MeshVertexColors()
+            return self.MeshVertexColors() as AnyObject?
         default:
             print("unknown type: \(id)")
         }
@@ -798,12 +862,12 @@ class MMDXReader {
     }
 
 
-#if os(iOS)
+#if os(iOS) || os(watchOS)
     /**
         read ColorRGB value
         - returns: ColorRGBA object. Alpha is 1.0
      */
-    private func ColorRGB() -> UIColor {
+    fileprivate func ColorRGB() -> UIColor {
         let r = self.getOSFloat()!
         let g = self.getOSFloat()!
         let b = self.getOSFloat()!
@@ -818,7 +882,7 @@ class MMDXReader {
         read ColorRGBA value
         - returns: ColorRGBA object
      */
-    private func ColorRGBA() -> UIColor {
+    fileprivate func ColorRGBA() -> UIColor {
         let r = self.getOSFloat()!
         let g = self.getOSFloat()!
         let b = self.getOSFloat()!
@@ -829,7 +893,7 @@ class MMDXReader {
         return UIColor(colorLiteralRed: r, green: g, blue: b, alpha: a)
     }
     
-    private func IndexedColor() -> UIColor {
+    fileprivate func IndexedColor() -> UIColor {
         let index = self.getInt()
         let color = self.ColorRGBA()
         // color.index = index
@@ -882,7 +946,7 @@ class MMDXReader {
         read Coords2d object
         - returns: texture coord
     */
-    private func Coords2d() -> [Float32] {
+    fileprivate func Coords2d() -> [Float32] {
         var v = [Float32]()
         
         v.append(self.getFloat32()!)
@@ -892,7 +956,7 @@ class MMDXReader {
         return v
     }
 
-    private func Template() -> Bool {
+    fileprivate func Template() -> Bool {
         let name = self.getWord()
 
         self.getLeftBrace()
@@ -907,7 +971,7 @@ class MMDXReader {
         return true
     }
     
-    private func Header() -> Bool {
+    fileprivate func Header() -> Bool {
         self.getLeftBrace()
         
         let major = self.getInt()
@@ -919,8 +983,8 @@ class MMDXReader {
         return true
     }
     
-    private func Material() -> SCNMaterial {
-        var material = SCNMaterial()
+    fileprivate func Material() -> SCNMaterial {
+        let material = SCNMaterial()
         
         self.getLeftBrace()
         
@@ -934,7 +998,7 @@ class MMDXReader {
         if name == "TextureFilename" {
             let textureFilePath = self.TextureFilename()
             if textureFilePath != nil {
-                #if os(iOS)
+                #if os(iOS) || os(watchOS)
                     let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0)
                     let image = UIImage(contentsOfFile: textureFilePath!)
                 #elseif os(OSX)
@@ -955,7 +1019,7 @@ class MMDXReader {
         return material
     }
 
-    private func Mesh() -> Bool {
+    fileprivate func Mesh() -> Bool {
         self.getLeftBrace()
         
         // vertices
@@ -986,7 +1050,7 @@ class MMDXReader {
         return true
     }
     
-    private func MeshMaterialList() -> Bool {
+    fileprivate func MeshMaterialList() -> Bool {
         self.getLeftBrace()
         
         // materials
@@ -1020,7 +1084,7 @@ class MMDXReader {
         return true
     }
     
-    private func MeshNormals() -> Bool {
+    fileprivate func MeshNormals() -> Bool {
         self.getLeftBrace()
         
         let nNormals = self.getInt()!
@@ -1046,7 +1110,7 @@ class MMDXReader {
         return true
     }
     
-    private func MeshTextureCoords() -> Bool {
+    fileprivate func MeshTextureCoords() -> Bool {
         self.getLeftBrace()
         
         // suppose to be the same number as vertexCount
@@ -1064,7 +1128,7 @@ class MMDXReader {
         return true
     }
     
-    private func MeshVertexColors() -> Bool {
+    fileprivate func MeshVertexColors() -> Bool {
         self.getLeftBrace()
         
         let nVertexColors = self.getInt()!
@@ -1078,15 +1142,15 @@ class MMDXReader {
         return true
     }
     
-    private func TextureFilename() -> String? {
+    fileprivate func TextureFilename() -> String? {
         self.getLeftBrace()
         
         let name = self.getFilename()
-        var filePath = name!.stringByReplacingOccurrencesOfString("\\\\", withString: "/")
+        var filePath = name!.replacingOccurrences(of: "\\\\", with: "/")
         
         print("before: \(name), after: \(filePath)")
         
-        filePath = (self.directoryPath as NSString).stringByAppendingPathComponent(filePath)
+        filePath = (self.directoryPath as NSString).appendingPathComponent(filePath)
         
         print("filePath: \(filePath)")
         

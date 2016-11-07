@@ -1,15 +1,15 @@
 //
-//  MMDSceneKit_OSXTests.swift
-//  MMDSceneKit_OSXTests
+//  MMDSceneKitSample_macOSTests.swift
+//  MMDSceneKitSample_macOSTests
 //
-//  Created by magicien on 12/9/15.
+//  Created by magicien on 12/10/15.
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
 import XCTest
-@testable import MMDSceneKit_OSX
+@testable import MMDSceneKitSample_macOS
 
-class MMDSceneKit_OSXTests: XCTestCase {
+class MMDSceneKitSample_macOSTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

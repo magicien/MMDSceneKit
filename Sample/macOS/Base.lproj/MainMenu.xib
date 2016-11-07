@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
-        <plugIn identifier="com.apple.SceneKitIBPlugin" version="9060"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.SceneKitIBPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -660,7 +660,6 @@
                 <subviews>
                     <sceneView autoenablesDefaultLighting="YES" translatesAutoresizingMaskIntoConstraints="NO" id="536" customClass="GameView" customModule="MMDSceneKitSample_OSX" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </sceneView>
                 </subviews>
@@ -670,7 +669,6 @@
                     <constraint firstItem="536" firstAttribute="bottom" secondItem="372" secondAttribute="bottom" id="543"/>
                     <constraint firstItem="536" firstAttribute="trailing" secondItem="372" secondAttribute="trailing" id="544"/>
                 </constraints>
-                <animations/>
             </view>
             <point key="canvasLocation" x="385" y="452"/>
         </window>

@@ -8,6 +8,13 @@
 
 import SceneKit
 
+#if os(watchOS)
+
+class MMDVMDReader: MMDReader {
+    // CAAnimation is not supported in watchOS
+}
+
+#else
 class MMDVMDReader: MMDReader {
     // MARK: - property for VMD File
     private var workingAnimationGroup: CAAnimationGroup! = nil
@@ -34,7 +41,7 @@ class MMDVMDReader: MMDReader {
     
     /**
     */
-    static func getAnimation(data: NSData, directoryPath: String! = "") -> CAAnimationGroup? {
+    static func getAnimation(_ data: Data, directoryPath: String! = "") -> CAAnimationGroup? {
         let reader = MMDVMDReader(data: data, directoryPath: directoryPath)
         let animation = reader.loadVMDFile()
         
@@ -159,22 +166,22 @@ class MMDVMDReader: MMDReader {
                     break
                 }
                 
-                frameIndex++
+                frameIndex += 1
             }
             
-            posXMotion!.keyTimes!.insert(Float(frameNo), atIndex: frameIndex)
-            posYMotion!.keyTimes!.insert(Float(frameNo), atIndex: frameIndex)
-            posZMotion!.keyTimes!.insert(Float(frameNo), atIndex: frameIndex)
-            rotMotion!.keyTimes!.insert(Float(frameNo), atIndex: frameIndex)
+            posXMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            posYMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            posZMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            rotMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             
             if(frameNo > frameLength) {
                 frameLength = frameNo
             }
             
             //let position = SCNVector3.init(getFloat(), getFloat(), getFloat())
-            let posX = NSNumber(float: getFloat())
-            let posY = NSNumber(float: getFloat())
-            let posZ = NSNumber(float: -getFloat())
+            let posX = NSNumber(value: getFloat())
+            let posY = NSNumber(value: getFloat())
+            let posZ = NSNumber(value: -getFloat())
             var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
             
             normalize(&rotate)
@@ -190,7 +197,7 @@ class MMDVMDReader: MMDReader {
                 interpolation[8],
                 interpolation[12]
             )
-            posXMotion!.timingFunctions!.insert(timingX, atIndex: frameIndex)
+            posXMotion!.timingFunctions!.insert(timingX, at: frameIndex)
             
             let timingY = CAMediaTimingFunction.init(controlPoints:
                 interpolation[1],
@@ -198,7 +205,7 @@ class MMDVMDReader: MMDReader {
                 interpolation[9],
                 interpolation[13]
             )
-            posYMotion!.timingFunctions!.insert(timingY, atIndex: frameIndex)
+            posYMotion!.timingFunctions!.insert(timingY, at: frameIndex)
             
             let timingZ = CAMediaTimingFunction.init(controlPoints:
                 interpolation[2],
@@ -206,7 +213,7 @@ class MMDVMDReader: MMDReader {
                 interpolation[10],
                 interpolation[14]
             )
-            posZMotion!.timingFunctions!.insert(timingZ, atIndex: frameIndex)
+            posZMotion!.timingFunctions!.insert(timingZ, at: frameIndex)
             
             let timingRot = CAMediaTimingFunction.init(controlPoints:
                 interpolation[3],
@@ -214,12 +221,12 @@ class MMDVMDReader: MMDReader {
                 interpolation[11],
                 interpolation[15]
             )
-            rotMotion!.timingFunctions!.insert(timingRot, atIndex: frameIndex)
+            rotMotion!.timingFunctions!.insert(timingRot, at: frameIndex)
             
-            posXMotion!.values!.insert(posX, atIndex: frameIndex)
-            posYMotion!.values!.insert(posY, atIndex: frameIndex)
-            posZMotion!.values!.insert(posZ, atIndex: frameIndex)
-            rotMotion!.values!.insert(NSValue.init(SCNVector4: rotate), atIndex: frameIndex)
+            posXMotion!.values!.insert(posX, at: frameIndex)
+            posYMotion!.values!.insert(posY, at: frameIndex)
+            posZMotion!.values!.insert(posZ, at: frameIndex)
+            rotMotion!.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
         }
         
     }
@@ -234,7 +241,7 @@ class MMDVMDReader: MMDReader {
         for _ in 0..<faceFrameCount {
             let name = String(getString(15)!)
             let frameNo = Int(getUnsignedInt())
-            let factor = NSNumber(float: getFloat())
+            let factor = NSNumber(value: getFloat())
             
             let keyPath: String! = "morpher.weights.\(name)"
             var animation = self.faceAnimationHash[name]
@@ -255,12 +262,12 @@ class MMDVMDReader: MMDReader {
                     break
                 }
                 
-                frameIndex++
+                frameIndex += 1
             }
             
-            animation!.keyTimes!.insert(frameNo, atIndex: frameIndex)
-            animation!.values!.insert(factor, atIndex:  frameIndex)
-            animation!.timingFunctions!.insert(timingFunc, atIndex: frameIndex)
+            animation!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            animation!.values!.insert(factor, at:  frameIndex)
+            animation!.timingFunctions!.insert(timingFunc, at: frameIndex)
         }
     }
     
@@ -273,7 +280,7 @@ class MMDVMDReader: MMDReader {
         for (_, motion) in self.animationHash {
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
-                motion.keyTimes![num] = NSNumber(float: keyTime)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
             motion.duration = duration
@@ -286,7 +293,7 @@ class MMDVMDReader: MMDReader {
             print("faceAnimation: \(motion.keyPath!)")
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
-                motion.keyTimes![num] = NSNumber(float: keyTime)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
             motion.duration = duration
@@ -332,3 +339,5 @@ class MMDVMDReader: MMDReader {
     }
 
 }
+
+#endif
