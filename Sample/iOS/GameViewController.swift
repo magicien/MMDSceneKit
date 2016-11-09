@@ -25,7 +25,7 @@ class GameViewController: MMDSceneViewController {
         self.setupGameScene(scene, view: scnView)
 
         // add a tap gesture recognizer
-        let tapGesture = UITapGestureRecognizer(target: self, action: "handleTap:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(GameViewController.handleTap(_:)))
         scnView.addGestureRecognizer(tapGesture)
     }
     
