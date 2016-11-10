@@ -2,7 +2,7 @@
 //  MMDNode_Tests.swift
 //  MMDSceneKit
 //
-//  Created by Yuki OHNO on 7/11/16.
+//  Created by magicien on 7/11/16.
 //  Copyright © 2016 DarkHorse. All rights reserved.
 //
 

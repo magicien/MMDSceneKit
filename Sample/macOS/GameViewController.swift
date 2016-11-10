@@ -1,6 +1,6 @@
 //
 //  GameViewController.swift
-//  MMDSceneKitSample_OSX
+//  MMDSceneKitSample_macOS
 //
 //  Created by magicien on 12/10/15.
 //  Copyright (c) 2015 DarkHorse. All rights reserved.

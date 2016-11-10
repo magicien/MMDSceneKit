@@ -2,7 +2,7 @@
 //  MMDSceneKitSample_tvOSTests.swift
 //  MMDSceneKitSample_tvOSTests
 //
-//  Created by Yuki OHNO on 11/10/16.
+//  Created by magicien on 11/10/16.
 //  Copyright © 2016 DarkHorse. All rights reserved.
 //
 
