@@ -43,7 +43,7 @@ class MMDPMXReader: MMDReader {
     
     // MARK: texture data
     fileprivate var textureCount = 0
-    #if os(iOS) || os(watchOS)
+    #if os(iOS) || os(tvOS) || os(watchOS)
         fileprivate var textureArray: [UIImage]! = nil
     #elseif os(OSX)
         private var textureArray: [NSImage]! = nil
@@ -126,7 +126,7 @@ class MMDPMXReader: MMDReader {
         self.materialIndexCountArray = [Int]()
         self.materialShapeArray = [SCNGeometryPrimitiveType]()
         
-        #if os(iOS) || os(watchOS)
+        #if os(iOS) || os(tvOS) || os(watchOS)
             self.textureArray = [UIImage]()
         #elseif os(OSX)
             self.textureArray = [NSImage]()
@@ -417,7 +417,7 @@ class MMDPMXReader: MMDReader {
 
             print("***** textureName: \(textureFile) *****")
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 var image = UIImage(contentsOfFile: fileName as String)
                 if image == nil {
                     image = UIImage()
@@ -447,7 +447,7 @@ class MMDPMXReader: MMDReader {
             
             let englishName = getTextBuffer()
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
@@ -621,7 +621,7 @@ class MMDPMXReader: MMDReader {
             boneNode.name = getTextBuffer() as String
             let englishName = getTextBuffer()
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 let x = getFloat()
                 let y = getFloat()
                 let z = -getFloat()
@@ -883,7 +883,7 @@ class MMDPMXReader: MMDReader {
             let index = getIntOfLength(self.materialIndexSize)
             let addColor = getUnsignedByte()
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 
                 let diffuseColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 let SpecularColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)

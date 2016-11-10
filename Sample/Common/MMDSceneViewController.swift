@@ -11,6 +11,10 @@ import SceneKit
     import MMDSceneKit_macOS
     public typealias SuperViewController = NSViewController
     public typealias MMDView = SCNView
+#elseif os(tvOS)
+    import MMDSceneKit_tvOS
+    public typealias SuperViewController = UIViewController
+    public typealias MMDView = SCNView
 #elseif os(iOS)
     import MMDSceneKit_iOS
     public typealias SuperViewController = UIViewController
@@ -49,7 +53,7 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         ambientLightNode.light!.type = SCNLight.LightType.ambient
         #if os(OSX)
             ambientLightNode.light!.color = NSColor.darkGray
-        #elseif os(iOS) || os(watchOS)
+        #elseif os(iOS) || os(tvOS) || os(watchOS)
             ambientLightNode.light!.color = UIColor.darkGray
         #endif
 
@@ -107,7 +111,7 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         // configure the view
         #if os(OSX)
             view.backgroundColor = NSColor.black
-        #elseif os(iOS)
+        #elseif os(iOS) || os(tvOS)
             view.backgroundColor = UIColor.black
         #endif
     }

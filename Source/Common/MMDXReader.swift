@@ -8,7 +8,7 @@
 
 import SceneKit
 
-#if os(iOS) || os(watchOS)
+#if os(iOS) || os(tvOS) || os(watchOS)
     typealias OSFloat = Float
     typealias OSColor = UIColor
     typealias OSImage = UIImage
@@ -862,7 +862,7 @@ class MMDXReader {
     }
 
 
-#if os(iOS) || os(watchOS)
+#if os(iOS) || os(tvOS) || os(watchOS)
     /**
         read ColorRGB value
         - returns: ColorRGBA object. Alpha is 1.0
@@ -998,7 +998,7 @@ class MMDXReader {
         if name == "TextureFilename" {
             let textureFilePath = self.TextureFilename()
             if textureFilePath != nil {
-                #if os(iOS) || os(watchOS)
+                #if os(iOS) || os(tvOS) || os(watchOS)
                     let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0)
                     let image = UIImage(contentsOfFile: textureFilePath!)
                 #elseif os(OSX)

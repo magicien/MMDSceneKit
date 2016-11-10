@@ -254,7 +254,7 @@ class MMDPMDReader: MMDReader {
         for _ in 0..<self.materialCount {
             let material = SCNMaterial()
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.shininess = CGFloat(getFloat())
@@ -283,7 +283,7 @@ class MMDPMDReader: MMDReader {
                 
                 print("setTexture: \(fileName)")
                 
-                #if os(iOS) || os(watchOS)
+                #if os(iOS) || os(tvOS) || os(watchOS)
                     material.diffuse.contents = UIImage(contentsOfFile: fileName)
                 #elseif os(OSX)
                     material.diffuse.contents = NSImage(contentsOfFile: fileName)
@@ -353,7 +353,7 @@ class MMDPMDReader: MMDReader {
                 boneNode.type = .unknown
             }
             
-            #if os(iOS) || os(watchOS)
+            #if os(iOS) || os(tvOS) || os(watchOS)
                 let x = getFloat()
                 let y = getFloat()
                 let z = -getFloat()
