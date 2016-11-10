@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		DDA557171DD3C9DC00592E12 /* Build framework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DDA557181DD3C9DC00592E12 /* Build configuration list for PBXAggregateTarget "Build framework" */;
+			buildPhases = (
+				DDA5571B1DD3CA0900592E12 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Build framework";
+			productName = "Build framework";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
 		DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
@@ -75,6 +89,7 @@
 		DD6297011C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
 		DD6297021C30067800707364 /* MMDShaderZValuePlot.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD6296FF1C30067800707364 /* MMDShaderZValuePlot.plist */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
+		DDA5571D1DD3DE6E00592E12 /* MMDSceneKit_macOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DDBFF9751DD3A81400E4CE78 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF9731DD3A81400E4CE78 /* Interface.storyboard */; };
@@ -134,6 +149,13 @@
 			remoteGlobalIDString = DD12BF911C18390700B20F37;
 			remoteInfo = MMDSceneKit_iOS;
 		};
+		DDA5571E1DD3DE6E00592E12 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DD12BF751C1838D700B20F37;
+			remoteInfo = MMDSceneKit_macOS;
+		};
 		DDBFF97F1DD3A81400E4CE78 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DD12BEF01C18359600B20F37 /* Project object */;
@@ -176,6 +198,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				DD6296EB1C2FCFC000707364 /* MMDSceneKit_iOS.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DDA557201DD3DE6E00592E12 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DDA5571D1DD3DE6E00592E12 /* MMDSceneKit_macOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -767,10 +800,12 @@
 				DD12BFDE1C1AB85800B20F37 /* Sources */,
 				DD12BFDF1C1AB85800B20F37 /* Frameworks */,
 				DD12BFE01C1AB85800B20F37 /* Resources */,
+				DDA557201DD3DE6E00592E12 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DDA5571F1DD3DE6E00592E12 /* PBXTargetDependency */,
 			);
 			name = MMDSceneKitSample_macOS;
 			productName = MMDSceneKitSample_OSX;
@@ -903,6 +938,11 @@
 						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0800;
 					};
+					DDA557171DD3C9DC00592E12 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = EF37D6UQZ9;
+						ProvisioningStyle = Automatic;
+					};
 					DDBFF9701DD3A81400E4CE78 = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = EF37D6UQZ9;
@@ -939,6 +979,7 @@
 				DD12BFF51C1AB85800B20F37 /* MMDSceneKitSample_macOSTests */,
 				DDBFF9701DD3A81400E4CE78 /* MMDSceneKitSample_watchOS */,
 				DDBFF97C1DD3A81400E4CE78 /* MMDSceneKitSample_watchOS Extension */,
+				DDA557171DD3C9DC00592E12 /* Build framework */,
 			);
 		};
 /* End PBXProject section */
@@ -1071,7 +1112,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/macOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"${SRCROOT}/Framework/macOS\"\n\nif [ ! -d \"${DESTINATION_DIR}\" ]; then\n    mkdir -p ${DESTINATION_DIR}\nfi\ncp -r ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME} ${DESTINATION_DIR}\n";
+		};
+		DDA5571B1DD3CA0900592E12 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Merge Script\n# original from http://code.hootsuite.com/an-introduction-to-creating-and-distributing-embedded-frameworks-in-ios/\n\n# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Setup some constants for use later on.\nFRAMEWORK_NAME=\"MMDSceneKit\"\nMACOS_FRAMEWORK_NAME=\"MMDSceneKit_macOS\"\nIOS_FRAMEWORK_NAME=\"MMDSceneKit_iOS\"\nTVOS_FRAMEWORK_NAME=\"MMDSceneKit_tvOS\"\nWATCHOS_FRAMEWORK_NAME=\"MMDSceneKit_watchOS\"\n\nBASE_DIR=\"${SRCROOT}/build\"\nMACOS_FRAMEWORK_PATH=\"${BASE_DIR}/Release/${MACOS_FRAMEWORK_NAME}.framework\"\nIOS_FRAMEWORK_PATH=\"${BASE_DIR}/Release-iphoneos/${IOS_FRAMEWORK_NAME}.framework\"\nIOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/Release-iphonesimulator/${IOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_FRAMEWORK_PATH=\"${BASE_DIR}/Release-watchos/${WATCHOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/Release-watchsimulator/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\nMACOS_BIN_PATH=\"${MACOS_FRAMEWORK_PATH}/${MACOS_FRAMEWORK_NAME}\"\nIOS_BIN_PATH=\"${IOS_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nIOS_SIM_BIN_PATH=\"${IOS_SIM_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nWATCHOS_BIN_PATH=\"${WATCHOS_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\nWATCHOS_SIM_BIN_PATH=\"${WATCHOS_SIM_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi\n\n# 4\n# Build the framework for device and for simulator (using\n# all needed architectures).\n\n# macOS\n#xcodebuild -target \"${MACOS_FRAMEWORK_NAME}\" -configuration Release -arch x86_64 only_active_arch=no defines_module=yes -sdk \"macosx\"\n\n# iOS\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration Release -arch arm64 -arch armv7 -arch armv7s only_active_arch=no defines_module=yes -sdk \"iphoneos\"\n\n# iOS Simulator\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration Release -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\n\n# watchOS\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration Release -arch armv7k only_active_arch=no defines_module=yes -sdk \"watchos\"\n\n# watchOS Simulator\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration Release -arch i386 only_active_arch=no defines_module=yes -sdk \"watchsimulator\"\n\n# 5\n# Remove .framework file if exists on Desktop from previous run.\n#if [ -d \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\" ]; then\n#    rm -rf \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\"\n#fi\nFAT_DIR=\"$SRCROOT/Framework/FAT\"\n\nif [ ! -d \"${FAT_DIR}\" ]; then\n    mkdir -p ${FAT_DIR}\nfi\n\n# 6\n# Copy the device version of framework to FAT directory.\n\n# macOS => Master\n#cp -r \"${MACOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${FRAMEWORK_NAME}.framework\"\n\n# iOS\ncp -r \"${IOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework\"\n\n# watchOS\ncp -r \"${WATCHOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\n# 7\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator\n# frameworks' executables with lipo.\n\n# iOS FAT\nlipo -create -output \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/${IOS_FRAMEWORK_NAME}\" \"${IOS_BIN_PATH}\" \"${IOS_SIM_BIN_PATH}\"\n\n# watchOS FAT\nlipo -create -output \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/${WATCHOS_FRAMEWORK_NAME}\" \"${WATCHOS_BIN_PATH}\" \"${WATCHOS_SIM_BIN_PATH}\"\n\n# all OS FAT\n#lipo -create -output \"${FAT_DIR}/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${MACOS_BIN_PATH}\" \"${IOS_BIN_PATH}\" \"${IOS_SIM_BIN_PATH}\" \"${WATCHOS_BIN_PATH}\" \"${WATCHOS_SIM_BIN_PATH}\"\n\n\n\n# 8\n# Copy the Swift module mappings for the simulator into the\n# framework.  The device mappings already exist from step 6.\n\n# iOS FAT\ncp -r \"${IOS_SIM_FRAMEWORK_PATH}/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# watchOS FAT\ncp -r \"${WATCHOS_SIM_FRAMEWORK_PATH}/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# all OS FAT\n#cp -r \"${WATCHOS_FRAMEWORK_PATH}/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule/\" \"${IOS_FRAMEWORK_PATH}/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule\"\n\n\n# 9\n# Delete the most recent build.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi";
 		};
 		DDAE3ACD1C1D4E150014F375 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1241,6 +1295,11 @@
 			target = DD12BF911C18390700B20F37 /* MMDSceneKit_iOS */;
 			targetProxy = DD6296EC1C2FCFC000707364 /* PBXContainerItemProxy */;
 		};
+		DDA5571F1DD3DE6E00592E12 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DD12BF751C1838D700B20F37 /* MMDSceneKit_macOS */;
+			targetProxy = DDA5571E1DD3DE6E00592E12 /* PBXContainerItemProxy */;
+		};
 		DDBFF9801DD3A81400E4CE78 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DDBFF97C1DD3A81400E4CE78 /* MMDSceneKitSample_watchOS Extension */;
@@ -1392,10 +1451,9 @@
 		DD12BF881C1838D700B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1416,10 +1474,9 @@
 		DD12BF891C1838D700B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1611,6 +1668,7 @@
 		DD12BFFE1C1AB85800B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1628,6 +1686,7 @@
 		DD12BFFF1C1AB85800B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1681,6 +1740,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1691,12 +1751,14 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Source/watchOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
+				VALID_ARCHS = "armv7k i386";
 				WATCHOS_DEPLOYMENT_TARGET = 3.1;
 			};
 			name = Debug;
@@ -1705,6 +1767,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1715,6 +1778,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Source/watchOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1722,7 +1786,49 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
+				VALID_ARCHS = "armv7k i386";
 				WATCHOS_DEPLOYMENT_TARGET = 3.1;
+			};
+			name = Release;
+		};
+		DDA557191DD3C9DC00592E12 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					i386,
+					x86_64,
+					armv7,
+					arm64,
+					armv7k,
+				);
+				CODE_SIGN_IDENTITY = "Mac Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "macos iphonesimulator iphoneos watchsimulator watchos";
+				VALID_ARCHS = "i386 x86_64 arm64 armv7 armv7s armv7k";
+			};
+			name = Debug;
+		};
+		DDA5571A1DD3C9DC00592E12 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					i386,
+					x86_64,
+					armv7,
+					arm64,
+					armv7k,
+				);
+				CODE_SIGN_IDENTITY = "Mac Developer: OHNO YUUKI (7S54TRHWB3)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = EF37D6UQZ9;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "macos iphonesimulator iphoneos watchsimulator watchos";
+				VALID_ARCHS = "i386 x86_64 arm64 armv7 armv7s armv7k";
 			};
 			name = Release;
 		};
@@ -1909,6 +2015,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		DDA557181DD3C9DC00592E12 /* Build configuration list for PBXAggregateTarget "Build framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDA557191DD3C9DC00592E12 /* Debug */,
+				DDA5571A1DD3C9DC00592E12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DDBFF98E1DD3A81500E4CE78 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1916,6 +2031,7 @@
 				DDBFF9901DD3A81500E4CE78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DDBFF9921DD3A81500E4CE78 /* Build configuration list for PBXNativeTarget "MMDSceneKitSample_watchOS" */ = {
 			isa = XCConfigurationList;
@@ -1924,6 +2040,7 @@
 				DDBFF9941DD3A81500E4CE78 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
