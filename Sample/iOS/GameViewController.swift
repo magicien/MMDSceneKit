@@ -11,15 +11,13 @@ import QuartzCore
 import SceneKit
 import MMDSceneKit_iOS
 
-var scene: SCNScene! = nil
-
 class GameViewController: MMDSceneViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // create a new scene
-        scene = SCNScene()
+        let scene = SCNScene()
         let scnView = self.view as! SCNView
 
         self.setupGameScene(scene, view: scnView)

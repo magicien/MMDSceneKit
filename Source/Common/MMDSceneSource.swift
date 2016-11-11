@@ -95,7 +95,7 @@ open class MMDSceneSource: SCNSceneSource {
 
     /**
         Initializes a scene source for reading the scene graph from a specified file.
-        - parameter url: A URL identifying the location of a scene file in MMD file format.
+        - parameter path: A path identifying the location of a scene file in MMD file format.
         - parameter options: ignored. just for compatibility of SCNSceneSource.
     */
     public convenience init?(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
@@ -108,6 +108,16 @@ open class MMDSceneSource: SCNSceneSource {
         } else {
             self.loadData(data!, options: options)
         }
+    }
+    
+    /**
+         Initializes a scene source for reading the scene graph from a specified file.
+         - parameter url: A URL identifying the location of a scene file in MMD file format.
+         - parameter options: ignored.
+    */
+    public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
+        let filePath = Bundle.main.path(forResource: name, ofType: nil)
+        self.init(path: filePath!, options: options)
     }
     
     /**
@@ -142,7 +152,20 @@ open class MMDSceneSource: SCNSceneSource {
         return lightArray
     }
     
-
+    open func getModel() -> MMDNode? {
+        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x {
+            // FIXME: clone node
+            return self.workingNode
+        }else if self.fileType == .pmm {
+            for node in self.workingScene.rootNode.childNodes {
+                if let mmdNode = node as? MMDNode {
+                    return mmdNode
+                }
+            }
+        }
+        return nil
+    }
+    
 #if !os(watchOS)
     /**
         Return a hash of CAAnimationGroup
@@ -164,6 +187,10 @@ open class MMDSceneSource: SCNSceneSource {
         animationHash["animation"] = self.workingAnimationGroup // FIXME
         
         return animationHash
+    }
+    
+    open func getMotion() -> CAAnimationGroup? {
+        return self.workingAnimationGroup
     }
 #endif
     

@@ -10,15 +10,13 @@ import SceneKit
 import QuartzCore
 import MMDSceneKit_macOS
 
-var scene: SCNScene! = nil
-
 class GameViewController: MMDSceneViewController {
     
     @IBOutlet weak var gameView: GameView!
     
     override func awakeFromNib(){
         // create a new scene
-        scene = SCNScene()
+        let scene = SCNScene()
         
         self.setupGameScene(scene, view: self.gameView!)
     }

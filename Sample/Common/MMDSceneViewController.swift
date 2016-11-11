@@ -25,7 +25,7 @@ import SceneKit
     public typealias MMDView = WKInterfaceSCNScene
 #endif
 
-public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelegate {
+public class MMDSceneViewController: SuperViewController {
     
     /**
      * setup game scene
@@ -60,21 +60,16 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         scene.rootNode.addChildNode(ambientLightNode)
 
         // create a character node from file
-        let modelPath = Bundle.main.path(forResource: "art1.scnassets/miku", ofType: ".pmd")
-        let modelSceneSource = MMDSceneSource(path: modelPath!)
-        let modelNode = modelSceneSource!.modelNodes().first!
+        let modelNode = MMDSceneSource(named: "art1.scnassets/miku.pmd")!.getModel()!
         scene.rootNode.addChildNode(modelNode)
         
         // create a background object from file
-        
 #if !os(watchOS)
         // This X model is too big for watchOS...
     
         // measure time for optimization
         let timer = Date()
-        let xPath = Bundle.main.path(forResource: "art2.scnassets/ゲキド街v3.0", ofType: ".x")
-        let xSceneSource = MMDSceneSource(path: xPath!)
-        let xNode = xSceneSource!.modelNodes().first!
+        let xNode = MMDSceneSource(named: "art2.scnassets/ゲキド街v3.0.x")!.getModel()!
         xNode.scale = SCNVector3Make(10.0, 10.0, 10.0)
         scene.rootNode.addChildNode(xNode)
         print("Read XFile: \(-timer.timeIntervalSinceNow) sec.")
@@ -82,12 +77,10 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
 
 #if !os(watchOS)
         // animate the 3d object
-        let motionPath = Bundle.main.path(forResource: "art2.scnassets/walking", ofType: ".vmd")
-        let motionSceneSource = MMDSceneSource(path: motionPath!)
-        let motion = motionSceneSource?.animations().first?.1
-        motion!.isRemovedOnCompletion = false
-        motion!.repeatCount = Float.infinity
-        modelNode.addAnimation(motion!, forKey: "happysyn")
+        let motion = MMDSceneSource(named: "art2.scnassets/running.vmd")!.getMotion()!
+        motion.isRemovedOnCompletion = false
+        motion.repeatCount = Float.infinity
+        modelNode.addAnimation(motion, forKey: "happysyn")
 #else
         // rotate the model instead of animating...
         modelNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
@@ -102,8 +95,9 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
         view.showsStatistics = true
 
 #if !os(watchOS)
-        view.delegate = self
-        
+        // set the delegate to update IK for each frame
+        view.delegate = MMDIKController.sharedController
+    
         // allows the user to manipulate the camera
         view.allowsCameraControl = true
 #endif
@@ -115,38 +109,4 @@ public class MMDSceneViewController: SuperViewController, SCNSceneRendererDelega
             view.backgroundColor = UIColor.black
         #endif
     }
-    
-#if !os(watchOS)
-    /**
-     * apply IK constraint after animations are applied
-     */
-    public func renderer(_ renderer: SCNSceneRenderer, didApplyAnimationsAtTime time: TimeInterval) {
-        applyIKRecursive(scene.rootNode)
-    }
-#endif
-    
-    /**
-     * apply IK constraint recursively
-     */
-    func applyIKRecursive(_ node: SCNNode) {
-        if let mmdNode = node as? MMDNode {
-            mmdNode.updateIK()
-        }
-        
-        for childNode in node.childNodes {
-            applyIKRecursive(childNode)
-        }
-    }
-
-    /*
-    func renderer(renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: NSTimeInterval) {
-        //print("didSimulatePhysicsAtTime")
-    }
-    func renderer(renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: NSTimeInterval) {
-        //print("willRenderScene")
-    }
-    func renderer(renderer: SCNSceneRenderer, didRenderScene scene: SCNScene, atTime time: NSTimeInterval) {
-        //print("didRenderScene")
-    }
-    */
 }

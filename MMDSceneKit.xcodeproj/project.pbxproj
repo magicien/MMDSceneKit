@@ -134,6 +134,11 @@
 		DDCF5CB71DD4F9E20037BD66 /* art1.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */; };
 		DDCF5CB81DD4F9E40037BD66 /* art2.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art2.scnassets */; };
 		DDCF5CBB1DD4FC190037BD66 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDCF5CB91DD4FC190037BD66 /* Main.storyboard */; };
+		DDCF5D2B1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
+		DDCF5D2C1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
+		DDCF5D2D1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
+		DDCF5D2E1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
+		DDCF5D2F1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
 		DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDE586CE1C7123D900CF3B48 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
@@ -385,6 +390,7 @@
 		DDCF5CAD1DD4F8510037BD66 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDCF5CAE1DD4F8510037BD66 /* MMDSceneKitSample_tvOSUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_tvOSUITests.swift; sourceTree = "<group>"; };
 		DDCF5CBA1DD4FC190037BD66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKController.swift; sourceTree = "<group>"; };
 		DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDIKConstraint.swift; sourceTree = "<group>"; };
 		DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneViewController.swift; sourceTree = "<group>"; };
 		DDEC59891C38B4570043F939 /* MMDPMXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMXReader.swift; sourceTree = "<group>"; };
@@ -555,6 +561,7 @@
 				DD41D89F1C24099400A7F834 /* MMDXReader.swift */,
 				DD41D8A21C25354C00A7F834 /* Regexp.swift */,
 				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
+				DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */,
 				DD6296D81C2D120800707364 /* MMDProgram.swift */,
 				DD6296F51C2FFB9C00707364 /* MMDShader.swift */,
 				DD6296DB1C2D14F600707364 /* Shader */,
@@ -1500,6 +1507,7 @@
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
 				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */,
+				DDCF5D2B1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1528,6 +1536,7 @@
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
 				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */,
+				DDCF5D2C1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1595,6 +1604,7 @@
 				DD3313C51D39C32A0027FCA9 /* MMDShader.metal in Sources */,
 				DD3313BF1D39C3160027FCA9 /* MMDVMDReader.swift in Sources */,
 				DD3313C31D39C3160027FCA9 /* MMDProgram.swift in Sources */,
+				DDCF5D2D1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1624,6 +1634,7 @@
 				DDCF5C631DD4F3830037BD66 /* MMDShader.metal in Sources */,
 				DDCF5C571DD4F3720037BD66 /* MMDVMDReader.swift in Sources */,
 				DDCF5C5B1DD4F3720037BD66 /* MMDProgram.swift in Sources */,
+				DDCF5D2E1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1641,6 +1652,7 @@
 			files = (
 				DDCF5CA71DD4F82A0037BD66 /* GameViewController.swift in Sources */,
 				DDCF5CA41DD4F82A0037BD66 /* AppDelegate.swift in Sources */,
+				DDCF5D2F1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 				DDCF5CB61DD4F8D20037BD66 /* MMDSceneViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
