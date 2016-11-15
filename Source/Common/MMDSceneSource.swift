@@ -105,6 +105,7 @@ open class MMDSceneSource: SCNSceneSource {
         let data = try? Data(contentsOf: URL(fileURLWithPath: path))
         if data == nil {
             print("data is nil...")
+            return nil
         } else {
             self.loadData(data!, options: options)
         }
@@ -117,7 +118,11 @@ open class MMDSceneSource: SCNSceneSource {
     */
     public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
         let filePath = Bundle.main.path(forResource: name, ofType: nil)
-        self.init(path: filePath!, options: options)
+        guard let path = filePath else {
+            print("error: file \(name) not found.")
+            return nil
+        }
+        self.init(path: path, options: options)
     }
     
     /**

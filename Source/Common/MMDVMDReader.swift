@@ -371,7 +371,7 @@ class MMDVMDReader: MMDReader {
         let posYMotion = CAKeyframeAnimation(keyPath: "transform.translation.y")
         let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
         let rotMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
-        let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.xFov")
+        let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.yFov")
         let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
         
         distanceMotion.values = [AnyObject]()
@@ -443,8 +443,8 @@ class MMDVMDReader: MMDReader {
             let sinZ = sin(rotZ / 2)
 
             var rotate = SCNQuaternion()
-            rotate.x = OSFloat(-sinX * cosY * cosZ - cosX * sinY * sinZ)
-            rotate.y = OSFloat(-cosX * sinY * cosZ + cosX * cosY * sinZ)
+            rotate.x = OSFloat(sinX * cosY * cosZ + cosX * sinY * sinZ)
+            rotate.y = OSFloat(cosX * sinY * cosZ - cosX * cosY * sinZ)
             rotate.z = OSFloat(cosX * cosY * sinZ - sinX * sinY * cosZ)
             rotate.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
             normalize(&rotate)
@@ -517,7 +517,37 @@ class MMDVMDReader: MMDReader {
             persMotion.values!.insert(useOrtho, at: frameIndex)
         }
 
-    }
+        let duration = Double(self.frameLength) / 30.0
+        print("frameLength: \(self.frameLength)")
+        
+        distanceMotion.duration = duration
+        posXMotion.duration = duration
+        posYMotion.duration = duration
+        posZMotion.duration = duration
+        rotMotion.duration = duration
+        angleMotion.duration = duration
+        persMotion.duration = duration
+        
+        distanceMotion.usesSceneTimeBase = false
+        posXMotion.usesSceneTimeBase = false
+        posYMotion.usesSceneTimeBase = false
+        posZMotion.usesSceneTimeBase = false
+        rotMotion.usesSceneTimeBase = false
+        angleMotion.usesSceneTimeBase = false
+        persMotion.usesSceneTimeBase = false
+        
+        self.workingAnimationGroup.animations!.append(distanceMotion)
+        self.workingAnimationGroup.animations!.append(posXMotion)
+        self.workingAnimationGroup.animations!.append(posYMotion)
+        self.workingAnimationGroup.animations!.append(posZMotion)
+        self.workingAnimationGroup.animations!.append(rotMotion)
+        self.workingAnimationGroup.animations!.append(angleMotion)
+        self.workingAnimationGroup.animations!.append(persMotion)
+        self.workingAnimationGroup.duration = duration
+        self.workingAnimationGroup.usesSceneTimeBase = false
+    }    
+    
+
     
     /**
      */
