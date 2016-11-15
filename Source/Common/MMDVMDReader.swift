@@ -8,6 +8,13 @@
 
 import SceneKit
 
+enum MMDMotionType {
+    case Model
+    case CameraOrLight
+    case Camera
+    case Light
+}
+
 #if os(watchOS)
 
 class MMDVMDReader: MMDReader {
@@ -19,6 +26,7 @@ class MMDVMDReader: MMDReader {
     // MARK: - property for VMD File
     private var workingAnimationGroup: CAAnimationGroup! = nil
     private var animationHash: [String: CAKeyframeAnimation]! = nil
+    public var motionType: MMDMotionType! = nil
     
     // MARK: VMD header data
     private var vmdMagic: String! = ""
@@ -98,6 +106,9 @@ class MMDVMDReader: MMDReader {
         
         if self.motionName == "カメラ・照明" {
             print("カメラ・照明用モーション")
+            self.motionType = .CameraOrLight
+        } else {
+            self.motionType = .Model
         }
     }
     
@@ -106,6 +117,14 @@ class MMDVMDReader: MMDReader {
     private func readFrame() {
         self.frameCount = Int(getUnsignedInt())
         self.frameLength = 0
+        let bytesPerFrame = 111
+        
+        if self.motionType == .CameraOrLight && self.frameCount > 0 {
+            print("error: not model motion data has bone motion data")
+            // skip data
+            skip(bytesPerFrame * self.frameCount)
+            return
+        }
         
         for index in 0..<frameCount {
             let boneNameStr = getString(15) as String?
@@ -237,6 +256,14 @@ class MMDVMDReader: MMDReader {
         let faceFrameCount = getUnsignedInt()
         //let timingFunc = CAMediaTimingFunction(controlPoints: 1, 0, 1, 1)
         let timingFunc = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        let bytesPerFrame = 23
+        
+        if self.motionType == .CameraOrLight && faceFrameCount > 0 {
+            print("error: not model motion data has face motion data")
+            // skip data
+            skip(bytesPerFrame * Int(faceFrameCount))
+            return
+        }
         
         for _ in 0..<faceFrameCount {
             let name = String(getString(15)!)
@@ -320,7 +347,176 @@ class MMDVMDReader: MMDReader {
     /**
      */
     private func readCameraMotion() {
+        let cameraFrameCount = Int(getUnsignedInt())
+        let bytesPerFrame = 61
         
+        if cameraFrameCount == 0 {
+            return
+        }
+        
+        if self.motionType != .CameraOrLight {
+            print("error: not camera motion has camera motion data")
+            // skip data
+            skip(bytesPerFrame * cameraFrameCount)
+            return
+        }
+        self.motionType = .Camera
+
+        // init values
+        self.frameCount = cameraFrameCount
+        self.frameLength = 0
+        
+        let distanceMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).translation.z")
+        let posXMotion = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        let posYMotion = CAKeyframeAnimation(keyPath: "transform.translation.y")
+        let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
+        let rotMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
+        let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.xFov")
+        let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
+        
+        distanceMotion.values = [AnyObject]()
+        posXMotion.values = [AnyObject]()
+        posYMotion.values = [AnyObject]()
+        posZMotion.values = [AnyObject]()
+        rotMotion.values = [AnyObject]()
+        angleMotion.values = [AnyObject]()
+        persMotion.values = [AnyObject]()
+        
+        distanceMotion.keyTimes = [NSNumber]()
+        posXMotion.keyTimes = [NSNumber]()
+        posYMotion.keyTimes = [NSNumber]()
+        posZMotion.keyTimes = [NSNumber]()
+        rotMotion.keyTimes = [NSNumber]()
+        angleMotion.keyTimes = [NSNumber]()
+        persMotion.keyTimes = [NSNumber]()
+        
+        distanceMotion.timingFunctions = [CAMediaTimingFunction]()
+        posXMotion.timingFunctions = [CAMediaTimingFunction]()
+        posYMotion.timingFunctions = [CAMediaTimingFunction]()
+        posZMotion.timingFunctions = [CAMediaTimingFunction]()
+        rotMotion.timingFunctions = [CAMediaTimingFunction]()
+        angleMotion.timingFunctions = [CAMediaTimingFunction]()
+        //persMotion.timingFunctions = [CAMediaTimingFunction]()
+        
+        for index in 0..<self.frameCount {
+            var frameIndex = 0
+            let frameNo = Int(getUnsignedInt())
+            
+            // the frame number might not be sorted
+            while frameIndex < posXMotion.keyTimes!.count {
+                let k = Int(posXMotion.keyTimes![frameIndex])
+                if(k > frameNo) {
+                    break
+                }
+                
+                frameIndex += 1
+            }
+            
+            distanceMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            posXMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            posYMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            posZMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            rotMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            angleMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            persMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            
+            if(frameNo > self.frameLength) {
+                self.frameLength = frameNo
+            }
+            
+            let distance = NSNumber(value: -getFloat())
+            let posX = NSNumber(value: getFloat())
+            let posY = NSNumber(value: getFloat())
+            let posZ = NSNumber(value: -getFloat())
+
+            //var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
+            //normalize(&rotate)
+            let rotX = getFloat()
+            let rotY = getFloat()
+            let rotZ = getFloat()
+            
+            let cosX = cos(rotX / 2)
+            let cosY = cos(rotY / 2)
+            let cosZ = cos(rotZ / 2)
+            let sinX = sin(rotX / 2)
+            let sinY = sin(rotY / 2)
+            let sinZ = sin(rotZ / 2)
+
+            var rotate = SCNQuaternion()
+            rotate.x = OSFloat(-sinX * cosY * cosZ - cosX * sinY * sinZ)
+            rotate.y = OSFloat(-cosX * sinY * cosZ + cosX * cosY * sinZ)
+            rotate.z = OSFloat(cosX * cosY * sinZ - sinX * sinY * cosZ)
+            rotate.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
+            normalize(&rotate)
+
+            
+            var interpolation = [Float]()
+            for _ in 0..<24 {
+                interpolation.append(Float(getUnsignedByte()) / 127.0)
+            }
+            
+            let angle = NSNumber(value: getInt())
+            let perspective = getUnsignedByte()
+            let useOrtho = NSNumber(booleanLiteral: (perspective != 0))
+            
+            let timingX = CAMediaTimingFunction.init(controlPoints:
+                interpolation[0],
+                                                     interpolation[2],
+                                                     interpolation[1],
+                                                     interpolation[3]
+            )
+            posXMotion.timingFunctions!.insert(timingX, at: frameIndex)
+            
+            let timingY = CAMediaTimingFunction.init(controlPoints:
+                interpolation[4],
+                                                     interpolation[6],
+                                                     interpolation[5],
+                                                     interpolation[7]
+            )
+            posYMotion.timingFunctions!.insert(timingY, at: frameIndex)
+            
+            let timingZ = CAMediaTimingFunction.init(controlPoints:
+                interpolation[8],
+                                                     interpolation[10],
+                                                     interpolation[9],
+                                                     interpolation[11]
+            )
+            posZMotion.timingFunctions!.insert(timingZ, at: frameIndex)
+            
+            let timingRot = CAMediaTimingFunction.init(controlPoints:
+                interpolation[12],
+                                                       interpolation[14],
+                                                       interpolation[13],
+                                                       interpolation[15]
+            )
+            rotMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+ 
+            let timingDistance = CAMediaTimingFunction.init(controlPoints:
+                interpolation[16],
+                                                       interpolation[18],
+                                                       interpolation[17],
+                                                       interpolation[19]
+            )
+            distanceMotion.timingFunctions!.insert(timingDistance, at: frameIndex)
+
+            let timingAngle = CAMediaTimingFunction.init(controlPoints:
+                interpolation[20],
+                                                            interpolation[22],
+                                                            interpolation[21],
+                                                            interpolation[23]
+            )
+            angleMotion.timingFunctions!.insert(timingAngle, at: frameIndex)
+
+            
+            distanceMotion.values!.insert(distance, at: frameIndex)
+            posXMotion.values!.insert(posX, at: frameIndex)
+            posYMotion.values!.insert(posY, at: frameIndex)
+            posZMotion.values!.insert(posZ, at: frameIndex)
+            rotMotion.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
+            angleMotion.values!.insert(angle, at: frameIndex)
+            persMotion.values!.insert(useOrtho, at: frameIndex)
+        }
+
     }
     
     /**
