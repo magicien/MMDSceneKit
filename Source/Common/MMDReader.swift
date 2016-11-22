@@ -42,7 +42,7 @@ internal class MMDReader: NSObject {
      * - parameter encoding: encoding of string data. Default encoding of .mmd file is ShiftJIS
      * - returns: String data
      */
-    internal func getString(_ length: Int, encoding: String.Encoding = String.Encoding.shiftJIS) -> NSString? {
+    internal func getString(length: Int, encoding: String.Encoding = String.Encoding.shiftJIS) -> NSString? {
         // check where null char is
         var strlen = length
         //var chars = Array<Int8>(repeating: 0, count: length)
@@ -142,7 +142,7 @@ internal class MMDReader: NSObject {
     internal func getIntOfLength(_ length: Int) -> Int {
         var num: Int = 0
         
-        if length < 0 || length > 4 {
+        if length <= 0 || length > 4 {
             return 0
         }
         

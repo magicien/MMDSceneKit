@@ -64,8 +64,8 @@ open class MMDSceneSource: SCNSceneSource {
                 }
             #endif
         }else if self.fileType == .pmm {
-            if let pmmNodes = loadPMMFile() {
-                for node in pmmNodes {
+            if let pmmScene = MMDPMMReader.getScene(data, directoryPath: self.directoryPath) {
+                for node in pmmScene.rootNode.childNodes {
                     self.workingScene.rootNode.addChildNode(node)
                 }
             }
@@ -223,7 +223,7 @@ open class MMDSceneSource: SCNSceneSource {
         let byte24 = data.subdata(in: 0..<24)
         let str24 = NSString.init(data: byte24, encoding: String.Encoding.shiftJIS.rawValue)
 
-        if str24 == "Polygon Movie maker 0002" {
+        if str24 == "Polygon Movie maker 0001" || str24 == "Polygon Movie maker 0002" {
             self.fileType = .pmm
             return .pmm
         }

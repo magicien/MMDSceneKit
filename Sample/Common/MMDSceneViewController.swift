@@ -32,13 +32,12 @@ public class MMDSceneViewController: SuperViewController {
      */
     public func setupGameScene(_ scene: SCNScene, view: MMDView) {
         // create and add a camera to the scene
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        cameraNode.camera?.automaticallyAdjustsZRange = true
+        //let cameraNode = SCNNode()
+        //cameraNode.camera = SCNCamera()
+        //cameraNode.camera?.automaticallyAdjustsZRange = true
+        //scene.rootNode.addChildNode(cameraNode)
+        let cameraNode = MMDCameraNode()
         scene.rootNode.addChildNode(cameraNode)
-        
-        // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 50, z: 40)
         
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -58,9 +57,12 @@ public class MMDSceneViewController: SuperViewController {
         #endif
 
         scene.rootNode.addChildNode(ambientLightNode)
-
+        
         // create a character node from file
         let modelNode = MMDSceneSource(named: "art1.scnassets/miku.pmd")!.getModel()!
+        //let modelNode = MMDSceneSource(named: "art1.scnassets/初音ミク イミテーションｖ1ミニマム2.pmx")!.getModel()!
+        //let modelNode = MMDSceneSource(named: "art1.scnassets/Tda式初音ミク・アペンド_Ver1.00_ボーン未改造.pmx")!.getModel()!
+        //let modelNode = MMDSceneSource(named: "art1.scnassets/una/音街ウナ（公式モデル）Sugar.pmx")!.getModel()!
         scene.rootNode.addChildNode(modelNode)
         
         // create a background object from file
@@ -75,18 +77,34 @@ public class MMDSceneViewController: SuperViewController {
         print("Read XFile: \(-timer.timeIntervalSinceNow) sec.")
 #endif
 
+        //let stage = MMDSceneSource(named: "art2.scnassets/DTE SPiCa Stage/1.pmx")!.getModel()!
+        //scene.rootNode.addChildNode(stage)
+        
+        //let cameraMotion = MMDSceneSource(named: "art2.scnassets/Shake it! Camera by RituPepper.vmd")!.getMotion()!
+        //cameraMotion.usesSceneTimeBase = true
+        
 #if !os(watchOS)
         // animate the 3d object
         let motion = MMDSceneSource(named: "art2.scnassets/running.vmd")!.getMotion()!
+        //let motion = MMDSceneSource(named: "art2.scnassets/AzatokawaiiTurn.vmd")!.getMotion()!
+        //let motion = MMDSceneSource(named: "art2.scnassets/shakeit_miku.vmd")!.getMotion()!
         motion.isRemovedOnCompletion = false
         motion.repeatCount = Float.infinity
-        modelNode.addAnimation(motion, forKey: "happysyn")
+        //motion.usesSceneTimeBase = true
+        modelNode.addAnimation(motion, forKey: "motion")
+    
+        //cameraNode.addAnimation(cameraMotion, forKey: "shakeit")
 #else
         // rotate the model instead of animating...
         modelNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
 #endif
-
+        
         modelNode.childNodes[0].position = SCNVector3Make(0, 50.0, 0.0)
+        //modelNode.childNodes[0].position = SCNVector3Make(0.0, 0.0, 0.0)
+        
+        // place the camera
+        cameraNode.position = SCNVector3(x: 0, y: 50, z: 40)
+
         
         // set the scene to the view
         view.scene = scene

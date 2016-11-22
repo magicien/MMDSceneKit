@@ -101,8 +101,8 @@ class MMDVMDReader: MMDReader {
     /**
      */
     private func readVMDHeader() {
-        self.vmdMagic = String(getString(30)!)
-        self.motionName = String(getString(20)!)
+        self.vmdMagic = String(getString(length: 30)!)
+        self.motionName = String(getString(length: 20)!)
         
         if self.motionName == "カメラ・照明" {
             print("カメラ・照明用モーション")
@@ -127,7 +127,7 @@ class MMDVMDReader: MMDReader {
         }
         
         for index in 0..<frameCount {
-            let boneNameStr = getString(15) as String?
+            let boneNameStr = getString(length: 15) as String?
             if boneNameStr == nil {
                 print("motion(\(index)): skip because of broken bone name")
                 // skip data
@@ -266,7 +266,7 @@ class MMDVMDReader: MMDReader {
         }
         
         for _ in 0..<faceFrameCount {
-            let name = String(getString(15)!)
+            let name = String(getString(length: 15)!)
             let frameNo = Int(getUnsignedInt())
             let factor = NSNumber(value: getFloat())
             
@@ -302,7 +302,7 @@ class MMDVMDReader: MMDReader {
      */
     private func createAnimations() {
         let duration = Double(self.frameLength) / 30.0
-        print("frameLength: \(self.frameLength)")
+        print("bone frameLength: \(self.frameLength)")
         
         for (_, motion) in self.animationHash {
             for num in 0..<motion.keyTimes!.count {
@@ -370,7 +370,10 @@ class MMDVMDReader: MMDReader {
         let posXMotion = CAKeyframeAnimation(keyPath: "transform.translation.x")
         let posYMotion = CAKeyframeAnimation(keyPath: "transform.translation.y")
         let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
-        let rotMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
+        //let rotMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
+        let rotZMotion = CAKeyframeAnimation(keyPath: "eulerAngles.z")
+        let rotXMotion = CAKeyframeAnimation(keyPath: "eulerAngles.x")
+        let rotYMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROT_NODE_NAME).eulerAngles.y")
         let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.yFov")
         let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
         
@@ -378,7 +381,9 @@ class MMDVMDReader: MMDReader {
         posXMotion.values = [AnyObject]()
         posYMotion.values = [AnyObject]()
         posZMotion.values = [AnyObject]()
-        rotMotion.values = [AnyObject]()
+        rotXMotion.values = [AnyObject]()
+        rotYMotion.values = [AnyObject]()
+        rotZMotion.values = [AnyObject]()
         angleMotion.values = [AnyObject]()
         persMotion.values = [AnyObject]()
         
@@ -386,7 +391,9 @@ class MMDVMDReader: MMDReader {
         posXMotion.keyTimes = [NSNumber]()
         posYMotion.keyTimes = [NSNumber]()
         posZMotion.keyTimes = [NSNumber]()
-        rotMotion.keyTimes = [NSNumber]()
+        rotXMotion.keyTimes = [NSNumber]()
+        rotYMotion.keyTimes = [NSNumber]()
+        rotZMotion.keyTimes = [NSNumber]()
         angleMotion.keyTimes = [NSNumber]()
         persMotion.keyTimes = [NSNumber]()
         
@@ -394,7 +401,9 @@ class MMDVMDReader: MMDReader {
         posXMotion.timingFunctions = [CAMediaTimingFunction]()
         posYMotion.timingFunctions = [CAMediaTimingFunction]()
         posZMotion.timingFunctions = [CAMediaTimingFunction]()
-        rotMotion.timingFunctions = [CAMediaTimingFunction]()
+        rotXMotion.timingFunctions = [CAMediaTimingFunction]()
+        rotYMotion.timingFunctions = [CAMediaTimingFunction]()
+        rotZMotion.timingFunctions = [CAMediaTimingFunction]()
         angleMotion.timingFunctions = [CAMediaTimingFunction]()
         //persMotion.timingFunctions = [CAMediaTimingFunction]()
         
@@ -416,7 +425,9 @@ class MMDVMDReader: MMDReader {
             posXMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             posYMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             posZMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
-            rotMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            rotXMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            rotYMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            rotZMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             angleMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             persMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             
@@ -431,10 +442,14 @@ class MMDVMDReader: MMDReader {
 
             //var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
             //normalize(&rotate)
-            let rotX = getFloat()
+            //let rotX = getFloat() * 180.0 / Float(M_PI)
+            //let rotY = getFloat() * 180.0 / Float(M_PI)
+            //let rotZ = -getFloat() * 180.0 / Float(M_PI)
+            let rotX = -getFloat()
             let rotY = getFloat()
-            let rotZ = getFloat()
-            
+            let rotZ = -getFloat()
+
+            /*
             let cosX = cos(rotX / 2)
             let cosY = cos(rotY / 2)
             let cosZ = cos(rotZ / 2)
@@ -448,16 +463,26 @@ class MMDVMDReader: MMDReader {
             rotate.z = OSFloat(cosX * cosY * sinZ - sinX * sinY * cosZ)
             rotate.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
             normalize(&rotate)
-
+            
+            // FIXME: handling over 180 degrees
+            if abs(rotX) > 360 || abs(rotY) > 360 || abs(rotZ) > 360 {
+                // test
+                rotate.w -= 2.0
+            } else if abs(rotX) > 180 || abs(rotY) > 180 || abs(rotZ) > 180 {
+                // test
+            }
+            */
             
             var interpolation = [Float]()
             for _ in 0..<24 {
                 interpolation.append(Float(getUnsignedByte()) / 127.0)
             }
+            print("[\(frameNo / 30)] \(interpolation)")
             
             let angle = NSNumber(value: getInt())
             let perspective = getUnsignedByte()
             let useOrtho = NSNumber(booleanLiteral: (perspective != 0))
+            
             
             let timingX = CAMediaTimingFunction.init(controlPoints:
                 interpolation[0],
@@ -489,7 +514,9 @@ class MMDVMDReader: MMDReader {
                                                        interpolation[13],
                                                        interpolation[15]
             )
-            rotMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            rotXMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            rotYMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            rotZMotion.timingFunctions!.insert(timingRot, at: frameIndex)
  
             let timingDistance = CAMediaTimingFunction.init(controlPoints:
                 interpolation[16],
@@ -506,25 +533,81 @@ class MMDVMDReader: MMDReader {
                                                             interpolation[23]
             )
             angleMotion.timingFunctions!.insert(timingAngle, at: frameIndex)
-
+ 
+            /*
+            let timingX = CAMediaTimingFunction.init(controlPoints:
+                interpolation[0],
+                                                     interpolation[4],
+                                                     interpolation[8],
+                                                     interpolation[12]
+            )
+            posXMotion.timingFunctions!.insert(timingX, at: frameIndex)
+            
+            let timingY = CAMediaTimingFunction.init(controlPoints:
+                interpolation[1],
+                                                     interpolation[5],
+                                                     interpolation[9],
+                                                     interpolation[13]
+            )
+            posYMotion.timingFunctions!.insert(timingY, at: frameIndex)
+            
+            let timingZ = CAMediaTimingFunction.init(controlPoints:
+                interpolation[2],
+                                                     interpolation[6],
+                                                     interpolation[10],
+                                                     interpolation[14]
+            )
+            posZMotion.timingFunctions!.insert(timingZ, at: frameIndex)
+            
+            let timingRot = CAMediaTimingFunction.init(controlPoints:
+                interpolation[3],
+                                                       interpolation[7],
+                                                       interpolation[11],
+                                                       interpolation[15]
+            )
+            rotXMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            rotYMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            rotZMotion.timingFunctions!.insert(timingRot, at: frameIndex)
+            
+            let timingDistance = CAMediaTimingFunction.init(controlPoints:
+                interpolation[16],
+                                                            interpolation[18],
+                                                            interpolation[17],
+                                                            interpolation[19]
+            )
+            distanceMotion.timingFunctions!.insert(timingDistance, at: frameIndex)
+            
+            let timingAngle = CAMediaTimingFunction.init(controlPoints:
+                interpolation[20],
+                                                         interpolation[22],
+                                                         interpolation[21],
+                                                         interpolation[23]
+            )
+            angleMotion.timingFunctions!.insert(timingAngle, at: frameIndex)
+            */
             
             distanceMotion.values!.insert(distance, at: frameIndex)
             posXMotion.values!.insert(posX, at: frameIndex)
             posYMotion.values!.insert(posY, at: frameIndex)
             posZMotion.values!.insert(posZ, at: frameIndex)
-            rotMotion.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
+            //rotMotion.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
+            rotXMotion.values!.insert(rotX, at: frameIndex)
+            rotYMotion.values!.insert(rotY, at: frameIndex)
+            rotZMotion.values!.insert(rotZ, at: frameIndex)
             angleMotion.values!.insert(angle, at: frameIndex)
             persMotion.values!.insert(useOrtho, at: frameIndex)
         }
 
         let duration = Double(self.frameLength) / 30.0
-        print("frameLength: \(self.frameLength)")
+        print("camera frameLength: \(self.frameLength)")
         
         distanceMotion.duration = duration
         posXMotion.duration = duration
         posYMotion.duration = duration
         posZMotion.duration = duration
-        rotMotion.duration = duration
+        rotXMotion.duration = duration
+        rotYMotion.duration = duration
+        rotZMotion.duration = duration
         angleMotion.duration = duration
         persMotion.duration = duration
         
@@ -532,7 +615,9 @@ class MMDVMDReader: MMDReader {
         posXMotion.usesSceneTimeBase = false
         posYMotion.usesSceneTimeBase = false
         posZMotion.usesSceneTimeBase = false
-        rotMotion.usesSceneTimeBase = false
+        rotXMotion.usesSceneTimeBase = false
+        rotYMotion.usesSceneTimeBase = false
+        rotZMotion.usesSceneTimeBase = false
         angleMotion.usesSceneTimeBase = false
         persMotion.usesSceneTimeBase = false
         
@@ -540,7 +625,9 @@ class MMDVMDReader: MMDReader {
         self.workingAnimationGroup.animations!.append(posXMotion)
         self.workingAnimationGroup.animations!.append(posYMotion)
         self.workingAnimationGroup.animations!.append(posZMotion)
-        self.workingAnimationGroup.animations!.append(rotMotion)
+        self.workingAnimationGroup.animations!.append(rotXMotion)
+        self.workingAnimationGroup.animations!.append(rotYMotion)
+        self.workingAnimationGroup.animations!.append(rotZMotion)
         self.workingAnimationGroup.animations!.append(angleMotion)
         self.workingAnimationGroup.animations!.append(persMotion)
         self.workingAnimationGroup.duration = duration

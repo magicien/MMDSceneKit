@@ -111,6 +111,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     open var boneArray: [MMDNode]! = nil
     open var boneInverseMatrixArray: [NSValue]! = nil
     open var rootBone: MMDNode! = nil
+    
+    open var rotateEffector: MMDNode? = nil
+    open var rotateEffectRate: Float = 0.0
+    open var translateEffector: MMDNode? = nil
+    open var translateEffectRate: Float = 0.0
 
     fileprivate var dummyNode: DummyNode = DummyNode()
     
@@ -186,17 +191,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     }
     
     open func updateVertexData() {
-        //let vertexData = Data(bytes: UnsafePointer<UInt8>(self.vertexArray), count: 4 * 3 * self.vertexCount)
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
-        //let normalData = Data(bytes: UnsafePointer<UInt8>(self.normalArray), count: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
-        //let texcoordData = Data(bytes: UnsafePointer<UInt8>(self.texcoordArray), count: 4 * 2 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
-        //let boneIndicesData = Data(bytes: UnsafePointer<UInt8>(self.boneIndicesArray), count: 2 * 2 * self.vertexCount)
         let boneIndicesData = NSData(bytes: self.boneIndicesArray, length: 2 * 2 * self.vertexCount)
-        //let boneWeightsData = Data(bytes: UnsafePointer<UInt8>(self.boneWeightsArray), count: 4 * 2 * self.vertexCount)
         let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 2 * self.vertexCount)
-        //let indexData = Data(bytes: UnsafePointer<UInt8>(self.indexArray), count: 2 * self.indexCount)
         let indexData = NSData(bytes: self.indexArray, length: 2 * self.indexCount)
         
         let vertexSource = SCNGeometrySource(data: vertexData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: Int(vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
@@ -210,7 +209,6 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         for index in 0..<self.materialCount {
             let count = materialIndexCountArray[index]
             let length = count * 2
-            //let data =  indexData.subdata(with: Range(indexPos..<indexPos+length))
             let data =  indexData.subdata(with: NSRange(indexPos..<indexPos+length))
             
             let element = SCNGeometryElement(data: data, primitiveType: .triangles, primitiveCount: count / 3, bytesPerIndex: 2)
@@ -236,38 +234,6 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         let oldGeometryNode = self.childNode(withName: "Geometry", recursively: true)
         self.replaceChildNode(oldGeometryNode!, with: newGeometryNode)
     }
-    
-    
-    /*
-    public func updateVertexData() {
-        let geometryNode = self.childNodeWithName("Geometry", recursively: true)
-
-        let vertexCount = self.vertexArray!.count / 3
-        let vertexData = NSData(bytes: self.vertexArray!, length: 4 * 3 * vertexCount)
-        let vertexSource = SCNGeometrySource(data: vertexData, semantic: SCNGeometrySourceSemanticVertex, vectorCount: Int(vertexCount), floatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
-        
-        //let normalSource = geometryNode!.geometry!.geometrySourcesForSemantic(SCNGeometrySourceSemanticNormal).first!
-        //let texcoordSource = geometryNode!.geometry!.geometrySourcesForSemantic(SCNGeometrySourceSemanticTexcoord).first!
-        //let elementArray = geometryNode!.geometry!.geometryElements
-        
-        let geometry = SCNGeometry(sources: [vertexSource, self.normalSource!, self.texcoordSource!], elements: self.elementArray!)
-        //let geometry = SCNGeometry(sources: [vertexSource, normalSource, texcoordSource], elements: elementArray)
-        geometry.materials = geometryNode!.geometry!.materials
-        geometry.name = "Geometry"
-
-        let rootBone = self.childNodeWithName("rootBone", recursively: true)
-        let newGeometryNode = SCNNode(geometry: geometry)
-        newGeometryNode.name = "Geometry"
-        
-        let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: self.boneWeightsSource!, boneIndices: self.boneIndicesSource!)
-
-        newGeometryNode.skinner = geometryNode!.skinner
-        newGeometryNode.skinner!.skeleton = rootBone
-
-        self.replaceChildNode(geometryNode!, with: newGeometryNode)
-        //geometryNode!.geometry = geometry
-    }
-*/
 
 #if !os(watchOS)
     @nonobjc public func program(_ program: SCNProgram, handleError error: NSError) {
@@ -284,13 +250,13 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
             return self.dummyNode
         }
         
-        print("unknown key: \(key)")
+        //print("unknown key: \(key)")
             
         let result = self.faceWeightsPattern.matches(key)
         if result != nil {
             let index = Int(result![1])
             let value = self.faceWeights[index!]
-            print("match: \(value)")
+            //print("match: \(value)")
             return value
         }
         
@@ -325,33 +291,9 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                         let bone = self.childNode(withName: boneName, recursively: true)
                         
                         if boneNameKey == "morpher" {
-                            /*
-                            if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
-                                print("morpher Animation - \(keyAnim.keyPath!)")
-                                let faceName = (keyAnim.keyPath! as NSString).substringFromIndex(16)
-                                var faceIndex = -1
-                                
-                                // search face name from geometry node
-                                for index in 0..<geometryNode!.morpher!.targets.count {
-                                    if geometryNode!.morpher!.targets[index].name == faceName {
-                                        faceIndex = index
-                                        break
-                                    }
-                                }
 
-                                if faceIndex >= 0 {
-                                    let newKeyPath: String! = "/Geometry.morpher.weights[\(faceIndex)]"
-                                    keyAnim.keyPath = newKeyPath
-                                    
-                                    print("set keyPath: \(keyAnim.keyPath!): \(faceName)")
-                                }else{
-                                    keyAnim.keyPath = "//"
-                                }
-                            }
-                            */
-                            
                             if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
-                                print("+++++ morpher Animation - \(keyAnim.keyPath!)")
+                                //print("+++++ morpher Animation - \(keyAnim.keyPath!)")
                                 let faceName = (keyAnim.keyPath! as NSString).substring(from: 16)
                                 var faceIndex = -1
                                 
@@ -364,18 +306,12 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                                 }
                                 
                                 if faceIndex >= 0 {
-                                    //let newKeyPath: String! = "/Geometry.morpher.weights[\(faceIndex)]"
-                                    let newKeyPath: String! = "faceWeights[\(faceIndex)].value"
-                                    print("Face: \(faceName), KeyPath: \(newKeyPath), duration: \(keyAnim.duration)")
+                                    var newKeyPath: String! = "faceWeights[\(faceIndex)].value"
+                                    if MMD_USES_SCNMORPHER {
+                                        newKeyPath = "/Geometry.morpher.weights[\(faceIndex)]"
+                                    }
+                                    //print("Face: \(faceName), KeyPath: \(newKeyPath), duration: \(keyAnim.duration)")
                                     keyAnim.keyPath = newKeyPath
-
-                                    //self.faceWeights[faceIndex] = 1.0
-                                    //for index in 0..<keyAnim.values!.count {
-                                    //    let val = keyAnim.values![index]
-                                    //    let tim = keyAnim.keyTimes![index]
-                                    //
-                                    //    print("  \(tim): \(val)")
-                                    //}
                                 }else{
                                     keyAnim.keyPath = "//"
                                 }
@@ -404,14 +340,19 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                                     keyAnim.values![index] = newValue
                                 }
                             }
+                        } else {
+                            // The bone is not found. It might happen.
+                            //print("missing bone: \(boneName)")
                         }
                     }else{
+                        // not CAKeyframeAnimation: nothing to do so far
                     }
                     newGroup.animations!.append(newAnim as! CAAnimation)
                 }
             }
             super.addAnimation(newGroup, forKey: key)
         }else{
+            // not CAAnimationGroup: just call the superclass
             super.addAnimation(animation, forKey: key)
         }
     }
@@ -421,193 +362,129 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     update IK bone
     */
     open func updateIK() {
-        if self.ikArray == nil {
-            return
-        }
-        
-        let zeroThreshold = Float(0.0000001)
-        
-        for ik in self.ikArray! {
-            let ikBone = ik.ikBone
-            let targetBone = ik.targetBone
+        if self.ikArray != nil {
+            let zeroThreshold = Float(0.0000001)
             
-            let numBones = ik.boneArray.count
-            
-            // <update ikBone>
-            
-            for _ in 0..<ik.iteration {
-                boneArrayLoop: for index in 0..<ik.boneArray.count {
-                    let bone = ik.boneArray[index]
-                    
-                    // <update targetBone>
-                    // <update bone>
-                    let bonePosition = getWorldPosition(bone.presentation)
-                    let targetPosition = getWorldPosition(targetBone?.presentation)
-                    let ikPosition = getWorldPosition(ikBone?.presentation)
-                    
-                    var v1 = sub(bonePosition, targetPosition)
-                    var v2 = sub(bonePosition, ikPosition)
-                    
-                    v1 = normalize(v1)
-                    v2 = normalize(v2)
-                    
-                    let diff = sub(v1, v2)
-                    let x2 = diff.x * diff.x
-                    let y2 = diff.y * diff.y
-                    let z2 = diff.z * diff.z
-                    if Float(x2 + y2 + z2) < zeroThreshold {
-                        break boneArrayLoop
-                    }
-                    // MARK: DEBUG
-                    let beforeDiffLength = x2 + y2 + z2
-
-                    var v = cross(v1, v2)
-                    // worldTransform -> localTransform (rotation)
-                    v = inverseCross(v, bone.parent!.presentation.worldTransform)
-                    v = normalize(v)
-                    
-                    if bone.isKnee {
-                        if v.x > 0 {
-                            v.x = 1.0
-                        } else {
-                            v.x = -1.0
-                        }
-                        v.y = 0
-                        v.z = 0
-                    }
-                    
-                    var innerProduct = dot(v1, v2)
-                    if innerProduct > 1 {
-                        innerProduct = 1
-                    } else if innerProduct < -1 {
-                        innerProduct = -1
-                    }
-                    
-                    var ikRot = 0.5 * acos(innerProduct)
-                    
-                    let maxRot = ik.weight * Float(index + 1) * 2
-                    if ikRot > maxRot {
-                        ikRot = maxRot
-                    }
-                    
-                    let ikSin = OSFloat(sin(ikRot))
-                    let ikCos = OSFloat(cos(ikRot))
-                    var quat = SCNVector4()
-                    
-                    // create quaternion
-                    quat.x = OSFloat(v.x * ikSin)
-                    quat.y = OSFloat(v.y * ikSin)
-                    quat.z = OSFloat(v.z * ikSin)
-                    quat.w = OSFloat(ikCos)
-                    
-                    //print("quat: \(quat.x) \(quat.y) \(quat.z) \(quat.w)")
-
-                    if index == ik.boneArray.count-1 {
-                        //print("***** before bone *****")
-                        //self.printTransform(targetBone)
-                        //bone.printWorldTransform()
-                        //printWorldTransform(bone.presentationNode)
+            for ik in self.ikArray! {
+                let ikBone = ik.ikBone
+                let targetBone = ik.targetBone
+                
+                // <update ikBone>
+                
+                for _ in 0..<ik.iteration {
+                    boneArrayLoop: for index in 0..<ik.boneArray.count {
+                        let bone = ik.boneArray[index]
                         
-                        if bone.childNodes.count > 0 {
-                            //print("***** before child *****")
-                            //printWorldTransform(bone.childNodes[0])
-                            //printWorldTransform(bone.childNodes[0].presentationNode)
-                            //printWorldPosition(bone.childNodes[0])
+                        // <update targetBone>
+                        // <update bone>
+                        let bonePosition = getWorldPosition(bone.presentation)
+                        let targetPosition = getWorldPosition(targetBone?.presentation)
+                        let ikPosition = getWorldPosition(ikBone?.presentation)
+                        
+                        var v1 = sub(bonePosition, targetPosition)
+                        var v2 = sub(bonePosition, ikPosition)
+                        
+                        v1 = normalize(v1)
+                        v2 = normalize(v2)
+                        
+                        let diff = sub(v1, v2)
+                        let x2 = diff.x * diff.x
+                        let y2 = diff.y * diff.y
+                        let z2 = diff.z * diff.z
+                        if Float(x2 + y2 + z2) < zeroThreshold {
+                            break boneArrayLoop
                         }
                         
-                        //print("")
-                        //print("***** target before *****")
-                        //printWorldTransform(targetBone.presentationNode)
-                    }
-                    
-                    //rot = cross(quat, bone.rotation)
-                    
-                    //printRotation(bone.presentationNode)
-                    let orgQuat = rotationToQuat(bone.presentation.rotation)
-                    quat = cross(quat, orgQuat)
-                    
-                    /*
-                    if bone.isKnee {
-                        let m23 = 2 * quat.y * quat.z + 2 * quat.w * quat.x
-                        let m33 = 1 - 2 * quat.x * quat.x - 2 * quat.y * quat.y
+                        var v = cross(v1, v2)
+                        // worldTransform -> localTransform (rotation)
+                        v = inverseCross(v, bone.parent!.presentation.worldTransform)
+                        v = normalize(v)
                         
-                        if atan2(m23, m33) < 0 {
-                            quat.x = -quat.x
+                        if bone.isKnee {
+                            if v.x > 0 {
+                                v.x = 1.0
+                            } else {
+                                v.x = -1.0
+                            }
+                            v.y = 0
+                            v.z = 0
                         }
-                    }
-*/
-                    
-                    //beforeCheck(bone)
-                    
-                    bone.rotation = quatToRotation(quat)
-                    //printRotation(bone.presentationNode)
-
-                    
-                    if bone.isKnee {
-                        if bone.eulerAngles.x < 0 {
-                            quat.x = -quat.x
-                            bone.rotation = quatToRotation(quat)
+                        
+                        var innerProduct = dot(v1, v2)
+                        if innerProduct > 1 {
+                            innerProduct = 1
+                        } else if innerProduct < -1 {
+                            innerProduct = -1
+                        }
+                        
+                        var ikRot = 0.5 * acos(innerProduct)
+                        
+                        let maxRot = ik.weight * Float(index + 1) * 2
+                        if ikRot > maxRot {
+                            ikRot = maxRot
+                        }
+                        
+                        let ikSin = OSFloat(sin(ikRot))
+                        let ikCos = OSFloat(cos(ikRot))
+                        var quat = SCNVector4()
+                        
+                        // create quaternion
+                        quat.x = OSFloat(v.x * ikSin)
+                        quat.y = OSFloat(v.y * ikSin)
+                        quat.z = OSFloat(v.z * ikSin)
+                        quat.w = OSFloat(ikCos)
+                        
+                        let orgQuat = rotationToQuat(bone.presentation.rotation)
+                        quat = cross(quat, orgQuat)
+                        
+                        bone.rotation = quatToRotation(quat)
+                        
+                        if bone.isKnee {
                             if bone.eulerAngles.x < 0 {
-                                //print("***************** ERROR *****************")
+                                quat.x = -quat.x
+                                bone.rotation = quatToRotation(quat)
+                                if bone.eulerAngles.x < 0 {
+                                    //print("***************** ERROR *****************")
+                                }
                             }
                         }
-                    }
-                    
-                    
-                    if index == ik.boneArray.count-1 {
-                        //print("***** after bone *****")
-                        //self.printTransform(targetBone)
-                        //bone.printWorldTransform()
-                        //printWorldTransform(bone.presentationNode)
                         
-                        if bone.childNodes.count > 0 {
-                            //print("***** after child *****")
-                            //printWorldTransform(bone.childNodes[0])
-                            //printWorldTransform(bone.childNodes[0].presentationNode)
-                            //printWorldPosition(bone.childNodes[0])
-                        }
                         
-                        //print("***** target after *****")
-                        //printWorldTransform(targetBone.presentationNode)
-                        
-                    }
-                    
-                    // MARK: DEBUG
-                    //print("")
-                    //print("")
-                    //print("\(bone.name!) - \(targetBone.name!) -> \(ikBone.name!)")
-                    //let afterBonePosition = getWorldPosition(bone.presentationNode)
-                    //let afterTargetPosition = getWorldPosition(targetBone.presentationNode)
-              
-                    /*
-                    if equalV3(targetPosition, afterTargetPosition) {
-                        print("!!!!! targetPosition is not changed !!!!!")
-                        print("   \(targetPosition.x), \(targetPosition.y), \(targetPosition.z)")
-                    }
-                    */
-                    
-                    /*
-                    var afterV1 = sub(afterBonePosition, afterTargetPosition)
-                    var afterV2 = sub(afterBonePosition, ikPosition)
-                    
-                    afterV1 = normalize(afterV1)
-                    afterV2 = normalize(afterV2)
-                    
-                    var afterDiff = sub(afterV1, afterV2)
-                    let afterX2 = afterDiff.x * afterDiff.x
-                    let afterY2 = afterDiff.y * afterDiff.y
-                    let afterZ2 = afterDiff.z * afterDiff.z
-                    let afterDiffLength = afterX2 + afterY2 + afterZ2
-                    */
-                    
-                    //afterCheck(bone)
-                    
-                    //print("diff: \(beforeDiffLength) -> \(afterDiffLength) (\(beforeDiffLength - afterDiffLength))")
-                    
-                    // <update bone matrices>
-                } // boneArray
-            } // iteration
-        } // ikArray
+                        // <update bone matrices>
+                    } // boneArray
+                } // iteration
+            } // ikArray
+        }
+        
+        self.updateEffector()
+    }
+    
+    open func updateEffector() {
+        if let rotateEffector = self.rotateEffector {
+            //print("\(self.name)")
+            //print("    \(self.presentation.rotation)")
+            var rot = rotateEffector.presentation.rotation
+            if self.rotateEffectRate == 1.0 {
+                self.rotation = rot
+            } else {
+                let quat = self.rotationToQuat(rot)
+                let orgQuat = self.rotationToQuat(self.presentation.rotation)
+                let newQuat = self.slerp(src: orgQuat, dst: quat, rate: self.rotateEffectRate)
+                self.rotation = self.quatToRotation(newQuat)
+            }
+            //print("    \(self.presentation.rotation)")
+        }
+        
+        if let translateEffector = self.translateEffector {
+            let pos = translateEffector.position
+            if self.translateEffectRate == 1.0 {
+                self.position = pos
+            } else {
+                self.position.x = pos.x * OSFloat(self.translateEffectRate)
+                self.position.y = pos.y * OSFloat(self.translateEffectRate)
+                self.position.z = pos.z * OSFloat(self.translateEffectRate)
+            }
+        }
     }
     
     fileprivate func sub(_ v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
@@ -782,6 +659,47 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         return rot
     }
     
+    /*
+    func mulQuat(_ q1: SCNVector4, _ q2: SCNVector4) -> SCNVector4 {
+        var ans = SCNVector4()
+        ans.w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z
+        ans.x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y
+        ans.y = q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x
+        ans.z = q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w
+
+        return ans
+    }
+    */
+    func slerp(src: SCNVector4, dst: SCNVector4, rate: Float) -> SCNVector4 {
+        var ans = SCNVector4()
+        
+        let dot = Float(src.x * dst.x + src.y * dst.y + src.z * dst.z + src.w * dst.w)
+        let inv2 = 1 - dot * dot
+        var inv = Float(0.0)
+        
+        if inv2 > 0.0 {
+            inv = sqrt(inv2)
+        }
+        if inv == 0.0 {
+            ans.x = src.x
+            ans.y = src.y
+            ans.z = src.z
+            ans.w = src.w
+        } else {
+            let h = acos(dot)
+            let t = h * rate
+            let t0 = OSFloat(sin(h - t) / inv)
+            let t1 = OSFloat(sin(t) / inv)
+            
+            ans.x = src.x * t0 + dst.x * t1
+            ans.y = src.y * t0 + dst.y * t1
+            ans.z = src.z * t0 + dst.z * t1
+            ans.w = src.w * t0 + dst.w * t1
+        }
+        
+        return ans
+    }
+    
     var checkParentPosition: SCNVector3 = SCNVector3()
     var checkParentRotation: SCNVector4 = SCNVector4()
     var checkParentPresentPosition: SCNVector3 = SCNVector3()
@@ -922,5 +840,5 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     
     func equalV4(_ v1: SCNVector4, _ v2: SCNVector4) -> Bool {
         return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w
-    }
+    }    
 }

@@ -9,6 +9,7 @@
 import SceneKit
 
 public let MMD_CAMERA_NODE_NAME = "MMDCamera"
+public let MMD_CAMERA_ROT_NODE_NAME = "MMDCameraRotY"
 
 open class MMDCameraNode: MMDNode {
     public init(name: String) {
@@ -17,10 +18,18 @@ open class MMDCameraNode: MMDNode {
         let cameraNode = MMDNode()
         let camera = SCNCamera()
         camera.name = name
-
         cameraNode.name = MMD_CAMERA_NODE_NAME
         cameraNode.camera = camera
-        self.addChildNode(cameraNode)
+        
+        // TODO: set default values of MikuMikuDance: ex) fov
+        camera.yFov = 45.0
+        camera.automaticallyAdjustsZRange = true
+        
+        let rotNode = MMDNode()
+        rotNode.name = MMD_CAMERA_ROT_NODE_NAME
+        
+        self.addChildNode(rotNode)
+        rotNode.addChildNode(cameraNode)
     }
     
     public override convenience init() {

@@ -64,7 +64,7 @@ class MMDPMXReader: MMDReader {
     
     // MARK: IK data
     fileprivate var ikCount = 0
-    fileprivate var ikArray: [MMDNode]! = nil
+    //fileprivate var ikArray: [MMDNode]! = nil
     
     // MARK: face data
     fileprivate var faceCount = 0
@@ -139,7 +139,7 @@ class MMDPMXReader: MMDReader {
         self.rootBone = MMDNode()
         
         self.ikCount = 0
-        self.ikArray = [MMDNode]()
+        self.workingNode.ikArray = [MMDIKConstraint]()
         
         self.physicsBodyCount = 0
         self.physicsBodyArray = [SCNPhysicsBody]()
@@ -154,7 +154,7 @@ class MMDPMXReader: MMDReader {
         // read contents of file
         self.readPMXHeader()
         if(self.pmxMagic != "PMX ") {
-            print("file is in the wrong format")
+            print("This PMX file is in the wrong format: \(self.pmxMagic)")
             // file is in the wrong format
             return nil
         }
@@ -169,12 +169,18 @@ class MMDPMXReader: MMDReader {
         self.readFace()
         self.readDisplayInfo()
         
+        //showBoneIndexData()
+        
         // create geometry for shader
         self.createGeometry()
-        //self.createFaceMorph()
+        self.createFaceMorph()
         
         self.readPhysicsBody()
         self.readConstraint()
+        
+        if(self.version > 2.0){
+            self.readSoftBody()
+        }
         
         return self.workingNode
     }
@@ -183,7 +189,7 @@ class MMDPMXReader: MMDReader {
         let strlen = Int(getUnsignedInt())
 //        return getString(strlen, encoding: self.encoding)!
 
-        let str = getString(strlen, encoding: self.encoding)!
+        let str = getString(length: strlen, encoding: self.encoding)!
         
         //print("getTextBuffer: \(str)")
         
@@ -194,7 +200,7 @@ class MMDPMXReader: MMDReader {
      read PMX header data
      */
     fileprivate func readPMXHeader() {
-        self.pmxMagic = String(getString(4)!)
+        self.pmxMagic = String(getString(length: 4)!)
         print("pmxMagic: \(pmxMagic)") // suppose to be "PMX "
         self.version = Float(getFloat())
         
@@ -230,6 +236,19 @@ class MMDPMXReader: MMDReader {
     fileprivate func readVertex() {
         self.vertexCount = Int(getInt())
         
+        var noBone = 0
+        switch(self.boneIndexSize) {
+        case 1:
+            noBone = Int(0xFF)
+        case 2:
+            noBone = Int(0xFFFF)
+        case 4:
+            //noBone = Int(0xFFFFFFFF)
+            noBone = -1 // FIXME:
+        default: break
+            // unknown size
+        }
+        
         for _ in 0..<self.vertexCount {
             self.vertexArray.append(getFloat())
             self.vertexArray.append(getFloat())
@@ -259,19 +278,6 @@ class MMDPMXReader: MMDReader {
             var boneNo2 = 0
             var boneNo3 = 0
             var boneNo4 = 0
-            
-            var noBone = 0
-            switch(self.boneIndexSize) {
-            case 1:
-                noBone = Int(0xFF)
-            case 2:
-                noBone = Int(0xFFFF)
-            case 4:
-                //noBone = Int(0xFFFFFFFF)
-                noBone = -1 // FIXME:
-            default: break
-                // unknown size
-            }
             
             switch(weightType) {
             case 0: // BDEF1
@@ -322,6 +328,7 @@ class MMDPMXReader: MMDReader {
                 weight4 = getFloat()
             default:
                 // unknown type
+                print("unknown skin weight type: \(weightType)")
                 break
             }
             
@@ -603,7 +610,8 @@ class MMDPMXReader: MMDReader {
     fileprivate func readBone() {
         var bonePositionArray = [SCNVector3]()
         var parentNoArray = [Int]()
-        var ikTargetNoArray = [Int]()
+        //var ikTargetNoArray = [Int]()
+        //var ikLinkNoArray = [[Int]]()
         
         self.boneCount = Int(getUnsignedInt())
         
@@ -620,6 +628,15 @@ class MMDPMXReader: MMDReader {
             
             boneNode.name = getTextBuffer() as String
             let englishName = getTextBuffer()
+            
+            let maxLen = boneNode.name!.characters.count
+            if maxLen >= 3 {
+                let kneeName = (boneNode.name! as NSString).substring(to: 3)
+                if kneeName == "右ひざ" || kneeName == "左ひざ" {
+                    boneNode.isKnee = true
+                }
+            }
+
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 let x = getFloat()
@@ -660,14 +677,22 @@ class MMDPMXReader: MMDReader {
                 getFloat()
             }
             
-            if hasRotationValue {
+            print("\(index): \(boneNode.name)")
+            if hasRotationValue || hasTranslationValue {
                 let boneIndex = getIntOfLength(self.boneIndexSize)
                 let rate = getFloat()
-            }
-            
-            if hasTranslationValue {
-                let boneIndex = getIntOfLength(self.boneIndexSize)
-                let rate = getFloat()
+                
+                let bone = self.boneArray[boneIndex]
+                print("   rotation/translation: [\(boneIndex)] \(bone.name) \(rate)")
+                
+                if hasRotationValue {
+                    boneNode.rotateEffector = bone
+                    boneNode.rotateEffectRate = rate
+                }
+                if hasTranslationValue {
+                    boneNode.translateEffector = bone
+                    boneNode.translateEffectRate = rate
+                }
             }
             
             if hasFixAxis {
@@ -691,19 +716,28 @@ class MMDPMXReader: MMDReader {
             }
             
             if isIKBone {
+                let ik = MMDIKConstraint()
+
                 let targetBoneNo = getIntOfLength(self.boneIndexSize)
                 let targetBone = self.boneArray[targetBoneNo]
+                //ikTargetNoArray.append(targetBoneNo)
                 
+                let iteration = getInt()
+                let weight = getFloat()
+                let numLink = getInt()
                 
-                let ikLoopCount = getInt()
-                let ikLimit = getFloat()
-                let linkCount = getInt()
+                ik.ikBone = boneNode
+                ik.targetBone = targetBone
+                ik.iteration = Int(iteration)
+                ik.weight = Float(Double(weight) * 0.25 * M_PI)
+                ik.boneArray = [MMDNode]()
+                
+                print("targetBoneNo: \(targetBoneNo) \(targetBone.name), ikBone: \(ik.ikBone.name)")
                 
                 var linkBoneNoArray = [Int]()
-                
-                for _ in 0..<linkCount {
-                    let linkBoneNo = getIntOfLength(self.boneIndexSize)
-                    linkBoneNoArray.append(linkBoneNo)
+                for _ in 0..<numLink {
+                    let linkNo = Int(getUnsignedShort())
+                    let bone = self.boneArray[linkNo]
                     
                     let limitFlag = getUnsignedByte()
                     if limitFlag == 1 {
@@ -715,18 +749,11 @@ class MMDPMXReader: MMDReader {
                         let maxY = getFloat()
                         let maxZ = getFloat()
                     }
+                    
+                    ik.boneArray.append(bone)
                 }
                 
-                let chainRootNode = self.boneArray[ linkBoneNoArray[linkCount-1] ]
-                let constraint = SCNIKConstraint.inverseKinematicsConstraint(chainRootNode: chainRootNode)
-                
-                if targetBone.constraints == nil {
-                    targetBone.constraints = [SCNConstraint]()
-                }
-                targetBone.constraints!.append(constraint)
-                
-            } else {
-                ikTargetNoArray.append(-1)
+                self.workingNode.ikArray!.append(ik)
             }
         }
         
@@ -803,10 +830,39 @@ class MMDPMXReader: MMDReader {
         }
         */
         
+        // update IK info
+        /*
+        for index in 0..<self.workingNode.ikArray!.count {
+            let targetNo = ikTargetNoArray[index]
+
+            let ik = self.workingNode.ikArray![index]
+            ik.targetBone = self.boneArray[targetNo]
+            
+            print("ik: \(ik.ikBone.name) => \(ik.targetBone.name)")
+            let linkBoneNoArray = ikLinkNoArray[index]
+            for linkNo in linkBoneNoArray {
+                let bone = self.boneArray[linkNo]
+                print("  linkNo: \(linkNo), \(bone.name!)")
+                ik.boneArray.append(bone)
+            }
+            
+            //let chainRootNode = self.boneArray[ linkBoneNoArray[linkCount-1] ]
+            //let constraint = SCNIKConstraint.inverseKinematicsConstraint(chainRootNode: chainRootNode)
+            //if ik.targetBone.constraints == nil {
+            //    ik.targetBone.constraints = [SCNConstraint]()
+            //}
+            //ik.targetBone.constraints!.append(constraint)
+        }
+ */
+        
         self.workingNode.addChildNode(self.rootBone)
         
-        //showBoneTree(self.rootBone)
-        showBoneList()
+        showBoneTree(self.rootBone)
+        //showBoneList()
+        
+        //for ik in self.workingNode.ikArray! {
+        //    ik.printInfo()
+        //}
     }
     
     func readFace() {
@@ -825,6 +881,7 @@ class MMDPMXReader: MMDReader {
                 readGroupMorph(offsetCount)
             case 1: // vertex morph
                 readVertexMorph(offsetCount)
+                self.faceNameArray.append(name as String)
             case 2: // bone morph
                 readBoneMorph(offsetCount)
             case 3: // UV morph
@@ -839,6 +896,10 @@ class MMDPMXReader: MMDReader {
                 readUVMorph(offsetCount, textureNo: 4)
             case 8: // material morph
                 readMaterialMorph(offsetCount)
+            case 9: // flip morph
+                readFlipMorph(offsetCount)
+            case 10: // impulse morph
+                readImpulseMorph(offsetCount)
             default: // unknown type
                 break
             }
@@ -846,12 +907,22 @@ class MMDPMXReader: MMDReader {
     }
     
     func readVertexMorph(_ count: Int) {
+        var faceVertex = [Float32](repeating: 0, count: self.vertexArray.count)
+
         for _ in 0..<count {
             let index = getIntOfLength(self.indexSize)
+            let vertexIndex = index * 3
+            
             let x = getFloat()
             let y = getFloat()
             let z = -getFloat()
+            
+            faceVertex[vertexIndex + 0] = x
+            faceVertex[vertexIndex + 1] = y
+            faceVertex[vertexIndex + 2] = z
         }
+        
+        self.faceVertexArray.append(faceVertex)
     }
     
     func readUVMorph(_ count: Int, textureNo: Int) {
@@ -866,7 +937,8 @@ class MMDPMXReader: MMDReader {
     
     func readBoneMorph(_ count: Int) {
         for _ in 0..<count {
-            let index = getIntOfLength(self.indexSize)
+            let index = getIntOfLength(self.boneIndexSize)
+            print("bone morph: index \(index)")
             let posX = getFloat()
             let posY = getFloat()
             let posZ = -getFloat()
@@ -925,7 +997,48 @@ class MMDPMXReader: MMDReader {
             let rate = getFloat()
         }
     }
+
+    func readFlipMorph(_ count: Int) {
+        for _ in 0..<count {
+            let morphIndex = getIntOfLength(self.morphIndexSize)
+            let rate = getFloat()
+        }
+    }
+
+    func readImpulseMorph(_ count: Int) {
+        for _ in 0..<count {
+            let morphIndex = getIntOfLength(self.morphIndexSize)
+            let isLocal = Int(getUnsignedByte())
+         
+            let vx = getFloat()
+            let vy = getFloat()
+            let vz = -getFloat()
+
+            let torqueX = getFloat()
+            let torqueY = getFloat()
+            let torqueZ = getFloat()
+        }
+    }
     
+    func createFaceMorph() {
+        let morpher = SCNMorpher()
+        morpher.calculationMode = .additive
+        
+        for index in 0..<self.faceVertexArray.count {
+            let faceVertexData = NSData(bytes: self.faceVertexArray[index], length: 4 * 3 * self.vertexCount)
+            let faceVertexSource = SCNGeometrySource(data: faceVertexData as Data, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: Int(self.vertexCount), usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: 4, dataOffset: 0, dataStride: 12)
+            
+            //let faceGeometry = SCNGeometry(sources: [faceVertexSource], elements: [])
+            let faceGeometry = SCNGeometry(sources: [faceVertexSource, self.normalSource], elements: [])
+            faceGeometry.name = self.faceNameArray[index]
+            
+            morpher.targets.append(faceGeometry)
+        }
+        let geometryNode = self.workingNode.childNode(withName: "Geometry", recursively: true)
+        geometryNode!.morpher = morpher
+        
+        self.workingNode.geometryMorpher = morpher
+    }
     
     func readDisplayInfo() {
         let displayCount = Int(getUnsignedInt())
@@ -951,15 +1064,10 @@ class MMDPMXReader: MMDReader {
     }
     
     func createGeometry() {
-        //let vertexData = Data(bytes: UnsafePointer<UInt8>(self.vertexArray), count: 4 * 3 * self.vertexCount)
         let vertexData = NSData(bytes: self.vertexArray, length: 4 * 3 * self.vertexCount)
-        //let normalData = Data(bytes: UnsafePointer<UInt8>(self.normalArray), count: 4 * 3 * self.vertexCount)
         let normalData = NSData(bytes: self.normalArray, length: 4 * 3 * self.vertexCount)
-        //let texcoordData = Data(bytes: UnsafePointer<UInt8>(self.texcoordArray), count: 4 * 2 * self.vertexCount)
         let texcoordData = NSData(bytes: self.texcoordArray, length: 4 * 2 * self.vertexCount)
-        //let boneWeightsData = Data(bytes: UnsafePointer<UInt8>(self.boneWeightsArray), count: 4 * 4 * self.vertexCount)
         let boneWeightsData = NSData(bytes: self.boneWeightsArray, length: 4 * 4 * self.vertexCount)
-        //let edgeData = NSData(bytes: self.edgeArray, length: 1 * 1 * self.vertexCount)
         
         var boneIndicesData: Data! = nil
         switch(self.boneIndexSize) {
@@ -1021,6 +1129,8 @@ class MMDPMXReader: MMDReader {
                 // unknown size
             }
             
+            // FIXME: use Point/Line in the A-A-A pattern or the A-B-A pattern
+            
             let primitiveType = self.materialShapeArray[index]
             let element = SCNGeometryElement(data: indexData, primitiveType: primitiveType, primitiveCount: count, bytesPerIndex: self.indexSize)
             print("***** Element ***** \(indexData.count), \(primitiveType), \(count), \(self.indexSize)")
@@ -1068,20 +1178,21 @@ class MMDPMXReader: MMDReader {
         let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
         
         geometryNode.skinner = skinner
-        //geometryNode.skinner!.skeleton = self.rootBone
-        geometryNode.skinner!.skeleton = self.workingNode
+        geometryNode.skinner!.skeleton = self.rootBone
         geometryNode.castsShadow = true
         
         //let program = MMDProgram()
         //geometryNode.geometry!.program = program
         
         self.workingNode.name = "rootNode" // FIXME: set model name or file name
+        self.workingNode.castsShadow = true
         self.workingNode.addChildNode(geometryNode)
-        self.workingNode.addChildNode(self.rootBone)
         
         //showBoneTree(self.rootBone)
         
         // FIXME: use morpher
+        self.workingNode.vertexArray = self.vertexArray
+
         /*
         self.workingNode.faceIndexArray = [Int]()
         self.workingNode.faceDataArray = [[Float32]]()
@@ -1103,7 +1214,7 @@ class MMDPMXReader: MMDReader {
             self.workingNode.faceDataArray!.append(newFaceData)
             self.workingNode.faceWeights!.append(MMDFloat())
         }
-        
+        */
         
         //self.workingNode.normalSource = self.normalSource
         //self.workingNode.texcoordSource = self.texcoordSource
@@ -1117,15 +1228,16 @@ class MMDPMXReader: MMDReader {
         self.workingNode.vertexArray = self.vertexArray
         self.workingNode.normalArray = self.normalArray
         self.workingNode.texcoordArray = self.texcoordArray
-        self.workingNode.boneIndicesArray = self.boneIndicesArray
+        // FIXME: [Int]! to [UInt16]!
+        //self.workingNode.boneIndicesArray = self.boneIndicesArray
         self.workingNode.boneWeightsArray = self.boneWeightsArray
         self.workingNode.indexCount = self.indexCount
-        self.workingNode.indexArray = self.indexArray
+        // FIXME: [Int]! to [UInt16]!
+        //self.workingNode.indexArray = self.indexArray
         self.workingNode.materialCount = self.materialCount
         self.workingNode.materialArray = self.materialArray
         self.workingNode.materialIndexCountArray = self.materialIndexCountArray
         self.workingNode.rootBone = self.rootBone
-        */
     }
     
     func readPhysicsBody() {
@@ -1232,6 +1344,96 @@ class MMDPMXReader: MMDReader {
         }
     }
     
+    func readSoftBody() {
+        let softBodyCount = Int(getUnsignedInt())
+
+        for _ in 0..<softBodyCount {
+            let name = getTextBuffer()
+            let englishName = getTextBuffer()
+            
+            let shape = Int(getUnsignedByte())
+            if shape == 0 {
+                // TriMesh
+            } else if shape == 1 {
+                // Rope
+            } else {
+                // unknown shape
+            }
+            
+            let index = getIntOfLength(self.materialIndexSize)
+            let groupIndex = Int(getUnsignedByte())
+            let groupTarget = Int(getUnsignedShort())
+
+            let flags = Int(getUnsignedByte())
+            if flags & 0x01 != 0 {
+                // create B-Link
+            }
+            if flags & 0x02 != 0 {
+                // create cluster
+            }
+            if flags & 0x04 != 0 {
+                // mix links
+            }
+
+            /*
+             4  : int	| B-Link 作成距離
+             4  : int	| クラスタ数
+             
+             4  : float	| 総質量
+             4  : float	| 衝突マージン
+             
+             4  : int	| AeroModel - 0:V_Point, 1:V_TwoSided, 2:V_OneSided, 3:F_TwoSided, 4:F_OneSided
+             
+             <config>
+             4  : float	| VCF
+             4  : float	| DP
+             4  : float	| DG
+             4  : float	| LF
+             4  : float	| PR
+             4  : float	| VC
+             4  : float	| DF
+             4  : float	| MT
+             4  : float	| CHR
+             4  : float	| KHR
+             4  : float	| SHR
+             4  : float	| AHR
+             
+             <cluster>
+             4  : float	| SRHR_CL
+             4  : float	| SKHR_CL
+             4  : float	| SSHR_CL
+             4  : float	| SR_SPLT_CL
+             4  : float	| SK_SPLT_CL
+             4  : float	| SS_SPLT_CL
+             
+             <iteration>
+             4  : int	| V_IT
+             4  : int	| P_IT
+             4  : int	| D_IT
+             4  : int	| C_IT
+             
+             <material>
+             4  : float	| LST
+             4  : float	| AST
+             4  : float	| VST
+             
+             4  : int	| アンカー剛体数
+             <アンカー剛体>
+             n  : 剛体Indexサイズ  | 関連剛体Index
+             n  : 頂点Indexサイズ  | 関連頂点Index
+             1  : byte	| Near モード  0:OFF 1:ON
+             </アンカー剛体>
+             * アンカー剛体数
+             
+             4  : int	| Pin頂点数
+             <Pin頂点>
+             n  : 頂点Indexサイズ  | 関連頂点Index
+             </Pin頂点>
+             * Pin頂点数
+             */
+        }
+    }
+ 
     func showBoneTree(_ bone: SCNNode, prefix: String = "") {
         print("\(prefix)\(bone.name)")
         let newPrefix = "\(prefix)    "
@@ -1246,6 +1448,23 @@ class MMDPMXReader: MMDReader {
         for index in 0..<count {
             let bone = self.boneArray[index]
             print("\(index): \(bone.name)")
+        }
+    }
+    
+    func showBoneIndexData() {
+        var index = 0
+        let numIndices = self.boneIndicesArray.count
+        
+        for index in 0..<numIndices {
+            let i = index % 4
+            if i == 0 {
+                print("======")
+            }
+            let boneIndex = self.boneIndicesArray[index]
+            let boneWeight = self.boneWeightsArray[index]
+            let bone = self.boneArray[boneIndex]
+            
+            print("\(i): \(boneIndex) (\(bone.name)): \(boneWeight)")
         }
     }
 }

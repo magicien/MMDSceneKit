@@ -72,6 +72,10 @@
 		DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */; };
 		DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
 		DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D8A21C25354C00A7F834 /* Regexp.swift */; };
+		DD4E68CB1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
+		DD4E68CC1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
+		DD4E68CD1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
+		DD4E68CE1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
 		DD6094981D3A26F600CA22C7 /* MMDSceneKit_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF781C1838D700B20F37 /* MMDSceneKit_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD60949D1D3A27D200CA22C7 /* MMDNode_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */; };
 		DD60949E1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */; };
@@ -357,6 +361,7 @@
 		DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVMDReader.swift; sourceTree = "<group>"; };
 		DD41D89F1C24099400A7F834 /* MMDXReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDXReader.swift; sourceTree = "<group>"; };
 		DD41D8A21C25354C00A7F834 /* Regexp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regexp.swift; sourceTree = "<group>"; };
+		DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDPMMReader.swift; sourceTree = "<group>"; };
 		DD6094991D3A27D200CA22C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDNode_Tests.swift; sourceTree = "<group>"; };
 		DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDSceneKit_macOSTests.swift; sourceTree = "<group>"; };
@@ -565,6 +570,7 @@
 				DDEC59891C38B4570043F939 /* MMDPMXReader.swift */,
 				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
 				DD41D89F1C24099400A7F834 /* MMDXReader.swift */,
+				DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */,
 				DD41D8A21C25354C00A7F834 /* Regexp.swift */,
 				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
 				DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */,
@@ -1507,6 +1513,7 @@
 				DD6296D91C2D120800707364 /* MMDProgram.swift in Sources */,
 				DD6296F61C2FFB9C00707364 /* MMDShader.swift in Sources */,
 				DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */,
+				DD4E68CB1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */,
 				DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */,
 				DDEC598A1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
@@ -1537,6 +1544,7 @@
 				DD6296DA1C2D120800707364 /* MMDProgram.swift in Sources */,
 				DD6296F71C2FFB9C00707364 /* MMDShader.swift in Sources */,
 				DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */,
+				DD4E68CC1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */,
 				DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */,
 				DDEC598B1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
@@ -1606,6 +1614,7 @@
 				DD3313BE1D39C3160027FCA9 /* MMDPMXReader.swift in Sources */,
 				DD3313C41D39C3160027FCA9 /* MMDShader.swift in Sources */,
 				DD3313C21D39C3160027FCA9 /* MMDIKConstraint.swift in Sources */,
+				DD4E68CD1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */,
 				DD3313BC1D39C3160027FCA9 /* MMDReader.swift in Sources */,
 				DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */,
 				DD3313BD1D39C3160027FCA9 /* MMDPMDReader.swift in Sources */,
@@ -1637,6 +1646,7 @@
 				DDCF5C561DD4F3720037BD66 /* MMDPMXReader.swift in Sources */,
 				DDCF5C5C1DD4F3720037BD66 /* MMDShader.swift in Sources */,
 				DDCF5C5A1DD4F3720037BD66 /* MMDIKConstraint.swift in Sources */,
+				DD4E68CE1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */,
 				DDCF5C541DD4F36B0037BD66 /* MMDReader.swift in Sources */,
 				DDCF5C521DD4F3630037BD66 /* MMDNode.swift in Sources */,
 				DDCF5C551DD4F3720037BD66 /* MMDPMDReader.swift in Sources */,

@@ -9,11 +9,11 @@
 import SceneKit
 
 open class MMDIKConstraint {
-    var boneArray: [MMDNode]! = []
+    public var boneArray: [MMDNode]! = []
     var minAngleArray: [Float]! = []
     var maxAngleArray: [Float]! = []
-    var ikBone: MMDNode! = nil
-    var targetBone: MMDNode! = nil
+    public var ikBone: MMDNode! = nil
+    public var targetBone: MMDNode! = nil
     var iteration: Int = 0
     var weight: Float = 0.0
     var linkNo: Int = -1
@@ -114,4 +114,28 @@ open class MMDIKConstraint {
         }
     }
     */
+    
+    func printInfo() {
+        print("boneArray: \(self.boneArray.count)")
+        for bone in self.boneArray {
+            print("  \(bone.name)")
+        }
+        
+        print("minAngleArray: \(self.minAngleArray.count)")
+        for val in self.minAngleArray {
+            print("  \(val)")
+        }
+        
+        print("maxAngleArray: \(self.maxAngleArray.count)")
+        for val in self.maxAngleArray {
+            print("  \(val)")
+        }
+        
+        print("ikBone: \(self.ikBone.name)")
+        print("targetBone: \(self.targetBone.name)")
+        print("iteration: \(self.iteration)")
+        print("weight: \(self.weight)")
+        print("isEnable: \(self.isEnable)")
+        print("")
+    }
 }
