@@ -39,7 +39,7 @@ public class MMDIKController: NSObject, SCNSceneRendererDelegate {
             self.applyIKRecursive(childNode)
         }
     }
-
+    
     /**
      * apply IK constraint after animations are applied
      */

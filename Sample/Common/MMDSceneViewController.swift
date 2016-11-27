@@ -31,6 +31,31 @@ public class MMDSceneViewController: SuperViewController {
      * setup game scene
      */
     public func setupGameScene(_ scene: SCNScene, view: MMDView) {
+        let mmdScene = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
+        //mmdScene.isPaused = true
+        
+        view.scene = mmdScene
+        view.delegate = MMDIKController.sharedController
+        view.showsStatistics = true
+        
+        #if os(iOS)
+        view.backgroundColor = UIColor.white
+        #endif
+        
+        #if !os(watchOS)
+        // allows the user to manipulate the camera
+        view.allowsCameraControl = true
+        #endif
+        
+        /*
+        let later = DispatchTime.now() + 5
+        DispatchQueue.main.asyncAfter(deadline: later) {
+            mmdScene.isPaused = false
+        }
+ */
+        //mmdScene.isPaused = false
+        return
+        
         // create and add a camera to the scene
         //let cameraNode = SCNNode()
         //cameraNode.camera = SCNCamera()

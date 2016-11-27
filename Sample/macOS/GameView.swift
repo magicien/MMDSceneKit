@@ -12,6 +12,7 @@ import MMDSceneKit_macOS
 class GameView: SCNView {
     
     override func mouseDown(with theEvent: NSEvent) {
+        return
         /* Called when a mouse click occurs */
         
         // get morpher

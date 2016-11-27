@@ -442,9 +442,6 @@ class MMDVMDReader: MMDReader {
 
             //var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
             //normalize(&rotate)
-            //let rotX = getFloat() * 180.0 / Float(M_PI)
-            //let rotY = getFloat() * 180.0 / Float(M_PI)
-            //let rotZ = -getFloat() * 180.0 / Float(M_PI)
             let rotX = -getFloat()
             let rotY = getFloat()
             let rotZ = -getFloat()
@@ -632,9 +629,7 @@ class MMDVMDReader: MMDReader {
         self.workingAnimationGroup.animations!.append(persMotion)
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
-    }    
-    
-
+    }
     
     /**
      */

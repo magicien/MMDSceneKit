@@ -127,6 +127,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
 
     fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
     
+    // for animation
+    //open var parentNo: Int = -1
+    //open var parentNodes: [MMDNode]? = nil
+    //open dynamic var motionParentNode: MMDNode? = nil
+    
     /*
     override public init() {
         super.init()
@@ -840,5 +845,29 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     
     func equalV4(_ v1: SCNVector4, _ v2: SCNVector4) -> Bool {
         return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w
-    }    
+    }
+    
+    func printBoneTree(indent: String = "    ", myIndent: String = "") {
+        let newIndent = myIndent + indent
+        for child in self.childNodes {
+            var childName = child.name
+            if childName == nil {
+                childName = "(no name)"
+            }
+            print("\(myIndent)\(childName)")
+            if let mmdChild = child as? MMDNode {
+                mmdChild.printBoneTree(indent: indent, myIndent: newIndent)
+            }
+        }
+    }
+    
+    func printBoneList() {
+        for (index, bone) in self.boneArray.enumerated() {
+            var boneName = bone.name
+            if boneName == nil {
+                boneName = "(no name)"
+            }
+            print("\(index): \(boneName)")
+        }
+    }
 }

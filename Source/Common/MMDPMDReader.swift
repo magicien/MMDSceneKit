@@ -258,16 +258,22 @@ class MMDPMDReader: MMDReader {
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.shininess = CGFloat(getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                //material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                //material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.ambient.contents = material.diffuse.contents
                 
             #elseif os(OSX)
                 
                 material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 material.shininess = CGFloat(getFloat())
                 material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                //material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.emission.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                //material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.ambient.contents = material.diffuse.contents
                 
             #endif
             
@@ -282,13 +288,17 @@ class MMDPMDReader: MMDReader {
                 
                 print("setTexture: \(fileName)")
                 
+                material.ambient.contents = material.emission.contents
                 #if os(iOS) || os(tvOS) || os(watchOS)
                     material.diffuse.contents = UIImage(contentsOfFile: fileName)
+                    material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 #elseif os(OSX)
                     material.diffuse.contents = NSImage(contentsOfFile: fileName)
+                    material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 #endif
             }
             material.isDoubleSided = true
+            
             
             self.materialIndexCountArray.append(indexCount)
             self.materialArray.append(material)
@@ -549,34 +559,33 @@ class MMDPMDReader: MMDReader {
             }
             self.faceNameArray.append(name)
             self.faceVertexArray.append(faceVertex)
-        }
-        
-        
-        for _ in 1..<self.faceCount {
-            let name = String(getString(length: 20)!)
-            var faceVertex = zeroArray
-            print("faceName: \(name)")
             
-            let numVertices = getUnsignedInt()
-            
-            // 0: base, 1: eyebrows, 2: eyes, 3: lips, 4: etc
-            let type = getUnsignedByte()
-            
-            for _ in 0..<numVertices {
-                let index = self.faceIndexArray[Int(getUnsignedInt())]
-                let vertexIndex = index * 3
+            for _ in 1..<self.faceCount {
+                let name = String(getString(length: 20)!)
+                var faceVertex = zeroArray
+                print("faceName: \(name)")
                 
-                let x = getFloat()
-                let y = getFloat()
-                let z = -getFloat()
+                let numVertices = getUnsignedInt()
                 
-                faceVertex[vertexIndex + 0] = x
-                faceVertex[vertexIndex + 1] = y
-                faceVertex[vertexIndex + 2] = z
+                // 0: base, 1: eyebrows, 2: eyes, 3: lips, 4: etc
+                let type = getUnsignedByte()
+                
+                for _ in 0..<numVertices {
+                    let index = self.faceIndexArray[Int(getUnsignedInt())]
+                    let vertexIndex = index * 3
+                    
+                    let x = getFloat()
+                    let y = getFloat()
+                    let z = -getFloat()
+                    
+                    faceVertex[vertexIndex + 0] = x
+                    faceVertex[vertexIndex + 1] = y
+                    faceVertex[vertexIndex + 2] = z
+                }
+                
+                self.faceNameArray.append(name)
+                self.faceVertexArray.append(faceVertex)
             }
-            
-            self.faceNameArray.append(name)
-            self.faceVertexArray.append(faceVertex)
         }
     }
     
@@ -595,7 +604,11 @@ class MMDPMDReader: MMDReader {
             morpher.targets.append(faceGeometry)
         }
         let geometryNode = self.workingNode.childNode(withName: "Geometry", recursively: true)
-        geometryNode!.morpher = morpher
+        
+        if self.faceCount > 0 {
+            // The empty morpher causes error in iOS.
+            geometryNode!.morpher = morpher
+        }
         
         // FIXME
         self.workingNode.geometryMorpher = morpher
@@ -716,9 +729,9 @@ class MMDPMDReader: MMDReader {
             if boneIndex != 0xFFFF {
                 let bone = self.boneArray[boneIndex]
                 bone.physicsBody = body
-                print("physicsBody: \(name) -> \(bone.name!), (\(dx), \(dy), \(dz))")
+                //print("physicsBody: \(name) -> \(bone.name!), (\(dx), \(dy), \(dz))")
             }else{
-                print("physicsBody: \(name) -> nil")
+                //print("physicsBody: \(name) -> nil")
             }
             
             self.physicsBodyArray.append(body)
@@ -762,6 +775,7 @@ class MMDPMDReader: MMDReader {
             print("pos2: \(pos2.x), \(pos2.y), \(pos2.z)")
             print("rot1: \(rot1.x), \(rot1.y), \(rot1.z)")
             print("rot2: \(rot2.x), \(rot2.y), \(rot2.z)")
+            
             
             // FIXME: 
             //self.workingNode.physicsBehaviors.append(constraint)
@@ -835,10 +849,12 @@ class MMDPMDReader: MMDReader {
         let geometryNode = SCNNode(geometry: geometry)
         geometryNode.name = "Geometry"
         
-        let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
-        
-        geometryNode.skinner = skinner
-        geometryNode.skinner!.skeleton = self.rootBone
+        if self.vertexCount > 0 && self.indexCount > 0 {
+            let skinner = SCNSkinner(baseGeometry: geometry, bones: self.boneArray, boneInverseBindTransforms: self.boneInverseMatrixArray, boneWeights: boneWeightsSource, boneIndices: boneIndicesSource)
+            
+            geometryNode.skinner = skinner
+            geometryNode.skinner!.skeleton = self.rootBone
+        }
         geometryNode.castsShadow = true
         
         //let program = MMDProgram()

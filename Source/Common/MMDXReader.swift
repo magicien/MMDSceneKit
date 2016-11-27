@@ -1008,7 +1008,7 @@ class MMDXReader {
                 
                 if image != nil {
                     material.ambient.contents = black
-                    material.emission.contents = black
+                    //material.emission.contents = black
                     material.diffuse.contents = image
                     material.diffuse.wrapS = .repeat
                     material.diffuse.wrapT = .repeat

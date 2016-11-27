@@ -15,7 +15,7 @@ import SceneKit
 #endif
 
 public enum MMDFileType {
-    case pmm, pmd, vmd, x, pmx, unknown
+    case pmm, pmd, vmd, x, vac, pmx, unknown
 }
 
 open class MMDSceneSource: SCNSceneSource {
@@ -73,6 +73,10 @@ open class MMDSceneSource: SCNSceneSource {
             if let xNode = MMDXReader.getNode(data, directoryPath: self.directoryPath) {
                 self.workingNode = xNode
             }
+        }else if self.fileType == .vac {
+            if let xNode = MMDVACReader.getNode(data, directoryPath: self.directoryPath) {
+                self.workingNode = xNode
+            }
         }else if self.fileType == .pmx {
             if let pmxNode = MMDPMXReader.getNode(data, directoryPath: self.directoryPath) {
                 //self.workingScene.rootNode.addChildNode(pmdNode)
@@ -102,9 +106,13 @@ open class MMDSceneSource: SCNSceneSource {
         self.init()
         self.directoryPath = (path as NSString).deletingLastPathComponent
 
+        if path.hasSuffix(".vac") {
+            self.fileType = .vac
+        }
+
         let data = try? Data(contentsOf: URL(fileURLWithPath: path))
         if data == nil {
-            print("data is nil...")
+            print("data is nil... (\(path))")
             return nil
         } else {
             self.loadData(data!, options: options)
@@ -131,7 +139,7 @@ open class MMDSceneSource: SCNSceneSource {
     open func modelNodes() -> [MMDNode]! {
         var nodeArray = [MMDNode]()
         
-        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x {
+        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x || self.fileType == .vac {
             print("add workingNode: \(self.workingNode)")
             nodeArray.append(self.workingNode) // FIXME: clone node
         }else if self.fileType == .pmm {
@@ -157,8 +165,12 @@ open class MMDSceneSource: SCNSceneSource {
         return lightArray
     }
     
+    open func getScene() -> SCNScene? {
+        return self.workingScene
+    }
+    
     open func getModel() -> MMDNode? {
-        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x {
+        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x || self.fileType == .vac {
             // FIXME: clone node
             return self.workingNode
         }else if self.fileType == .pmm {
@@ -234,6 +246,11 @@ open class MMDSceneSource: SCNSceneSource {
         if str25 == "Vocaloid Motion Data 0002" {
             self.fileType = .vmd
             return self.fileType
+        }
+        
+        if self.fileType == .vac {
+            // TODO: check file content
+            return .vac
         }
         
         self.fileType = .unknown
