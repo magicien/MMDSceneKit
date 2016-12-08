@@ -13,27 +13,12 @@ import SceneKit
 public class MMDProgram: SCNProgram, SCNProgramDelegate {
     override public init() {
         super.init()
-        /*
+        
         self.delegate = self
         
-        var path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "vsh")
-        let vertexShader = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
-        self.vertexShader = vertexShader
-        
-        path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "fsh")
-        let fragmentShader = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
-        self.fragmentShader = fragmentShader
-        
-        let libraryPath = NSBundle(forClass: MMDProgram.self).pathForResource("default", ofType: "metallib")
-        let device = MTLCreateSystemDefaultDevice()
-        do {
-            self.library = try device!.newLibraryWithFile(libraryPath!)
-        } catch {
-            print("********* library setting error ************")
-        }
         self.vertexFunctionName = "mmdVertex"
         self.fragmentFunctionName = "mmdFragment"
-        */
+        
         
         /*
         let device = MTLCreateSystemDefaultDevice()

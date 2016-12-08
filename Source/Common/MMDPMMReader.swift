@@ -44,17 +44,17 @@ fileprivate class MMDVMDInfo {
         self.posX = NSNumber(value: reader.getFloat())
         self.posY = NSNumber(value: reader.getFloat())
         self.posZ = NSNumber(value: -reader.getFloat())
-        var quat = SCNQuaternion.init(-reader.getFloat(), -reader.getFloat(), reader.getFloat(), reader.getFloat())
+        var quat = SCNQuaternion(-reader.getFloat(), -reader.getFloat(), reader.getFloat(), reader.getFloat())
         reader.normalize(&quat)
-        self.rotate = NSValue.init(scnVector4: quat)
+        self.rotate = NSValue(scnVector4: quat)
         
-        self.timingX = CAMediaTimingFunction.init(controlPoints:
+        self.timingX = CAMediaTimingFunction(controlPoints:
             interpolation[0], interpolation[1], interpolation[2], interpolation[3])
-        self.timingY = CAMediaTimingFunction.init(controlPoints:
+        self.timingY = CAMediaTimingFunction(controlPoints:
             interpolation[4], interpolation[5], interpolation[6], interpolation[7])
-        self.timingZ = CAMediaTimingFunction.init(controlPoints:
+        self.timingZ = CAMediaTimingFunction(controlPoints:
             interpolation[8], interpolation[9], interpolation[10], interpolation[11])
-        self.timingRot = CAMediaTimingFunction.init(controlPoints:
+        self.timingRot = CAMediaTimingFunction(controlPoints:
             interpolation[12], interpolation[13], interpolation[14], interpolation[15])
         
         if reader.version > 1 {
@@ -139,23 +139,31 @@ fileprivate class MMDVMDCameraInfo {
             interpolation.append(Float(reader.getUnsignedByte()) / 127.0)
         }
         
-        self.timingDistance = CAMediaTimingFunction.init(controlPoints:
+        self.timingX = CAMediaTimingFunction(controlPoints:
             interpolation[0], interpolation[1], interpolation[2], interpolation[3])
-        self.timingX = CAMediaTimingFunction.init(controlPoints:
+        self.timingY = CAMediaTimingFunction(controlPoints:
             interpolation[4], interpolation[5], interpolation[6], interpolation[7])
-        self.timingY = CAMediaTimingFunction.init(controlPoints:
+        self.timingZ = CAMediaTimingFunction(controlPoints:
             interpolation[8], interpolation[9], interpolation[10], interpolation[11])
-        self.timingZ = CAMediaTimingFunction.init(controlPoints:
+        self.timingRot = CAMediaTimingFunction(controlPoints:
             interpolation[12], interpolation[13], interpolation[14], interpolation[15])
-        self.timingRot = CAMediaTimingFunction.init(controlPoints:
+        self.timingDistance = CAMediaTimingFunction(controlPoints:
             interpolation[16], interpolation[17], interpolation[18], interpolation[19])
-        self.timingAngle = CAMediaTimingFunction.init(controlPoints:
+        self.timingAngle = CAMediaTimingFunction(controlPoints:
             interpolation[20], interpolation[21], interpolation[22], interpolation[23])
+        //print("=====")
+        //print("timingDistance: \(self.timingDistance)")
+        //print("timingX: \(self.timingX)")
+        //print("timingY: \(self.timingY)")
+        //print("timingZ: \(self.timingZ)")
+        //print("timingRot: \(self.timingRot)")
+        //print("timingAngle: \(self.timingAngle)")
+        
         
         let perspective = reader.getUnsignedByte()
         self.useOrtho = NSNumber(booleanLiteral: (perspective != 0))
         self.angle = NSNumber(value: reader.getInt())
-        print("camera angle \(self.angle)")
+        //print("camera angle \(self.angle)")
         
         let isSelected = reader.getUnsignedByte()
     }
@@ -181,7 +189,6 @@ fileprivate class MMDVMDLightInfo {
         self.prev = Int(reader.getUnsignedInt())
         self.next = Int(reader.getUnsignedInt())
 
-        //let color = CGColor(red: CGFloat(reader.getFloat()), green: CGFloat(reader.getFloat()), blue: CGFloat(reader.getFloat()), alpha: 1.0)
         #if os(iOS) || os(tvOS) || os(watchOS)
             let color = UIColor(colorLiteralRed: reader.getFloat(), green: reader.getFloat(), blue: reader.getFloat(), alpha: 1.0)
         #elseif os(OSX)
@@ -189,8 +196,8 @@ fileprivate class MMDVMDLightInfo {
         #endif
         self.color = color
         
-        let rotX = reader.getFloat()
-        let rotY = reader.getFloat()
+        let rotX = -reader.getFloat()
+        let rotY = -reader.getFloat()
         let rotZ = reader.getFloat()
 
         let cosX = cos(rotX / 2)
@@ -207,7 +214,7 @@ fileprivate class MMDVMDLightInfo {
         quat.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
         reader.normalize(&quat)
         
-        self.direction = NSValue.init(scnVector4: quat)
+        self.direction = NSValue(scnVector4: quat)
         
         let isSelected = reader.getUnsignedByte() // Is it correct?
     }
@@ -233,7 +240,7 @@ fileprivate class MMDVMDAccessoryInfo {
     
     var isHidden: NSNumber!
     var opacity: NSNumber!
-    var additive: NSNumber!
+    var additive: SCNBlendMode!
     var castsShadow: NSNumber!
     var parent: MMDNode?
     
@@ -242,7 +249,7 @@ fileprivate class MMDVMDAccessoryInfo {
         self.prev = Int(reader.getUnsignedInt())
         self.next = Int(reader.getUnsignedInt())
         
-        print("frameNo: \(self.frameNo), prev: \(self.prev), next: \(self.next)")
+        //print("frameNo: \(self.frameNo), prev: \(self.prev), next: \(self.next)")
 
         let visibility = reader.getUnsignedByte()
         let isVisible = visibility & 0x01
@@ -264,16 +271,16 @@ fileprivate class MMDVMDAccessoryInfo {
             let parentModel = reader.models[modelIndex]
             if boneIndex < parentModel.boneArray.count {
                 parentNode = parentModel.boneArray[boneIndex]
-                print("accessory parentNode: \(parentNode!.name)")
+                //print("accessory parentNode: \(parentNode!.name)")
             }
         }
         self.parent = parentNode
         
         let pos = SCNVector3Make(OSFloat(reader.getFloat()), OSFloat(reader.getFloat()), OSFloat(reader.getFloat()))
-        self.position = NSValue.init(scnVector3: pos)
+        self.position = NSValue(scnVector3: pos)
         
-        let rotX = reader.getFloat()
-        let rotY = reader.getFloat()
+        let rotX = -reader.getFloat()
+        let rotY = -reader.getFloat()
         let rotZ = reader.getFloat()
         
         let cosX = cos(rotX / 2)
@@ -290,17 +297,21 @@ fileprivate class MMDVMDAccessoryInfo {
         quat.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
         reader.normalize(&quat)
         
-        self.rotation = NSValue.init(scnVector4: quat)
+        self.rotation = NSValue(scnVector4: quat)
         let scale = OSFloat(reader.getFloat() * 10.0)
-        self.scale = NSValue.init(scnVector3: SCNVector3Make(scale, scale, scale))
+        self.scale = NSValue(scnVector3: SCNVector3Make(scale, scale, scale))
 
         // shadow/additive ?
         let flag = reader.getUnsignedByte()
 
         let isSelected = reader.getUnsignedByte()
         
-        self.additive = NSNumber(booleanLiteral: ((flag & 0x01) != 0))
-        //self.additive = NSNumber(booleanLiteral: false)
+        if (flag & 0x01) == 0 {
+            self.additive = .add
+        } else {
+            self.additive = .alpha
+        }
+        //self.additive = NSNumber(booleanLiteral: ((flag & 0x01) != 0))
 
         print("modelIndex: \(modelIndex)")
         
@@ -599,7 +610,7 @@ class MMDPMMReader: MMDReader {
         }
         
         for boneName in self.boneNameArray {
-            print("    bone: \(boneName)")
+            //print("    bone: \(boneName)")
         }
     }
     
@@ -611,7 +622,7 @@ class MMDPMMReader: MMDReader {
         }
         
         for faceName in self.faceNameArray {
-            print("    face: \(faceName)")
+            //print("    face: \(faceName)")
         }
     }
     
@@ -694,15 +705,18 @@ class MMDPMMReader: MMDReader {
         posZMotion: CAKeyframeAnimation,
         rotMotion: CAKeyframeAnimation) {
         
-        var frameIndex = 0
-        while frameIndex < posXMotion.keyTimes!.count {
+        var frameIndex = posXMotion.keyTimes!.count - 1
+
+        // the frame number might not be sorted
+        while frameIndex >= 0 {
             let k = Int(posXMotion.keyTimes![frameIndex])
-            if(k > info.frameNo) {
+            if(k < info.frameNo) {
                 break
             }
             
-            frameIndex += 1
+            frameIndex -= 1
         }
+        frameIndex += 1
         
         if(info.frameNo > self.frameLength) {
             self.frameLength = info.frameNo
@@ -836,15 +850,18 @@ class MMDPMMReader: MMDReader {
     }
     
     private func addFaceMotionRecursive(info: MMDVMDFaceInfo, faceMotion: CAKeyframeAnimation) {
-        var frameIndex = 0
-        while frameIndex < faceMotion.keyTimes!.count {
+        var frameIndex = faceMotion.keyTimes!.count - 1
+        
+        // the frame number might not be sorted
+        while frameIndex >= 0 {
             let k = Int(faceMotion.keyTimes![frameIndex])
-            if(k > info.frameNo) {
+            if(k < info.frameNo) {
                 break
             }
             
-            frameIndex += 1
+            frameIndex -= 1
         }
+        frameIndex += 1
         
         if(info.frameNo > self.frameLength) {
             self.frameLength = info.frameNo
@@ -920,7 +937,7 @@ class MMDPMMReader: MMDReader {
         let duration = Double(self.frameLength) / self.fps
         print("bone frameLength: \(self.frameLength)")
         
-        for (_, motion) in self.animationHash {
+        for (name, motion) in self.animationHash {
             let motionLength = Double(motion.keyTimes!.last!)
             
             for num in 0..<motion.keyTimes!.count {
@@ -933,13 +950,17 @@ class MMDPMMReader: MMDReader {
             motion.isRemovedOnCompletion = false
             motion.fillMode = kCAFillModeForwards
             
+            if motion.keyTimes!.count == 1 {
+                motion.repeatCount = Float.infinity
+            }
+            
             self.workingAnimationGroup.animations!.append(motion)
         }
         
         for (_, motion) in self.faceAnimationHash {
             let motionLength = Double(motion.keyTimes!.last!)
             
-            print("faceAnimation: \(motion.keyPath!)")
+            //print("faceAnimation: \(motion.keyPath!)")
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
@@ -1075,16 +1096,19 @@ class MMDPMMReader: MMDReader {
         angleMotion: CAKeyframeAnimation,
         persMotion: CAKeyframeAnimation) {
         
-        var frameIndex = 0
-        while frameIndex < distanceMotion.keyTimes!.count {
+        var frameIndex = distanceMotion.keyTimes!.count - 1
+        
+        // the frame number might not be sorted
+        while frameIndex >= 0 {
             let k = Int(distanceMotion.keyTimes![frameIndex])
-            if(k > info.frameNo) {
+            if(k < info.frameNo) {
                 break
             }
             
-            frameIndex += 1
+            frameIndex -= 1
         }
-        
+        frameIndex += 1
+
         if(info.frameNo > self.frameLength) {
             self.frameLength = info.frameNo
         }
@@ -1151,9 +1175,9 @@ class MMDPMMReader: MMDReader {
         let posXMotion = CAKeyframeAnimation(keyPath: "transform.translation.x")
         let posYMotion = CAKeyframeAnimation(keyPath: "transform.translation.y")
         let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
-        let rotZMotion = CAKeyframeAnimation(keyPath: "eulerAngles.z")
-        let rotXMotion = CAKeyframeAnimation(keyPath: "eulerAngles.x")
-        let rotYMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROT_NODE_NAME).eulerAngles.y")
+        let rotZMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTZ_NODE_NAME).eulerAngles.z")
+        let rotXMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTX_NODE_NAME).eulerAngles.x")
+        let rotYMotion = CAKeyframeAnimation(keyPath: "eulerAngles.y")
         let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.yFov")
         let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
         
@@ -1371,16 +1395,19 @@ class MMDPMMReader: MMDReader {
         colorMotion: CAKeyframeAnimation,
         directionMotion: CAKeyframeAnimation) {
         
-        var frameIndex = 0
-        while frameIndex < colorMotion.keyTimes!.count {
+        var frameIndex = colorMotion.keyTimes!.count - 1
+        
+        // the frame number might not be sorted
+        while frameIndex >= 0 {
             let k = Int(colorMotion.keyTimes![frameIndex])
-            if(k > info.frameNo) {
+            if(k < info.frameNo) {
                 break
             }
             
-            frameIndex += 1
+            frameIndex -= 1
         }
-        
+        frameIndex += 1
+
         if(info.frameNo > self.frameLength) {
             self.frameLength = info.frameNo
         }
@@ -1531,7 +1558,7 @@ class MMDPMMReader: MMDReader {
         let scaleMotion = CAKeyframeAnimation(keyPath: "scale")
         let hiddenMotion = CAKeyframeAnimation(keyPath: "hidden")
         let opacityMotion = CAKeyframeAnimation(keyPath: "opacity")
-        let additiveMotion = CAKeyframeAnimation(keyPath: "filters.additive.enabled")
+        let additiveMotion = CAKeyframeAnimation(keyPath: "/Geometry.materials.blendMode")
         let parentMotion = CAKeyframeAnimation(keyPath: "parent.motionParentNode")
         
         posMotion.values = [AnyObject]()
@@ -1578,6 +1605,7 @@ class MMDPMMReader: MMDReader {
             }
         }
         hiddenMotion.calculationMode = kCAAnimationDiscrete
+        additiveMotion.calculationMode = kCAAnimationDiscrete
         parentMotion.calculationMode = kCAAnimationDiscrete
         
         for num in 0..<hiddenMotion.keyTimes!.count {
@@ -1600,15 +1628,16 @@ class MMDPMMReader: MMDReader {
         
         var parentEvents = [SCNAnimationEvent]()
         var prevParent: SCNNode? = nil
+        
         for index in 0..<parentMotion.keyTimes!.count {
-            let keyTime = parentMotion.keyTimes![index]
+            let keyTime = Float(parentMotion.keyTimes![index])
             let value = parentMotion.values![index]
             //print("parent keyTime \(keyTime): value \(value)")
 
             if let mmdParentNode = value as? SCNNode {
                 // TODO: implement for playingBackward
                 var parentEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime), block: { (animation: CAAnimation, animatedObject: Any, playingBackward: Bool) in
-                    //print("parentEvent: \(keyTime), \(mmdParentNode)")
+                    //print("===== parentEvent: \(keyTime), \(mmdParentNode) =====")
                     if let node = animatedObject as? SCNNode {
                         //print("change parent")
                         if playingBackward {
@@ -1618,12 +1647,46 @@ class MMDPMMReader: MMDReader {
                         } else {
                             mmdParentNode.addChildNode(node)
                         }
+                        
+                        //print("accessory.transform: \(node.transform)")
+                        //print("accessory.presentation.transform: \(node.presentation.transform)")
                     }
                 })
                 parentEvents.append(parentEvent)
                 prevParent = mmdParentNode
             }
         }
+        
+        var prevBlendMode: SCNBlendMode! = .alpha
+        for index in 0..<additiveMotion.keyTimes!.count {
+            let keyTime = additiveMotion.keyTimes![index]
+            let value = additiveMotion.values![index] as! SCNBlendMode
+            
+            var additiveEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime), block: { (animation: CAAnimation, animatedObject: Any, playingBackward: Bool) in
+                
+                print("additiveEvent")
+                if let node = animatedObject as? SCNNode {
+                    if let geometry = node.childNode(withName: "Geometry", recursively: true)?.geometry {
+                        print("setValue")
+                        var blendMode = value
+                        if playingBackward {
+                            blendMode = prevBlendMode
+                        }
+                        if blendMode == .add {
+                            print(".add")
+                        } else if blendMode == .alpha {
+                            print(".alpha")
+                        }
+                        for material in geometry.materials {
+                            material.blendMode = blendMode
+                        }
+                    }
+                }
+            })
+            parentEvents.append(additiveEvent)
+            prevBlendMode = value
+        }
+
         animation.animationEvents = parentEvents
         
         self.accessoryMotions.append(animation)
@@ -1639,15 +1702,18 @@ class MMDPMMReader: MMDReader {
         additiveMotion: CAKeyframeAnimation,
         parentMotion: CAKeyframeAnimation) {
         
-        var frameIndex = 0
-        while frameIndex < posMotion.keyTimes!.count {
+        var frameIndex = posMotion.keyTimes!.count - 1
+        
+        // the frame number might not be sorted
+        while frameIndex >= 0 {
             let k = Int(posMotion.keyTimes![frameIndex])
-            if(k > info.frameNo) {
+            if(k < info.frameNo) {
                 break
             }
             
-            frameIndex += 1
+            frameIndex -= 1
         }
+        frameIndex += 1
         
         if(info.frameNo > self.frameLength) {
             self.frameLength = info.frameNo
@@ -1804,6 +1870,8 @@ class MMDPMMReader: MMDReader {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = .directional
+        lightNode.light!.castsShadow = true
+        //lightNode.light!.shadowMode = .deferred
         lightNode.addAnimation(self.workingLightAnimationGroup, forKey: "motion")
         lightNode.name = "MMDLight"
         

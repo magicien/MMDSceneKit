@@ -47,10 +47,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     open internal(set) var isKnee: Bool = false
     
     // FIXME: internal variant
-    open var ikTargetBone: MMDNode? = nil
+    //open var ikTargetBone: MMDNode? = nil
     //public var ikConstraint: SCNIKConstraint? = nil
     internal var ikConstraint: MMDIKConstraint? = nil
     open var ikArray: [MMDIKConstraint]? = nil
+    //open var ikEffector: MMDNode? = nil
 
     /*
     public var ikAnim: Float = 0.0 {
@@ -288,6 +289,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
             
             if let animations = group.animations {
                 for anim in animations {
+                    var hasEffector = false
                     let newAnim = anim.copy()
                     
                     if let keyAnim = newAnim as? CAKeyframeAnimation {
@@ -324,6 +326,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                             
                                                     
                         } else if bone != nil {
+                            
                             if keyAnim.keyPath!.hasSuffix(".translation.x") {
                                 // FIXME: clone values
                             
@@ -332,17 +335,59 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                                     let newValue = origValue + Float(bone!.position.x)
                                     keyAnim.values![index] = newValue
                                 }
+                                
+                                //if let mmdBone = bone as? MMDNode {
+                                //    if (mmdBone.translateEffector != nil) {
+                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                                //        hasEffector = true
+                                //    }
+                                //}
                             }else if keyAnim.keyPath!.hasSuffix(".translation.y") {
                                 for index in 0..<keyAnim.values!.count {
                                     let origValue = keyAnim.values![index] as! Float
                                     let newValue = origValue + Float(bone!.position.y)
                                     keyAnim.values![index] = newValue
                                 }
+                                
+                                //if let mmdBone = bone as? MMDNode {
+                                //    if (mmdBone.translateEffector != nil) {
+                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                                //        hasEffector = true
+                                //    }
+                                //}
                             }else if keyAnim.keyPath!.hasSuffix(".translation.z") {
                                 for index in 0..<keyAnim.values!.count {
                                     let origValue = keyAnim.values![index] as! Float
                                     let newValue = origValue + Float(bone!.position.z)
                                     keyAnim.values![index] = newValue
+                                }
+                                
+                                //if let mmdBone = bone as? MMDNode {
+                                //    if (mmdBone.translateEffector != nil) {
+                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                                //        hasEffector = true
+                                //    }
+                                //}
+                            }else if keyAnim.keyPath!.hasSuffix(".quaternion") {
+                                //if let mmdBone = bone as? MMDNode {
+                                //    if let rotateEffector = mmdBone.rotateEffector {
+                                //        if rotateEffector.ikEffector != nil {
+                                //            hasEffector = true
+                                //        }
+                                //    }
+                                //}
+                            }
+                            
+                            if keyAnim.values!.count == 1 {
+                                // remove the meanless animation
+                                if let value = keyAnim.values![0] as? SCNVector3 {
+                                    if value.x == 0 && value.y == 0 && value.z == 0 {
+                                        hasEffector = true
+                                    }
+                                } else if let value = keyAnim.values![0] as? SCNVector4 {
+                                    if value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 {
+                                        hasEffector = true
+                                    }
                                 }
                             }
                         } else {
@@ -352,7 +397,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                     }else{
                         // not CAKeyframeAnimation: nothing to do so far
                     }
-                    newGroup.animations!.append(newAnim as! CAAnimation)
+                    
+                    // FIXME: don't remove animation even if it has the effector.
+                    if !hasEffector {
+                        newGroup.animations!.append(newAnim as! CAAnimation)
+                    }
                 }
             }
             super.addAnimation(newGroup, forKey: key)
@@ -404,7 +453,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                         // worldTransform -> localTransform (rotation)
                         v = inverseCross(v, bone.parent!.presentation.worldTransform)
                         v = normalize(v)
-                        
+                                                
                         if bone.isKnee {
                             if v.x > 0 {
                                 v.x = 1.0
@@ -454,10 +503,22 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                             }
                         }
                         
-                        
                         // <update bone matrices>
+                        
+                        
                     } // boneArray
                 } // iteration
+                
+                /*
+                if targetBone!.name == "左足首" {
+                    let targetPosition = getWorldPosition(targetBone?.presentation)
+                    let ikPosition = getWorldPosition(ikBone?.presentation)
+                    print("target: \(targetBone!.name) \(targetPosition)")
+                    print("ik: \(ikBone!.name) \(ikPosition)")
+                    print("")
+                }
+                */
+
             } // ikArray
         }
         
@@ -466,8 +527,9 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     
     open func updateEffector() {
         if let rotateEffector = self.rotateEffector {
+            //print("rotateEffector: \(rotateEffector)")
             //print("\(self.name)")
-            //print("    \(self.presentation.rotation)")
+            //print("    before: \(self.presentation.rotation)")
             var rot = rotateEffector.presentation.rotation
             if self.rotateEffectRate == 1.0 {
                 self.rotation = rot
@@ -477,7 +539,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                 let newQuat = self.slerp(src: orgQuat, dst: quat, rate: self.rotateEffectRate)
                 self.rotation = self.quatToRotation(newQuat)
             }
-            //print("    \(self.presentation.rotation)")
+            //print("    after: \(self.presentation.rotation)")
         }
         
         if let translateEffector = self.translateEffector {

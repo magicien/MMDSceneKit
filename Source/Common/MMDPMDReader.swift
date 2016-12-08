@@ -11,6 +11,61 @@ public let MMD_USES_SCNMORPHER = true
 
 import SceneKit
 
+/*
+// for debug
+class MMDMaterial: SCNMaterial {
+    override func value(forKey key: String) -> Any? {
+        print("Material value(forKey: \(key))")
+        return super.value(forKey: key)
+    }
+    
+    override func value(forKeyPath keyPath: String) -> Any? {
+        print("Material value(forKeyPath: \(keyPath)")
+        return super.value(forKeyPath: keyPath)
+    }
+    
+    override func value(forUndefinedKey key: String) -> Any? {
+        print("Material value(forUndefinedKey: \(key)")
+        return super.value(forUndefinedKey: key)
+    }
+    
+    override func setValue(_ value: Any?, forKey key: String) {
+        print("Material setValue(_: \(value) forKey: \(key)")
+        super.setValue(value, forKey: key)
+    }
+
+    override func setValue(_ value: Any?, forKeyPath keyPath: String) {
+        print("Material setValue(_: \(value) forKeyPath: \(keyPath)")
+        super.setValue(value, forKeyPath: keyPath)
+    }
+    
+    override func setValue(_ value: Any?, forUndefinedKey key: String) {
+        print("Material setValue(_: \(value) forUndefinedKey: \(key)")
+        super.setValue(value, forUndefinedKey: key)
+    }
+    
+    override func mutableSetValue(forKey key: String) -> NSMutableSet {
+        print("Material mutableSetValue(forKey: \(key)")
+        return super.mutableSetValue(forKey: key)
+    }
+    
+    override func mutableSetValue(forKeyPath keyPath: String) -> NSMutableSet {
+        print("Material mutableSetValue(forKeyPath: \(keyPath)")
+        return super.mutableSetValue(forKeyPath: keyPath)
+    }
+    
+    override func mutableOrderedSetValue(forKey key: String) -> NSMutableOrderedSet {
+        print("Material mutableOrderedSetValue(forKey: \(key)")
+        return super.mutableOrderedSetValue(forKey: key)
+    }
+    
+    override func mutableOrderedSetValue(forKeyPath keyPath: String) -> NSMutableOrderedSet {
+        print("Material mutableOrderedSetValue(forKeyPath: \(keyPath)")
+        return super.mutableOrderedSetValue(forKeyPath: keyPath)
+    }
+}
+*/
+
 class MMDPMDReader: MMDReader {
     fileprivate var workingNode: MMDNode! = nil
     
@@ -35,6 +90,7 @@ class MMDPMDReader: MMDReader {
     // MARK: material data
     fileprivate var materialCount = 0
     fileprivate var materialArray: [SCNMaterial]! = nil
+    //fileprivate var materialArray: [MMDMaterial]! = nil
     fileprivate var materialIndexCountArray: [Int]! = nil
     
     // MARK: bone data
@@ -106,6 +162,7 @@ class MMDPMDReader: MMDReader {
         
         self.materialCount = 0
         self.materialArray = [SCNMaterial]()
+        //self.materialArray = [MMDMaterial]()
         self.materialIndexCountArray = [Int]()
         
         self.boneCount = 0
@@ -148,6 +205,8 @@ class MMDPMDReader: MMDReader {
         self.createGeometry()
         self.createFaceMorph()
         
+        self.workingNode.categoryBitMask = 0x02 // debug
+
         // read additional data
         
         if (self.pos >= self.length) {
@@ -252,6 +311,7 @@ class MMDPMDReader: MMDReader {
         
         for _ in 0..<self.materialCount {
             let material = SCNMaterial()
+            //let material = MMDMaterial()
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 
@@ -261,8 +321,7 @@ class MMDPMDReader: MMDReader {
                 //material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
                 //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                //material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                material.ambient.contents = material.diffuse.contents
+                material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 
             #elseif os(OSX)
                 
@@ -272,8 +331,7 @@ class MMDPMDReader: MMDReader {
                 //material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
                 //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 material.emission.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                //material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                material.ambient.contents = material.diffuse.contents
+                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 
             #endif
             
@@ -288,13 +346,19 @@ class MMDPMDReader: MMDReader {
                 
                 print("setTexture: \(fileName)")
                 
-                material.ambient.contents = material.emission.contents
+                //material.ambient.contents = material.emission.contents
                 #if os(iOS) || os(tvOS) || os(watchOS)
-                    material.diffuse.contents = UIImage(contentsOfFile: fileName)
-                    material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    //material.diffuse.contents = UIImage(contentsOfFile: fileName)
+                    //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    //material.diffuse.contents = self.createTexture(fileName: fileName, light: material.diffuse.contents)
+                    //material.emission.contents = self.createTexture(fileName: fileName, light: material.emission.contents)
+                    material.multiply.contents = UIImage(contentsOfFile: fileName)
                 #elseif os(OSX)
-                    material.diffuse.contents = NSImage(contentsOfFile: fileName)
-                    material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    //material.diffuse.contents = NSImage(contentsOfFile: fileName)
+                    //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                    //material.diffuse.contents = self.createTexture(fileName: fileName, light: material.diffuse.contents as! OSColor)
+                    //material.emission.contents = self.createTexture(fileName: fileName, light: material.emission.contents as! OSColor)
+                    material.multiply.contents = NSImage(contentsOfFile: fileName)
                 #endif
             }
             material.isDoubleSided = true
@@ -402,14 +466,14 @@ class MMDPMDReader: MMDReader {
             let bonePos = bonePositionArray[index]
             let matrix = SCNMatrix4MakeTranslation(-bonePos.x, -bonePos.y, -bonePos.z)
             
-            self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: matrix))
+            self.boneInverseMatrixArray.append(NSValue(scnMatrix4: matrix))
         }
         
         self.boneArray.append(self.rootBone)
-        self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: SCNMatrix4Identity))
+        self.boneInverseMatrixArray.append(NSValue(scnMatrix4: SCNMatrix4Identity))
 
         //self.boneArray.append(self.workingNode)
-        //self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
+        //self.boneInverseMatrixArray.append(NSValue(SCNMatrix4: SCNMatrix4Identity))
         
         // set constarint to knees
         /*

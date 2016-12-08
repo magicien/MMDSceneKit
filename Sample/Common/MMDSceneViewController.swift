@@ -25,15 +25,20 @@ import SceneKit
     public typealias MMDView = WKInterfaceSCNScene
 #endif
 
+var mikuNode: MMDNode! = nil
+
 public class MMDSceneViewController: SuperViewController {
     
     /**
      * setup game scene
      */
     public func setupGameScene(_ scene: SCNScene, view: MMDView) {
-        let mmdScene = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
-        //mmdScene.isPaused = true
         
+        //let vpdData = MMDSceneSource(named: "art5.scnassets/右手グー.vpd")!.getMotion()!
+        //return
+        
+        //let mmdScene = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
+        let mmdScene = MMDSceneSource(named: "art3.scnassets/宝箱開け.pmm")!.getScene()!
         view.scene = mmdScene
         view.delegate = MMDIKController.sharedController
         view.showsStatistics = true
@@ -48,13 +53,25 @@ public class MMDSceneViewController: SuperViewController {
         #endif
         
         /*
-        let later = DispatchTime.now() + 5
-        DispatchQueue.main.asyncAfter(deadline: later) {
-            mmdScene.isPaused = false
+        print("shader...")
+        if let path = Bundle.main.path(forResource: "MMDShader", ofType: "plist") {
+            if let dict1 = NSDictionary(contentsOfFile: path) {
+                print("found shader.")
+                let dict = dict1 as! [String : AnyObject]
+                let technique = SCNTechnique(dictionary:dict)
+                print("technique: \(technique)")
+                var screenSize: Float = Float(max(view.frame.size.height, view.frame.size.width))
+                
+                let customData = NSData(bytes: &screenSize, length: MemoryLayout<Float>.size)
+                technique?.setValue(customData, forKey: "screenSize")
+
+                view.technique = technique
+            }
         }
- */
-        //mmdScene.isPaused = false
+         */
+        
         return
+        
         
         // create and add a camera to the scene
         //let cameraNode = SCNNode()
@@ -67,11 +84,12 @@ public class MMDSceneViewController: SuperViewController {
         // create and add a light to the scene
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
-        lightNode.light!.type = SCNLight.LightType.omni
+        lightNode.light!.type = SCNLight.LightType.directional
         lightNode.position = SCNVector3(x: 0, y: 100, z: 10)
         scene.rootNode.addChildNode(lightNode)
         
         // create and add an ambient light to the scene
+        /*
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
         ambientLightNode.light!.type = SCNLight.LightType.ambient
@@ -82,15 +100,33 @@ public class MMDSceneViewController: SuperViewController {
         #endif
 
         scene.rootNode.addChildNode(ambientLightNode)
+        */
+        
         
         // create a character node from file
-        let modelNode = MMDSceneSource(named: "art1.scnassets/miku.pmd")!.getModel()!
+        //let modelNode = MMDSceneSource(named: "art1.scnassets/miku.pmd")!.getModel()!
         //let modelNode = MMDSceneSource(named: "art1.scnassets/初音ミク イミテーションｖ1ミニマム2.pmx")!.getModel()!
         //let modelNode = MMDSceneSource(named: "art1.scnassets/Tda式初音ミク・アペンド_Ver1.00_ボーン未改造.pmx")!.getModel()!
-        //let modelNode = MMDSceneSource(named: "art1.scnassets/una/音街ウナ（公式モデル）Sugar.pmx")!.getModel()!
+        let modelNode = MMDSceneSource(named: "art4.scnassets/una/音街ウナ（公式モデル）Sugar.pmx")!.getModel()!
         scene.rootNode.addChildNode(modelNode)
+        mikuNode = modelNode
+        
+        //view.debugOptions = .showPhysicsShapes
+
+        /*
+        let debugPath = Bundle.main.path(forResource: "MMDPostShader", ofType: "plist")
+
+        if let path = Bundle.main.path(forResource: "MMDPostShader", ofType: "plist") {
+            if let dict1 = NSDictionary(contentsOfFile: path) {
+                let dict = dict1 as! [String : AnyObject]
+                let technique = SCNTechnique(dictionary:dict)
+                view.technique = technique
+            }
+        }
+         */
         
         // create a background object from file
+        /*
 #if !os(watchOS)
         // This X model is too big for watchOS...
     
@@ -101,35 +137,35 @@ public class MMDSceneViewController: SuperViewController {
         scene.rootNode.addChildNode(xNode)
         print("Read XFile: \(-timer.timeIntervalSinceNow) sec.")
 #endif
+         */
 
-        //let stage = MMDSceneSource(named: "art2.scnassets/DTE SPiCa Stage/1.pmx")!.getModel()!
-        //scene.rootNode.addChildNode(stage)
+        let stage = MMDSceneSource(named: "art4.scnassets/DTE SPiCa Stage/1.pmx")!.getModel()!
+        scene.rootNode.addChildNode(stage)
         
-        //let cameraMotion = MMDSceneSource(named: "art2.scnassets/Shake it! Camera by RituPepper.vmd")!.getMotion()!
-        //cameraMotion.usesSceneTimeBase = true
         
 #if !os(watchOS)
+        let cameraMotion = MMDSceneSource(named: "art4.scnassets/Shake it! Camera by RituPepper.vmd")!.getMotion()!
+
         // animate the 3d object
-        let motion = MMDSceneSource(named: "art2.scnassets/running.vmd")!.getMotion()!
+        //let motion = MMDSceneSource(named: "art2.scnassets/running.vmd")!.getMotion()!
         //let motion = MMDSceneSource(named: "art2.scnassets/AzatokawaiiTurn.vmd")!.getMotion()!
-        //let motion = MMDSceneSource(named: "art2.scnassets/shakeit_miku.vmd")!.getMotion()!
-        motion.isRemovedOnCompletion = false
-        motion.repeatCount = Float.infinity
+        let motion = MMDSceneSource(named: "art4.scnassets/shakeit_vmd/shakeit_miku.vmd")!.getMotion()!
+        //motion.isRemovedOnCompletion = false
+        //motion.repeatCount = Float.infinity
         //motion.usesSceneTimeBase = true
         modelNode.addAnimation(motion, forKey: "motion")
     
-        //cameraNode.addAnimation(cameraMotion, forKey: "shakeit")
+        cameraNode.addAnimation(cameraMotion, forKey: "shakeit")
 #else
         // rotate the model instead of animating...
         modelNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 2, z: 0, duration: 1)))
 #endif
         
-        modelNode.childNodes[0].position = SCNVector3Make(0, 50.0, 0.0)
-        //modelNode.childNodes[0].position = SCNVector3Make(0.0, 0.0, 0.0)
+        //modelNode.childNodes[0].position = SCNVector3Make(0, 50.0, 0.0)
+        modelNode.childNodes[0].position = SCNVector3Make(0.0, 0.0, 0.0)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 50, z: 40)
-
+        //cameraNode.position = SCNVector3(x: 0, y: 50, z: 40)
         
         // set the scene to the view
         view.scene = scene

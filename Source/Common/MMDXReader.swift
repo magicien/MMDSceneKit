@@ -8,19 +8,7 @@
 
 import SceneKit
 
-#if os(iOS) || os(tvOS) || os(watchOS)
-    typealias OSFloat = Float
-    typealias OSColor = UIColor
-    typealias OSImage = UIImage
-#elseif os(OSX)
-    typealias OSFloat = CGFloat
-    typealias OSColor = NSColor
-    typealias OSImage = NSImage
-#endif
-    
-    
-
-class MMDXReader {
+class MMDXReader : MMDReader {
     fileprivate var workingNode: MMDNode! = nil
     fileprivate var workingGeometry: SCNGeometry! = nil
     fileprivate var workingGeometryNode: SCNNode! = nil
@@ -70,13 +58,14 @@ class MMDXReader {
     // geometry data
     fileprivate var elementArray: [SCNGeometryElement]! = nil
     
-    internal var directoryPath: String! = ""
-    internal var binaryData: Data! = nil
-    internal var length = 0
+    //internal var directoryPath: String! = ""
+    //internal var binaryData: Data! = nil
+    //internal var length = 0
     
-    internal init(data: Data!, directoryPath: String! = "") {
-        self.directoryPath = directoryPath
-        self.binaryData = data
+    internal override init(data: Data!, directoryPath: String! = "") {
+        super.init(data: data, directoryPath: directoryPath)
+        //self.directoryPath = directoryPath
+        //self.binaryData = data
         self.offset = 0
         
         let nsString = NSString(data: self.binaryData, encoding: String.Encoding.shiftJIS.rawValue)
@@ -143,6 +132,8 @@ class MMDXReader {
         
         self.workingNode.addChildNode(self.workingGeometryNode)
         self.workingNode.castsShadow = true
+        
+        self.workingNode.categoryBitMask = 0x02 // debug
         
         return self.workingNode
     }
@@ -894,7 +885,7 @@ class MMDXReader {
     }
     
     fileprivate func IndexedColor() -> UIColor {
-        let index = self.getInt()
+        let index: Int? = self.getInt()
         let color = self.ColorRGBA()
         // color.index = index
         
@@ -933,7 +924,7 @@ class MMDXReader {
     }
     
     private func IndexedColor() -> NSColor {
-        let index = self.getInt()
+        let index: Int? = self.getInt()
         let color = self.ColorRGBA()
         // color.index = index
     
@@ -974,9 +965,9 @@ class MMDXReader {
     fileprivate func Header() -> Bool {
         self.getLeftBrace()
         
-        let major = self.getInt()
-        let minor = self.getInt()
-        let flags = self.getInt()
+        let major: Int? = self.getInt()
+        let minor: Int? = self.getInt()
+        let flags: Int? = self.getInt()
         
         self.getRightBrace()
         
@@ -988,8 +979,8 @@ class MMDXReader {
         
         self.getLeftBrace()
         
-        material.ambient.contents = self.ColorRGBA()
-        material.diffuse.contents = material.ambient.contents
+        material.diffuse.contents = self.ColorRGBA()
+        material.ambient.contents = material.diffuse.contents
         material.shininess = CGFloat(self.getFloat()!)
         material.specular.contents = self.ColorRGB()
         material.emission.contents = self.ColorRGB()
@@ -1007,11 +998,17 @@ class MMDXReader {
                 #endif
                 
                 if image != nil {
-                    material.ambient.contents = black
-                    //material.emission.contents = black
-                    material.diffuse.contents = image
+                    //material.ambient.contents = black
+                    material.emission.contents = self.createTexture(image!, light: material.emission.contents as! OSColor)
+                    material.emission.wrapS = .repeat
+                    material.emission.wrapT = .repeat
+                    material.diffuse.contents = self.createTexture(image!, light: material.diffuse.contents as! OSColor)
                     material.diffuse.wrapS = .repeat
                     material.diffuse.wrapT = .repeat
+                    
+                    //material.multiply.contents = image
+                    //material.multiply.wrapS = .repeat
+                    //material.multiply.wrapT = .repeat
                 }
             }
         }

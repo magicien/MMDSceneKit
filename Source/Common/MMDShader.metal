@@ -23,7 +23,7 @@ struct VertexInput {
     float3 position [[attribute(SCNVertexSemanticPosition)]];
     float3 normal   [[attribute(SCNVertexSemanticNormal)]];
     float2 texcoord [[attribute(SCNVertexSemanticTexcoord0)]];
-    float2 texcoord2 [[attribute(SCNVertexSemanticTexcoord1)]];
+//    float2 texcoord2 [[attribute(SCNVertexSemanticTexcoord1)]];
 };
 
 struct VertexOutput {
@@ -49,7 +49,7 @@ struct MaterialUniform {
 //    float4 lightAmbientColor;
 //    float4 lightDiffuseColor;
 //    float4 lightSpecularColor;
-    float sepcularPower;
+    float specularPower;
     bool useTexture;
     bool useToon;
     bool useSphereMap;
@@ -69,11 +69,13 @@ vertex VertexOutput mmdVertex(VertexInput vIn [[ stage_in ]],
     
     vOut.position = scn_node.modelViewProjectionTransform * inPosition;
     vOut.eye = m.cameraPosition - float3(scn_node.modelTransform * inPosition);
-    vOut.normal  = normalize( float3x3(scn_node.modelTransform) * vIn.normal );
+    
+    float3x3 transRot = float3x3(scn_node.modelTransform[0].xyz, scn_node.modelTransform[1].xyz, scn_node.modelTransform[2].xyz);
+    vOut.normal  = normalize( transRot * vIn.normal );
     vOut.color.rgb = m.ambientColor.rgb;
     
     if(!m.useToon){
-        vOut.color.rgb += max(0, dot(vOut.normal, -m.lightDirection)) * m.diffuseColor.rgb;
+        vOut.color.rgb += fmax(0.0, dot(vOut.normal, -m.lightDirection)) * m.diffuseColor.rgb;
     }
     vOut.color.a = m.diffuseColor.a;
     vOut.color = saturate(vOut.color);
@@ -81,16 +83,16 @@ vertex VertexOutput mmdVertex(VertexInput vIn [[ stage_in ]],
     
     if (m.useSphereMap) {
         if (m.useSubTexture) {
-            vOut.spTexcoord = vIn.texcoord2;
+            //vOut.spTexcoord = vIn.texcoord2;
         } else {
-            float2 normalWV = float2(float3x3(scn_node.modelTransform) * vOut.normal);
+            float2 normalWV = (transRot * vOut.normal).xy;
             vOut.spTexcoord.x = normalWV.x * 0.5 + 0.5;
             vOut.spTexcoord.y = -normalWV.y * 0.5 + 0.5;
         }
     }
     
     float3 halfVector = normalize( normalize(vOut.eye) - m.lightDirection );
-    vOut.specular = pow( max(0, dot(halfVector, vOut.normal)), m.specularPower) * m.specularColor;
+    vOut.specular = pow( fmax(0.0, dot(halfVector, vOut.normal)), m.specularPower) * m.specularColor;
 
     return vOut;
 }
@@ -119,8 +121,126 @@ fragment half4 mmdFragment(VertexOutput fIn [[ stage_in ]],
         float lightNormal = dot(fIn.normal, -m.lightDirection);
         color *= toonTexture.sample(defaultSampler, float2(0, 0.5 - lightNormal * 0.5));
     }
-    color.rgb += fIn.specular;
+    color.rgb += fIn.specular.rgb;
     
     return half4(color);
 }
 */
+
+#include <metal_stdlib>
+using namespace metal;
+#include <SceneKit/scn_metal>
+
+
+// 頂点属性
+struct VertexInput {
+    float3 position [[ attribute(SCNVertexSemanticPosition) ]];
+//    float3 normal [[ attribute(SCNVertexSemanticNormal) ]];
+//    float4 color [[ attribute(SCNVertexSemanticColor) ]];
+    ushort2 boneIndices [[ attribute(SCNVertexSemanticBoneIndices) ]];
+    float2 boneWeights [[ attribute(SCNVertexSemanticBoneWeights) ]];
+    
+    float2 texcoord [[ attribute(SCNVertexSemanticTexcoord0) ]];
+};
+
+// モデルデータ
+struct NodeBuffer {
+    float4x4 modelTransform;
+    float4x4 modelViewProjectionTransform;
+//    float4x4 position_transforms[4];
+};
+
+// 変数
+/*
+struct CustomBuffer {
+    float4 color;
+};
+ */
+
+struct VertexOutput {
+    float4 position [[ position ]];
+    float2 texcoord;
+//    float4 color;
+};
+
+struct CustomBuffer {
+    float screenSize;
+};
+
+
+//vertex VertexOut textureVertex(VertexInput in [[ stage_in ]],
+//                               constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
+//                               constant NodeBuffer& scn_node [[ buffer(1) ]],
+//                               constant CustomBuffer& custom [[ buffer(2) ]]) {
+
+vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
+                           uint iid [[ instance_id ]],
+                           uint baseId [[ base_instance ]],
+                               constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
+                               constant NodeBuffer* scn_node [[ buffer(1) ]]) {
+    VertexOutput out;
+    float4x4 mat = float4x4(0);
+    mat += scn_node[in.boneIndices[0] + baseId].modelTransform * in.boneWeights[0];
+    mat += scn_node[in.boneIndices[1] + baseId].modelTransform * in.boneWeights[1];
+    
+    //out.position = scn_node[iid].modelViewProjectionTransform * mat * float4(in.position, 1.0);
+    out.position = scn_frame.viewProjectionTransform * mat * float4(in.position, 1.0);
+    out.texcoord = in.texcoord;
+    return out;
+}
+
+fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
+                               texture2d<float> texture [[ texture(0) ]]) {
+    constexpr sampler defaultSampler;
+    float4 color;
+//    color = texture.sample(defaultSampler, in.texcoord) + in.color;
+    color = texture.sample(defaultSampler, in.texcoord);
+//    color = in.position.z;
+    return half4(color);
+}
+
+
+vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
+                                     constant NodeBuffer& scn_node [[ buffer(0) ]])
+//                                     constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
+//                                     constant NodeBuffer& scn_node [[ buffer(1) ]])
+//                                     constant float& screenSize [[ buffer(2) ]])
+{
+    VertexOutput out;
+    /*
+    float4 in_pos0 = float4(in.position, 1.0);
+    float4 in_pos1 = float4(in.position + in.normal, 1.0);
+    
+    float edgeSize = 1.0;
+    float screenSize = 200; // debug
+    
+    float4 pos0 = scn_node.modelViewProjectionTransform * in_pos0;
+    float4 pos1 = scn_node.modelViewProjectionTransform * in_pos1;
+    
+    pos0.xy /= pos0.w;
+    pos1.xy /= pos1.w;
+    
+    float d = distance(pos0.xy, pos1.xy);
+    float coeff = screenSize * d;
+    if(coeff > edgeSize){
+        coeff = edgeSize / coeff;
+    }
+    */
+    
+    //out.position = scn_node.modelViewProjectionTransform * float4(in.position + in.normal * coeff, 1.0);
+    //out.position = float4(in.position, 1.0) * scn_node.modelViewProjectionTransform;
+    out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
+    //out.position = float4(in.position, 1.0);
+    
+    return out;
+};
+
+
+fragment half4 pass_edge_fragment(VertexOutput in [[stage_in]])
+//                                          texture2d<float, access::sample> colorSampler [[texture(0)]])
+{
+    float4 color = float4(0.0, 0.0, 1.0, 1.0);
+    
+    return half4(color);
+};
+

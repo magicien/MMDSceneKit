@@ -35,6 +35,7 @@ class MMDVMDReader: MMDReader {
     // MARK: frame data
     private var frameCount = 0
     private var frameLength = 0
+    public var fps = 30.0
     
     // MARK: face motion data
     private var faceAnimationHash: [String: CAKeyframeAnimation]! = nil
@@ -175,18 +176,18 @@ class MMDVMDReader: MMDReader {
                 self.animationHash["rot:\(boneName)"] = rotMotion
             }
             
-            var frameIndex = 0
+            var frameIndex = posXMotion!.keyTimes!.count - 1
             let frameNo = Int(getUnsignedInt())
             
-            //for index in 0...posXMotion!.keyTimes!.count {
-            while frameIndex < posXMotion!.keyTimes!.count {
+            while frameIndex >= 0 {
                 let k = Int(posXMotion!.keyTimes![frameIndex])
-                if(k > frameNo) {
+                if(k < frameNo) {
                     break
                 }
                 
-                frameIndex += 1
+                frameIndex -= 1
             }
+            frameIndex += 1
             
             posXMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             posYMotion!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
@@ -197,11 +198,10 @@ class MMDVMDReader: MMDReader {
                 frameLength = frameNo
             }
             
-            //let position = SCNVector3.init(getFloat(), getFloat(), getFloat())
             let posX = NSNumber(value: getFloat())
             let posY = NSNumber(value: getFloat())
             let posZ = NSNumber(value: -getFloat())
-            var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
+            var rotate = SCNQuaternion(-getFloat(), -getFloat(), getFloat(), getFloat())
             
             normalize(&rotate)
             
@@ -210,7 +210,7 @@ class MMDVMDReader: MMDReader {
                 interpolation.append(Float(getUnsignedByte()) / 127.0)
             }
             
-            let timingX = CAMediaTimingFunction.init(controlPoints:
+            let timingX = CAMediaTimingFunction(controlPoints:
                 interpolation[0],
                 interpolation[4],
                 interpolation[8],
@@ -218,7 +218,7 @@ class MMDVMDReader: MMDReader {
             )
             posXMotion!.timingFunctions!.insert(timingX, at: frameIndex)
             
-            let timingY = CAMediaTimingFunction.init(controlPoints:
+            let timingY = CAMediaTimingFunction(controlPoints:
                 interpolation[1],
                 interpolation[5],
                 interpolation[9],
@@ -226,7 +226,7 @@ class MMDVMDReader: MMDReader {
             )
             posYMotion!.timingFunctions!.insert(timingY, at: frameIndex)
             
-            let timingZ = CAMediaTimingFunction.init(controlPoints:
+            let timingZ = CAMediaTimingFunction(controlPoints:
                 interpolation[2],
                 interpolation[6],
                 interpolation[10],
@@ -234,7 +234,7 @@ class MMDVMDReader: MMDReader {
             )
             posZMotion!.timingFunctions!.insert(timingZ, at: frameIndex)
             
-            let timingRot = CAMediaTimingFunction.init(controlPoints:
+            let timingRot = CAMediaTimingFunction(controlPoints:
                 interpolation[3],
                 interpolation[7],
                 interpolation[11],
@@ -245,7 +245,7 @@ class MMDVMDReader: MMDReader {
             posXMotion!.values!.insert(posX, at: frameIndex)
             posYMotion!.values!.insert(posY, at: frameIndex)
             posZMotion!.values!.insert(posZ, at: frameIndex)
-            rotMotion!.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
+            rotMotion!.values!.insert(NSValue(scnVector4: rotate), at: frameIndex)
         }
         
     }
@@ -254,7 +254,6 @@ class MMDVMDReader: MMDReader {
      */
     private func readFaceMotion() {
         let faceFrameCount = getUnsignedInt()
-        //let timingFunc = CAMediaTimingFunction(controlPoints: 1, 0, 1, 1)
         let timingFunc = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         let bytesPerFrame = 23
         
@@ -282,15 +281,16 @@ class MMDVMDReader: MMDReader {
                 self.faceAnimationHash[name] = animation
             }
             
-            var frameIndex = 0
-            while frameIndex < animation!.keyTimes!.count {
+            var frameIndex = animation!.keyTimes!.count - 1
+            while frameIndex >= 0 {
                 let k = Int(animation!.keyTimes![frameIndex])
-                if(k > frameNo) {
+                if(k < frameNo) {
                     break
                 }
                 
-                frameIndex += 1
+                frameIndex -= 1
             }
+            frameIndex += 1
             
             animation!.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             animation!.values!.insert(factor, at:  frameIndex)
@@ -301,37 +301,44 @@ class MMDVMDReader: MMDReader {
     /**
      */
     private func createAnimations() {
-        let duration = Double(self.frameLength) / 30.0
+        let duration = Double(self.frameLength) / self.fps
         print("bone frameLength: \(self.frameLength)")
         
         for (_, motion) in self.animationHash {
+            let motionLength = Double(motion.keyTimes!.last!)
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
-            motion.duration = duration
+            motion.duration = motionLength / self.fps
             motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
             
             self.workingAnimationGroup.animations!.append(motion)
         }
         
         for (_, motion) in self.faceAnimationHash {
             print("faceAnimation: \(motion.keyPath!)")
+            let motionLength = Double(motion.keyTimes!.last!)
+
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
-            motion.duration = duration
+            motion.duration = motionLength / self.fps
             motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
             
             self.workingAnimationGroup.animations!.append(motion)
         }
         
         /*
         let motion = CAKeyframeAnimation(keyPath: "faceAnimation")
-        let timing = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionLinear)
+        let timing = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         motion.values = [NSNumber(float: 0), NSNumber(float: 1)]
         motion.keyTimes = [NSNumber(float: 0), NSNumber(float: 1)]
         motion.timingFunctions = [timing, timing]
@@ -342,6 +349,8 @@ class MMDVMDReader: MMDReader {
         
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
+        self.workingAnimationGroup.isRemovedOnCompletion = false
+        self.workingAnimationGroup.fillMode = kCAFillModeForwards
     }
     
     /**
@@ -370,10 +379,9 @@ class MMDVMDReader: MMDReader {
         let posXMotion = CAKeyframeAnimation(keyPath: "transform.translation.x")
         let posYMotion = CAKeyframeAnimation(keyPath: "transform.translation.y")
         let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
-        //let rotMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
-        let rotZMotion = CAKeyframeAnimation(keyPath: "eulerAngles.z")
-        let rotXMotion = CAKeyframeAnimation(keyPath: "eulerAngles.x")
-        let rotYMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROT_NODE_NAME).eulerAngles.y")
+        let rotZMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTZ_NODE_NAME).eulerAngles.z")
+        let rotXMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTX_NODE_NAME).eulerAngles.x")
+        let rotYMotion = CAKeyframeAnimation(keyPath: "eulerAngles.y")
         let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.yFov")
         let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
         
@@ -408,18 +416,19 @@ class MMDVMDReader: MMDReader {
         //persMotion.timingFunctions = [CAMediaTimingFunction]()
         
         for index in 0..<self.frameCount {
-            var frameIndex = 0
+            var frameIndex = distanceMotion.keyTimes!.count - 1
             let frameNo = Int(getUnsignedInt())
             
             // the frame number might not be sorted
-            while frameIndex < posXMotion.keyTimes!.count {
-                let k = Int(posXMotion.keyTimes![frameIndex])
-                if(k > frameNo) {
+            while frameIndex >= 0 {
+                let k = Int(distanceMotion.keyTimes![frameIndex])
+                if(k < frameNo) {
                     break
                 }
                 
-                frameIndex += 1
+                frameIndex -= 1
             }
+            frameIndex += 1
             
             distanceMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
             posXMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
@@ -440,35 +449,9 @@ class MMDVMDReader: MMDReader {
             let posY = NSNumber(value: getFloat())
             let posZ = NSNumber(value: -getFloat())
 
-            //var rotate = SCNQuaternion.init(-getFloat(), -getFloat(), getFloat(), getFloat())
-            //normalize(&rotate)
-            let rotX = -getFloat()
+            let rotX = getFloat()
             let rotY = getFloat()
             let rotZ = -getFloat()
-
-            /*
-            let cosX = cos(rotX / 2)
-            let cosY = cos(rotY / 2)
-            let cosZ = cos(rotZ / 2)
-            let sinX = sin(rotX / 2)
-            let sinY = sin(rotY / 2)
-            let sinZ = sin(rotZ / 2)
-
-            var rotate = SCNQuaternion()
-            rotate.x = OSFloat(sinX * cosY * cosZ + cosX * sinY * sinZ)
-            rotate.y = OSFloat(cosX * sinY * cosZ - cosX * cosY * sinZ)
-            rotate.z = OSFloat(cosX * cosY * sinZ - sinX * sinY * cosZ)
-            rotate.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
-            normalize(&rotate)
-            
-            // FIXME: handling over 180 degrees
-            if abs(rotX) > 360 || abs(rotY) > 360 || abs(rotZ) > 360 {
-                // test
-                rotate.w -= 2.0
-            } else if abs(rotX) > 180 || abs(rotY) > 180 || abs(rotZ) > 180 {
-                // test
-            }
-            */
             
             var interpolation = [Float]()
             for _ in 0..<24 {
@@ -481,7 +464,7 @@ class MMDVMDReader: MMDReader {
             let useOrtho = NSNumber(booleanLiteral: (perspective != 0))
             
             
-            let timingX = CAMediaTimingFunction.init(controlPoints:
+            let timingX = CAMediaTimingFunction(controlPoints:
                 interpolation[0],
                                                      interpolation[2],
                                                      interpolation[1],
@@ -489,7 +472,7 @@ class MMDVMDReader: MMDReader {
             )
             posXMotion.timingFunctions!.insert(timingX, at: frameIndex)
             
-            let timingY = CAMediaTimingFunction.init(controlPoints:
+            let timingY = CAMediaTimingFunction(controlPoints:
                 interpolation[4],
                                                      interpolation[6],
                                                      interpolation[5],
@@ -497,7 +480,7 @@ class MMDVMDReader: MMDReader {
             )
             posYMotion.timingFunctions!.insert(timingY, at: frameIndex)
             
-            let timingZ = CAMediaTimingFunction.init(controlPoints:
+            let timingZ = CAMediaTimingFunction(controlPoints:
                 interpolation[8],
                                                      interpolation[10],
                                                      interpolation[9],
@@ -505,7 +488,7 @@ class MMDVMDReader: MMDReader {
             )
             posZMotion.timingFunctions!.insert(timingZ, at: frameIndex)
             
-            let timingRot = CAMediaTimingFunction.init(controlPoints:
+            let timingRot = CAMediaTimingFunction(controlPoints:
                 interpolation[12],
                                                        interpolation[14],
                                                        interpolation[13],
@@ -515,7 +498,7 @@ class MMDVMDReader: MMDReader {
             rotYMotion.timingFunctions!.insert(timingRot, at: frameIndex)
             rotZMotion.timingFunctions!.insert(timingRot, at: frameIndex)
  
-            let timingDistance = CAMediaTimingFunction.init(controlPoints:
+            let timingDistance = CAMediaTimingFunction(controlPoints:
                 interpolation[16],
                                                        interpolation[18],
                                                        interpolation[17],
@@ -523,7 +506,7 @@ class MMDVMDReader: MMDReader {
             )
             distanceMotion.timingFunctions!.insert(timingDistance, at: frameIndex)
 
-            let timingAngle = CAMediaTimingFunction.init(controlPoints:
+            let timingAngle = CAMediaTimingFunction(controlPoints:
                 interpolation[20],
                                                             interpolation[22],
                                                             interpolation[21],
@@ -531,63 +514,10 @@ class MMDVMDReader: MMDReader {
             )
             angleMotion.timingFunctions!.insert(timingAngle, at: frameIndex)
  
-            /*
-            let timingX = CAMediaTimingFunction.init(controlPoints:
-                interpolation[0],
-                                                     interpolation[4],
-                                                     interpolation[8],
-                                                     interpolation[12]
-            )
-            posXMotion.timingFunctions!.insert(timingX, at: frameIndex)
-            
-            let timingY = CAMediaTimingFunction.init(controlPoints:
-                interpolation[1],
-                                                     interpolation[5],
-                                                     interpolation[9],
-                                                     interpolation[13]
-            )
-            posYMotion.timingFunctions!.insert(timingY, at: frameIndex)
-            
-            let timingZ = CAMediaTimingFunction.init(controlPoints:
-                interpolation[2],
-                                                     interpolation[6],
-                                                     interpolation[10],
-                                                     interpolation[14]
-            )
-            posZMotion.timingFunctions!.insert(timingZ, at: frameIndex)
-            
-            let timingRot = CAMediaTimingFunction.init(controlPoints:
-                interpolation[3],
-                                                       interpolation[7],
-                                                       interpolation[11],
-                                                       interpolation[15]
-            )
-            rotXMotion.timingFunctions!.insert(timingRot, at: frameIndex)
-            rotYMotion.timingFunctions!.insert(timingRot, at: frameIndex)
-            rotZMotion.timingFunctions!.insert(timingRot, at: frameIndex)
-            
-            let timingDistance = CAMediaTimingFunction.init(controlPoints:
-                interpolation[16],
-                                                            interpolation[18],
-                                                            interpolation[17],
-                                                            interpolation[19]
-            )
-            distanceMotion.timingFunctions!.insert(timingDistance, at: frameIndex)
-            
-            let timingAngle = CAMediaTimingFunction.init(controlPoints:
-                interpolation[20],
-                                                         interpolation[22],
-                                                         interpolation[21],
-                                                         interpolation[23]
-            )
-            angleMotion.timingFunctions!.insert(timingAngle, at: frameIndex)
-            */
-            
             distanceMotion.values!.insert(distance, at: frameIndex)
             posXMotion.values!.insert(posX, at: frameIndex)
             posYMotion.values!.insert(posY, at: frameIndex)
             posZMotion.values!.insert(posZ, at: frameIndex)
-            //rotMotion.values!.insert(NSValue.init(scnVector4: rotate), at: frameIndex)
             rotXMotion.values!.insert(rotX, at: frameIndex)
             rotYMotion.values!.insert(rotY, at: frameIndex)
             rotZMotion.values!.insert(rotZ, at: frameIndex)
@@ -595,57 +525,307 @@ class MMDVMDReader: MMDReader {
             persMotion.values!.insert(useOrtho, at: frameIndex)
         }
 
-        let duration = Double(self.frameLength) / 30.0
+        let duration = Double(self.frameLength) / self.fps
         print("camera frameLength: \(self.frameLength)")
         
-        distanceMotion.duration = duration
-        posXMotion.duration = duration
-        posYMotion.duration = duration
-        posZMotion.duration = duration
-        rotXMotion.duration = duration
-        rotYMotion.duration = duration
-        rotZMotion.duration = duration
-        angleMotion.duration = duration
-        persMotion.duration = duration
-        
-        distanceMotion.usesSceneTimeBase = false
-        posXMotion.usesSceneTimeBase = false
-        posYMotion.usesSceneTimeBase = false
-        posZMotion.usesSceneTimeBase = false
-        rotXMotion.usesSceneTimeBase = false
-        rotYMotion.usesSceneTimeBase = false
-        rotZMotion.usesSceneTimeBase = false
-        angleMotion.usesSceneTimeBase = false
-        persMotion.usesSceneTimeBase = false
-        
-        self.workingAnimationGroup.animations!.append(distanceMotion)
-        self.workingAnimationGroup.animations!.append(posXMotion)
-        self.workingAnimationGroup.animations!.append(posYMotion)
-        self.workingAnimationGroup.animations!.append(posZMotion)
-        self.workingAnimationGroup.animations!.append(rotXMotion)
-        self.workingAnimationGroup.animations!.append(rotYMotion)
-        self.workingAnimationGroup.animations!.append(rotZMotion)
-        self.workingAnimationGroup.animations!.append(angleMotion)
-        self.workingAnimationGroup.animations!.append(persMotion)
+        for motion in [distanceMotion, posXMotion, posYMotion, posZMotion, rotXMotion, rotYMotion, rotZMotion, angleMotion, persMotion] {
+            let motionLength = Double(motion.keyTimes!.last!)
+            motion.duration = motionLength / self.fps
+            motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
+            
+            for num in 0..<motion.keyTimes!.count {
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
+            }
+            
+            self.workingAnimationGroup.animations!.append(motion)
+        }
+
         self.workingAnimationGroup.duration = duration
         self.workingAnimationGroup.usesSceneTimeBase = false
+        self.workingAnimationGroup.isRemovedOnCompletion = false
+        self.workingAnimationGroup.fillMode = kCAFillModeForwards
     }
     
     /**
      */
     private func readLightMotion() {
+        let lightFrameCount = Int(getUnsignedInt())
+        let bytesPerFrame = 28
+        
+        if lightFrameCount == 0 {
+            return
+        }
+        
+        if self.motionType != .CameraOrLight {
+            print("error: not light motion has light motion data")
+            // skip data
+            skip(bytesPerFrame * lightFrameCount)
+            return
+        }
+        self.motionType = .Light
+        
+        // init values
+        self.frameCount = lightFrameCount
+        self.frameLength = 0
+        
+        let colorMotion = CAKeyframeAnimation(keyPath: "light.color")
+        let directionMotion = CAKeyframeAnimation(keyPath: "transform.quaternion")
+        
+        colorMotion.values = [AnyObject]()
+        directionMotion.values = [AnyObject]()
+        
+        colorMotion.keyTimes = [NSNumber]()
+        directionMotion.keyTimes = [NSNumber]()
+        
+        for index in 0..<self.frameCount {
+            var frameIndex = colorMotion.keyTimes!.count - 1
+            let frameNo = Int(getUnsignedInt())
+            
+            // the frame number might not be sorted
+            while frameIndex >= 0 {
+                let k = Int(colorMotion.keyTimes![frameIndex])
+                if(k < frameNo) {
+                    break
+                }
+                
+                frameIndex -= 1
+            }
+            frameIndex += 1
+            
+            colorMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            directionMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            
+            if(frameNo > self.frameLength) {
+                self.frameLength = frameNo
+            }
+            
+            #if os(iOS) || os(tvOS) || os(watchOS)
+                let color = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+            #elseif os(OSX)
+                let color = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+            #endif
+            colorMotion.values!.insert(color, at: frameIndex)
+            
+            
+            let rotX = getFloat()
+            let rotY = getFloat()
+            let rotZ = getFloat()
+            
+            let cosX = cos(rotX / 2)
+            let cosY = cos(rotY / 2)
+            let cosZ = cos(rotZ / 2)
+            let sinX = sin(rotX / 2)
+            let sinY = sin(rotY / 2)
+            let sinZ = sin(rotZ / 2)
+            
+            var quat = SCNQuaternion()
+            quat.x = OSFloat(sinX * cosY * cosZ + cosX * sinY * sinZ)
+            quat.y = OSFloat(cosX * sinY * cosZ - cosX * cosY * sinZ)
+            quat.z = OSFloat(cosX * cosY * sinZ - sinX * sinY * cosZ)
+            quat.w = OSFloat(cosX * cosY * cosZ + sinX * sinY * sinZ)
+            normalize(&quat)
+            
+            let direction = NSValue(scnVector4: quat)
+            directionMotion.values!.insert(direction, at: frameIndex)
+        }
+        
+        let duration = Double(self.frameLength) / self.fps
+        print("light frameLength: \(self.frameLength)")
+        
+        for motion in [colorMotion, directionMotion] {
+            let motionLength = Double(motion.keyTimes!.last!)
+            motion.duration = motionLength / self.fps
+            motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
+            
+            for num in 0..<motion.keyTimes!.count {
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
+            }
+            
+            self.workingAnimationGroup.animations!.append(motion)
+        }
+        
+        self.workingAnimationGroup.duration = duration
+        self.workingAnimationGroup.usesSceneTimeBase = false
+        self.workingAnimationGroup.isRemovedOnCompletion = false
+        self.workingAnimationGroup.fillMode = kCAFillModeForwards
     }
     
     /**
      */
     private func readShadow() {
+        let shadowFrameCount = Int(getUnsignedInt())
+        let shadowArray = [Any]()
+        let bytesPerFrame = 9
+        
+        if shadowFrameCount == 0 {
+            return
+        }
+        
+        let dataLength = bytesPerFrame * shadowFrameCount
+        if self.motionType != .Model {
+            print("error: not model motion has shadow motion data")
+            // skip data
+            skip(dataLength)
+            return
+        }
+        
+        if getAvailableDataLength() < dataLength {
+            print("this file doesn't have shadow data")
+            skip(dataLength)
+            return
+        }
+        
+        var shadowFrameLength = 0
+        let shadowMotion = CAKeyframeAnimation(keyPath: "????")
+
+        shadowMotion.values = [AnyObject]()
+        
+        shadowMotion.keyTimes = [NSNumber]()
+        
+        for index in 0..<shadowFrameCount {
+            var frameIndex = shadowMotion.keyTimes!.count - 1
+            let frameNo = Int(getUnsignedInt())
+            
+            // the frame number might not be sorted
+            while frameIndex >= 0 {
+                let k = Int(shadowMotion.keyTimes![frameIndex])
+                if(k < frameNo) {
+                    break
+                }
+                
+                frameIndex -= 1
+            }
+            frameIndex += 1
+
+            
+            shadowMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+
+            if(frameNo > self.frameLength) {
+                self.frameLength = frameNo
+            }
+
+            let mode = getUnsignedByte()
+            let distance = getFloat()
+        }
+        
+        let duration = Double(shadowFrameLength) / self.fps
+        print("shadow frameLength: \(shadowFrameLength)")
+        
+        for motion in [shadowMotion] {
+            let motionLength = Double(motion.keyTimes!.last!)
+            motion.duration = motionLength / self.fps
+            motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
+            
+            for num in 0..<motion.keyTimes!.count {
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
+            }
+            
+            self.workingAnimationGroup.animations!.append(motion)
+        }
+        
+        //self.workingAnimationGroup.duration = duration
+        //self.workingAnimationGroup.usesSceneTimeBase = false
+        //self.workingAnimationGroup.isRemovedOnCompletion = false
+        //self.workingAnimationGroup.fillMode = kCAFillModeForwards
     }
     
     /**
      */
     private func readVisibilityAndIK() {
+        let ikFrameCount = Int(getUnsignedInt())
+        let ikArray = [Any]()
+        let bytesPerFrame = 9
+        
+        if ikFrameCount == 0 {
+            return
+        }
+        
+        let dataLength = bytesPerFrame * ikFrameCount
+        if self.motionType != .Model {
+            print("error: not model motion has IK motion data")
+            // skip data
+            skip(dataLength)
+            return
+        }
+        
+        if getAvailableDataLength() < dataLength {
+            print("this file doesn't have IK data")
+            skip(dataLength)
+            return
+        }
+        
+        var ikFrameLength = 0
+        let ikMotion = CAKeyframeAnimation(keyPath: "????")
+        let hiddenMotion = CAKeyframeAnimation(keyPath: "hidden")
+        
+        ikMotion.values = [AnyObject]()
+        hiddenMotion.values = [AnyObject]()
+        
+        ikMotion.keyTimes = [NSNumber]()
+        hiddenMotion.keyTimes = [NSNumber]()
+        
+        for index in 0..<ikFrameCount {
+            var frameIndex = ikMotion.keyTimes!.count - 1
+            let frameNo = Int(getUnsignedInt())
+            
+            // the frame number might not be sorted
+            while frameIndex >= 0 {
+                let k = Int(ikMotion.keyTimes![frameIndex])
+                if(k < frameNo) {
+                    break
+                }
+                
+                frameIndex -= 1
+            }
+            frameIndex += 1
+            
+            ikMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            hiddenMotion.keyTimes!.insert(NSNumber(integerLiteral: frameNo), at: frameIndex)
+            
+            if(frameNo > self.frameLength) {
+                self.frameLength = frameNo
+            }
+            
+            let visible = getUnsignedByte()
+            let hidden = (visible == 0)
+            let ikNum = getUnsignedInt()
+            
+            for no in 0..<ikNum {
+                let boneName = getString(length: 20)
+                let ikOn = getUnsignedByte()
+            }
+        }
+        
+        let duration = Double(ikFrameLength) / self.fps
+        print("ik frameLength: \(ikFrameLength)")
+        
+        for motion in [ikMotion, hiddenMotion] {
+            let motionLength = Double(motion.keyTimes!.last!)
+            motion.duration = motionLength / self.fps
+            motion.usesSceneTimeBase = false
+            motion.isRemovedOnCompletion = false
+            motion.fillMode = kCAFillModeForwards
+            
+            for num in 0..<motion.keyTimes!.count {
+                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                motion.keyTimes![num] = NSNumber(value: keyTime)
+            }
+            
+            self.workingAnimationGroup.animations!.append(motion)
+        }
+        
+        // update frame length
+        self.workingAnimationGroup.duration = duration
     }
-
 }
 
 #endif

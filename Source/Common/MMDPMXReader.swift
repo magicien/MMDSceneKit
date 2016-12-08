@@ -52,6 +52,7 @@ class MMDPMXReader: MMDReader {
     // MARK: material data
     fileprivate var materialCount = 0
     fileprivate var materialArray: [SCNMaterial]! = nil
+    //fileprivate var materialArray: [MMDMaterial]! = nil
     fileprivate var materialIndexCountArray: [Int]! = nil
     fileprivate var materialShapeArray: [SCNGeometryPrimitiveType]! = nil
     
@@ -88,6 +89,17 @@ class MMDPMXReader: MMDReader {
     fileprivate var elementArray: [SCNGeometryElement]! = nil
     fileprivate var separatedIndexData: [Data]! = nil
     
+    /*
+    fileprivate static let shaderModifiers = [
+        SCNShaderModifierEntryPoint.fragment:
+            "#pragma arguments" +
+            "sampler2D texture" +
+            "#pragma body" +
+            "_output.color.r = _output.color.r * texture" +
+            ""
+    ]
+ */
+    
     /**
      */
     static func getNode(_ data: Data, directoryPath: String! = "") -> MMDNode? {
@@ -123,6 +135,7 @@ class MMDPMXReader: MMDReader {
         
         self.materialCount = 0
         self.materialArray = [SCNMaterial]()
+        //self.materialArray = [MMDMaterial]()
         self.materialIndexCountArray = [Int]()
         self.materialShapeArray = [SCNGeometryPrimitiveType]()
         
@@ -181,6 +194,8 @@ class MMDPMXReader: MMDReader {
         if(self.version > 2.0){
             self.readSoftBody()
         }
+        
+        self.workingNode.categoryBitMask = 0x02 // debug
         
         return self.workingNode
     }
@@ -450,6 +465,7 @@ class MMDPMXReader: MMDReader {
 
         for _ in 0..<self.materialCount {
             let material = SCNMaterial()
+            //let material = MMDMaterial()
             material.name = getTextBuffer() as String
             
             let englishName = getTextBuffer()
@@ -459,8 +475,8 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
@@ -470,13 +486,15 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.ambient.contents = NSColor(red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: 1.0)
+                material.emission.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
                 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 
             #endif
+            
+            
 
             let noCulling = ((bitFlag & 0x01) != 0)
             let floorShadow = ((bitFlag & 0x02) != 0)
@@ -496,7 +514,10 @@ class MMDPMXReader: MMDReader {
             
             if textureNo < self.textureArray.count {
                 let texture = self.textureArray[textureNo]
-                material.diffuse.contents = texture
+                //material.diffuse.contents = self.createTexture(texture, light: material.diffuse.contents as! OSColor)
+                //material.emission.contents = self.createTexture(texture, light: material.emission.contents as! OSColor)
+                material.multiply.contents = texture
+                material.setValue(SCNMaterialProperty(contents: texture), forKey: "texture")
             }
             
             if toonFlag == 0 {
@@ -751,6 +772,7 @@ class MMDPMXReader: MMDReader {
                     }
                     
                     ik.boneArray.append(bone)
+                    //bone.ikEffector = boneNode
                 }
                 
                 self.workingNode.ikArray!.append(ik)
@@ -791,16 +813,16 @@ class MMDPMXReader: MMDReader {
             let bonePos = bonePositionArray[index]
             let matrix = SCNMatrix4MakeTranslation(-bonePos.x, -bonePos.y, -bonePos.z)
             
-            self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: matrix))
+            self.boneInverseMatrixArray.append(NSValue(scnMatrix4: matrix))
         }
         
         self.boneArray.append(self.rootBone)
-        self.boneInverseMatrixArray.append(NSValue.init(scnMatrix4: SCNMatrix4Identity))
+        self.boneInverseMatrixArray.append(NSValue(scnMatrix4: SCNMatrix4Identity))
         
         /*
         self.workingNode.position = SCNVector3Make(0, 0, 0)
         self.boneArray.append(self.workingNode)
-        self.boneInverseMatrixArray.append(NSValue.init(SCNMatrix4: SCNMatrix4Identity))
+        self.boneInverseMatrixArray.append(NSValue(SCNMatrix4: SCNMatrix4Identity))
         */
         
         // set constarint to knees
@@ -857,7 +879,7 @@ class MMDPMXReader: MMDReader {
         
         self.workingNode.addChildNode(self.rootBone)
         
-        showBoneTree(self.rootBone)
+        //showBoneTree(self.rootBone)
         //showBoneList()
         
         //for ik in self.workingNode.ikArray! {
@@ -1165,7 +1187,8 @@ class MMDPMXReader: MMDReader {
         for material in self.materialArray {
         material.program = program
         }
-        */
+    */
+    
 #endif
         
         let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)

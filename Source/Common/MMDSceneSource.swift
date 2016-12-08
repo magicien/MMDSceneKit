@@ -15,7 +15,7 @@ import SceneKit
 #endif
 
 public enum MMDFileType {
-    case pmm, pmd, vmd, x, vac, pmx, unknown
+    case pmm, pmd, vmd, vpd, x, vac, pmx, unknown
 }
 
 open class MMDSceneSource: SCNSceneSource {
@@ -61,6 +61,14 @@ open class MMDSceneSource: SCNSceneSource {
                 if let vmdAnimation = MMDVMDReader.getAnimation(data) {
                     //self.workingScene.rootNode.addChildNode(vmdNode)
                     self.workingAnimationGroup = vmdAnimation
+                }
+            #endif
+        }else if self.fileType == .vpd {
+            #if os(watchOS)
+                // CAAnimation is not supported in watchOS
+            #else
+                if let vpdAnimation = MMDVPDReader.getAnimation(data) {
+                    self.workingAnimationGroup = vpdAnimation
                 }
             #endif
         }else if self.fileType == .pmm {
@@ -231,6 +239,16 @@ open class MMDSceneSource: SCNSceneSource {
             self.fileType = .pmx
             return .pmx
         }
+
+        
+        let byte23 = data.subdata(in: 0..<23)
+        let str23 = NSString.init(data: byte23, encoding: String.Encoding.shiftJIS.rawValue)
+
+        if str23 == "Vocaloid Pose Data file" {
+            self.fileType = .vpd
+            return .vpd
+        }
+
         
         let byte24 = data.subdata(in: 0..<24)
         let str24 = NSString.init(data: byte24, encoding: String.Encoding.shiftJIS.rawValue)
@@ -239,6 +257,7 @@ open class MMDSceneSource: SCNSceneSource {
             self.fileType = .pmm
             return .pmm
         }
+        
 
         let byte25 = data.subdata(in: 0..<25)
         let str25 = NSString.init(data: byte25, encoding: String.Encoding.shiftJIS.rawValue)
@@ -256,13 +275,6 @@ open class MMDSceneSource: SCNSceneSource {
         self.fileType = .unknown
         return .unknown
     }
-    
-    // MARK: - Loading PMM File
-    
-    fileprivate func loadPMMFile() -> [MMDNode]? {
-        return nil
-    }
-
     
     // MARK: - for Debug
 
