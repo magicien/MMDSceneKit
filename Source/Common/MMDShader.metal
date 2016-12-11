@@ -6,166 +6,107 @@
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
-/*
-#include <metal_stdlib>
-#include <simd/simd.h>
-#include <metal_texture>
-#include <metal_matrix>
-#include <metal_geometric>
-#include <metal_math>
-#include <metal_graphics>
-
-using namespace metal;
-#include <SceneKit/scn_metal>
-
-
-struct VertexInput {
-    float3 position [[attribute(SCNVertexSemanticPosition)]];
-    float3 normal   [[attribute(SCNVertexSemanticNormal)]];
-    float2 texcoord [[attribute(SCNVertexSemanticTexcoord0)]];
-//    float2 texcoord2 [[attribute(SCNVertexSemanticTexcoord1)]];
-};
-
-struct VertexOutput {
-    float4 position [[position]];
-    float3 eye;
-    float3 normal;
-    float4 color;
-    float4 specular;
-    float2 texcoord;
-    float2 spTexcoord;
-};
-
-struct MyNodeBuffer {
-    float4x4 modelTransform;
-    float4x4 modelViewProjectionTransform;
-};
-
-struct MaterialUniform {
-    float3 cameraPosition;
-    float4 ambientColor;
-    float4 diffuseColor;
-    float4 specularColor;
-//    float4 lightAmbientColor;
-//    float4 lightDiffuseColor;
-//    float4 lightSpecularColor;
-    float specularPower;
-    bool useTexture;
-    bool useToon;
-    bool useSphereMap;
-    bool useSubTexture;
-    bool spadd;
-    float3 lightDirection;
-};
-
-vertex VertexOutput mmdVertex(VertexInput vIn [[ stage_in ]],
-                              constant SCNSceneBuffer& scn_frame [[buffer(0)]],
-                              constant MyNodeBuffer& scn_node [[buffer(1)]],
-                              constant MaterialUniform& m [[buffer(2)]]) {
-    VertexOutput vOut;
-    
-    float4 inPosition = float4(vIn.position, 1.0);
-    float4 inNormal = float4(vIn.normal, 1.0);
-    
-    vOut.position = scn_node.modelViewProjectionTransform * inPosition;
-    vOut.eye = m.cameraPosition - float3(scn_node.modelTransform * inPosition);
-    
-    float3x3 transRot = float3x3(scn_node.modelTransform[0].xyz, scn_node.modelTransform[1].xyz, scn_node.modelTransform[2].xyz);
-    vOut.normal  = normalize( transRot * vIn.normal );
-    vOut.color.rgb = m.ambientColor.rgb;
-    
-    if(!m.useToon){
-        vOut.color.rgb += fmax(0.0, dot(vOut.normal, -m.lightDirection)) * m.diffuseColor.rgb;
-    }
-    vOut.color.a = m.diffuseColor.a;
-    vOut.color = saturate(vOut.color);
-    vOut.texcoord = vIn.texcoord;
-    
-    if (m.useSphereMap) {
-        if (m.useSubTexture) {
-            //vOut.spTexcoord = vIn.texcoord2;
-        } else {
-            float2 normalWV = (transRot * vOut.normal).xy;
-            vOut.spTexcoord.x = normalWV.x * 0.5 + 0.5;
-            vOut.spTexcoord.y = -normalWV.y * 0.5 + 0.5;
-        }
-    }
-    
-    float3 halfVector = normalize( normalize(vOut.eye) - m.lightDirection );
-    vOut.specular = pow( fmax(0.0, dot(halfVector, vOut.normal)), m.specularPower) * m.specularColor;
-
-    return vOut;
-}
-
-fragment half4 mmdFragment(VertexOutput fIn [[ stage_in ]],
-                           texture2d<float> diffuseTexture [[ texture(0) ]],
-                           texture2d<float> sphereTexture [[ texture(1) ]],
-                           texture2d<float> toonTexture [[ texture(2) ]],
-                           constant MaterialUniform& m [[buffer(2)]]) {
-    constexpr sampler defaultSampler;
-    float4 color = fIn.color;
-        
-    if (m.useTexture) {
-        color *= diffuseTexture.sample(defaultSampler, fIn.texcoord);
-    }
-    if (m.useSphereMap) {
-        float4 texColor = sphereTexture.sample(defaultSampler, fIn.spTexcoord);
-        if (m.spadd) {
-            color.rgb += texColor.rgb;
-        } else {
-            color.rgb *= texColor.rgb;
-        }
-        color.a *= texColor.a;
-    }
-    if (m.useToon) {
-        float lightNormal = dot(fIn.normal, -m.lightDirection);
-        color *= toonTexture.sample(defaultSampler, float2(0, 0.5 - lightNormal * 0.5));
-    }
-    color.rgb += fIn.specular.rgb;
-    
-    return half4(color);
-}
-*/
-
 #include <metal_stdlib>
 using namespace metal;
 #include <SceneKit/scn_metal>
 
 
-// 頂点属性
+// Vertex
 struct VertexInput {
     float3 position [[ attribute(SCNVertexSemanticPosition) ]];
-//    float3 normal [[ attribute(SCNVertexSemanticNormal) ]];
-//    float4 color [[ attribute(SCNVertexSemanticColor) ]];
-    ushort2 boneIndices [[ attribute(SCNVertexSemanticBoneIndices) ]];
-    float2 boneWeights [[ attribute(SCNVertexSemanticBoneWeights) ]];
-    
+    float3 normal [[ attribute(SCNVertexSemanticNormal) ]];
+    //float4 color [[ attribute(SCNVertexSemanticColor) ]];
+    ushort4 boneIndices [[ attribute(SCNVertexSemanticBoneIndices) ]];
+    float4 boneWeights [[ attribute(SCNVertexSemanticBoneWeights) ]];
     float2 texcoord [[ attribute(SCNVertexSemanticTexcoord0) ]];
 };
 
-// モデルデータ
+// Model
 struct NodeBuffer {
     float4x4 modelTransform;
     float4x4 modelViewProjectionTransform;
-//    float4x4 position_transforms[4];
+    float4x4 normalTransform;
+    float4 skinningJointMatrices[765];
+    float color[27];
 };
 
-// 変数
-/*
-struct CustomBuffer {
-    float4 color;
+// Light
+struct Light {
+    //float3 ambient;
+    //float4 diffuse;
+    //float4 specular;
+    //float modulate;
+    
+    //float4 positionVS_invSquareRadius;
+    //float4 color_unscaledRadius;
+    //float4 direction_tanConeAngle;
+    //float2 spotAttenuation;
+    //float4x4 invProjectionTransform;
+
+    float4  color;
+    float4  direction;
+    float4  position;
+    float4  attenuation;
+    float4  spotAttenuation;
+    float4x4    shadowMatrix;
+    float4  shadowRadius;
+    float4  shadowColor;
+    float4x4    goboMatrix;
+    float4  projectorColor;
+    float4  right;
+    float4  up;
+    float4x4    iesMatrix;
 };
- */
+
+struct SCNShaderLight {
+    float4 intensity;
+    float3 direction;
+    float _att;
+    float3 _spotDirection;
+    float _distance;
+};
+
+struct Uniforms {
+    float4 diffuseColor;
+    float4 specularColor;
+    float4 ambientColor;
+    float4 emissionColor;
+    float4 reflectiveColor;
+    float4 multiplyColor;
+    float4 transparentColor;
+    float metalness;
+    float roughness;
+    
+    float diffuseIntensity;
+    float specularIntensity;
+    float normalIntensity;
+    float ambientIntensity;
+    float emissionIntensity;
+    float reflectiveIntensity;
+    float multiplyIntensity;
+    float transparentIntensity;
+    float metalnessIntensity;
+    float roughnessIntensity;
+    
+    float materialShininess;
+    float selfIlluminationOcclusion;
+    float transparency;
+    float3 fresnel; // x: ((n1-n2)/(n1+n2))^2 y:1-x z:exponent
+ };
+
+
+
 
 struct VertexOutput {
     float4 position [[ position ]];
     float2 texcoord;
-//    float4 color;
+    float3 normal;
+    float3 eye;
+    float2 sphereTexcoord;
+    float4 color;
+    float3 specular;
 };
 
-struct CustomBuffer {
-    float screenSize;
-};
 
 
 //vertex VertexOut textureVertex(VertexInput in [[ stage_in ]],
@@ -174,36 +115,99 @@ struct CustomBuffer {
 //                               constant CustomBuffer& custom [[ buffer(2) ]]) {
 
 vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
-                           uint iid [[ instance_id ]],
-                           uint baseId [[ base_instance ]],
-                               constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
-                               constant NodeBuffer* scn_node [[ buffer(1) ]]) {
+                              constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
+                              constant NodeBuffer& scn_node [[ buffer(1) ]],
+                              constant Light& scn_lights [[ buffer(2) ]],
+                              constant Uniforms& scn_commonprofile [[ buffer(3) ]],
+                              texture2d<float> u_emissionTexture [[ texture(0) ]],
+                              sampler u_emissionTextureSampler [[ sampler(0) ]],
+                              texture2d<float> u_diffuseTexture [[ texture(2) ]],
+                              sampler u_diffuseTextureSampler [[ sampler(2) ]]){
     VertexOutput out;
-    float4x4 mat = float4x4(0);
-    mat += scn_node[in.boneIndices[0] + baseId].modelTransform * in.boneWeights[0];
-    mat += scn_node[in.boneIndices[1] + baseId].modelTransform * in.boneWeights[1];
     
-    //out.position = scn_node[iid].modelViewProjectionTransform * mat * float4(in.position, 1.0);
-    out.position = scn_frame.viewProjectionTransform * mat * float4(in.position, 1.0);
+    float3 pos = 0.0;
+    float3 normal = 0.0;
+    
+    for(int i=0; i<4; i++){
+        float weight = in.boneWeights[i];
+        if(weight <= 0.0){
+            continue;
+        }
+        int idx = in.boneIndices[i] * 3;
+        float4x4 jointMatrix = float4x4(scn_node.skinningJointMatrices[idx],
+                                        scn_node.skinningJointMatrices[idx+1],
+                                        scn_node.skinningJointMatrices[idx+2],
+                                        float4(0, 0, 0, 1));
+        pos += (float4(in.position, 1.0) * jointMatrix).xyz * weight;
+        //normal += in.normal * scn::mat3(jointMatrix) * weight;
+    }
+    out.eye = (scn_frame.viewTransform * float4(pos, 1.0)).xyz;
+    out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
+    //out.eye = cameraPosition - pos;
+    
+    //out.color = scn_commonprofile.emissionColor;
+    //out.color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
+    
+    //if( !useToon ) {
+    //    out.color.rgb += max(0, dot(normal, -scn_lights.direction)) * scn_commonprofile.diffuseColor;
+    //}
+    //out.color.a = scn_commonprofile.u_diffuseColor.a;
+    //out.color = saturate(out.color);
+    
+    //out.color = float4(0.2, 0.2, 0.2, 1.0);
+    //out.color = scn_commonprofile.u_emissionColor;
+    out.color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
+    out.color += u_diffuseTexture.sample(u_diffuseTextureSampler, in.texcoord);
     out.texcoord = in.texcoord;
+    
+    //float r = scn_node.color[0] + scn_node.color[1] + scn_node.color[2];
+    //float g = scn_node.color[9] + scn_node.color[10] + scn_node.color[11];
+    //float b = scn_node.color[18] + scn_node.color[19] + scn_node.color[20];
+    //float r = scn_node.color[12];
+    //float g = scn_node.color[13];
+    //float b = scn_node.color[14];
+    
+    //float4 color = float4(r, g, b, 1.0);
+    //out.color = scn_commonprofile.diffuseColor;
+    //out.color = scn_lights.color;
+    //out.color = in.color;
+    //out.color = float4(0.3, 0.3, 0.3, 1.0);
+    //out.color = color;
+    
+    //float3 halfVector = normalize(normalize(out.eye) - lightDirection);
+    //out.specular = pow(max(0, dot(halfVector, out.normal)), scn_commonprofile.materialShininess) * scn_commonprofile.specularColor;
+    out.specular = float3(0);
+    
     return out;
 }
 
+//fragment half4 mmdFragment(VertexOutput in [[ stage_in ]]){
 fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
-                               texture2d<float> texture [[ texture(0) ]]) {
-    constexpr sampler defaultSampler;
-    float4 color;
-//    color = texture.sample(defaultSampler, in.texcoord) + in.color;
-    color = texture.sample(defaultSampler, in.texcoord);
-//    color = in.position.z;
+                           texture2d<float> u_multiplyTexture [[ texture(6) ]],
+                           sampler u_multiplyTextureSampler [[ sampler(6) ]]) {
+    float4 color = in.color;
+    //if(useTexture){
+    color *= u_multiplyTexture.sample(u_multiplyTextureSampler, in.texcoord);
+    //}
+    
+    //if(useSphereMap){
+    //
+    //}
+    
+    //if(useToon){
+    //
+    //}
+    
+    //color.rgb += in.specular;
+    
     return half4(color);
 }
 
 
 vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
-                                     constant NodeBuffer& scn_node [[ buffer(0) ]])
-//                                     constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
-//                                     constant NodeBuffer& scn_node [[ buffer(1) ]])
+//                                     constant NodeBuffer& scn_node [[ buffer(0) ]]){
+                                     constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
+                                     constant NodeBuffer& scn_node [[ buffer(1) ]])
 //                                     constant float& screenSize [[ buffer(2) ]])
 {
     VertexOutput out;
@@ -227,10 +231,60 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
     }
     */
     
-    //out.position = scn_node.modelViewProjectionTransform * float4(in.position + in.normal * coeff, 1.0);
+    float3 pos = 0.0;
+    float3 posMove = 0.0;
+    float3 normal = 0.0;
+    
+    float3 posN = normalize(in.position);
+    float posSize = length(in.position);
+    
+    for(int i=0; i<4; i++){
+        float weight = in.boneWeights[i];
+        if(weight <= 0.0){
+            continue;
+        }
+        int idx = in.boneIndices[i] * 3;
+        float4x4 jointMatrix = float4x4(scn_node.skinningJointMatrices[idx],
+                                        scn_node.skinningJointMatrices[idx+1],
+                                        scn_node.skinningJointMatrices[idx+2],
+                                        float4(0, 0, 0, 1));
+        pos += (float4(in.position, 1.0) * jointMatrix).xyz * weight;
+        
+        float3x3 normalMat = float3x3(jointMatrix[0].xyz, jointMatrix[1].xyz, jointMatrix[2].xyz);
+        normal += (in.normal * normalMat) * weight;
+        //pos += (in * normalMat) * weight;
+        //posMove += float3(jointMatrix[0].w, jointMatrix[1].w, jointMatrix[2].w) * weight;
+    }
+    //pos = normalize(pos) * posSize + posMove;
+    
+    out.eye = (scn_frame.viewTransform * float4(pos, 1.0)).xyz;
+    out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
+    
+    float4 in_pos0 = float4(pos, 1.0);
+    float4 in_pos1 = float4(pos + normal, 1.0);
+    
+    float edgeSize = 0.8;
+    float screenSize = 400; // debug
+    
+    float4 pos0 = scn_frame.viewProjectionTransform * in_pos0;
+    float4 pos1 = scn_frame.viewProjectionTransform * in_pos1;
+    
+    pos0.xy /= pos0.w;
+    pos1.xy /= pos1.w;
+    
+    float d = distance(pos0.xy, pos1.xy);
+    float coeff = screenSize * d;
+    if(coeff > edgeSize){
+        coeff = edgeSize / coeff;
+    }
+
+    out.position = scn_frame.viewProjectionTransform * float4(pos + normal * coeff, 1.0);
+    //out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
+    
     //out.position = float4(in.position, 1.0) * scn_node.modelViewProjectionTransform;
-    out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
+    //out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
     //out.position = float4(in.position, 1.0);
+    
     
     return out;
 };
@@ -239,7 +293,7 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
 fragment half4 pass_edge_fragment(VertexOutput in [[stage_in]])
 //                                          texture2d<float, access::sample> colorSampler [[texture(0)]])
 {
-    float4 color = float4(0.0, 0.0, 1.0, 1.0);
+    float4 color = float4(0.0, 0.0, 0.0, 1.0);
     
     return half4(color);
 };

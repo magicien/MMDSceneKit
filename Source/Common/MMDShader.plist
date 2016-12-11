@@ -16,7 +16,7 @@
 				<key>clear</key>
 				<true/>
 				<key>clearColor</key>
-				<string>0.8 0.3 0.3 1.0</string>
+				<string>sceneBackground</string>
 			</dict>
 			<key>draw</key>
 			<string>DRAW_SCENE</string>
@@ -41,20 +41,20 @@
 			<dict>
 				<key>clear</key>
 				<false/>
-				<key>clearColor</key>
-				<string>0.5 0.5 0.5 1.0</string>
 			</dict>
 			<key>depthStates</key>
 			<dict>
 				<key>clear</key>
-				<true/>
+				<false/>
 				<key>enableWrite</key>
 				<true/>
 				<key>enableRead</key>
 				<true/>
 				<key>func</key>
-				<string>always</string>
+				<string>less</string>
 			</dict>
+			<key>cullMode</key>
+			<string>front</string>
 			<key>draw</key>
 			<string>DRAW_SCENE</string>
 			<key>program</key>
@@ -64,14 +64,13 @@
 			<key>metalFragmentShader</key>
 			<string>pass_edge_fragment</string>
 			<key>inputs</key>
-			<dict>
-				<key>colorSampler</key>
-				<string>COLOR</string>
-			</dict>
+			<dict/>
 			<key>outputs</key>
 			<dict>
 				<key>color</key>
 				<string>COLOR</string>
+				<key>depth</key>
+				<string>DEPTH</string>
 			</dict>
 		</dict>
 	</dict>

@@ -38,6 +38,26 @@ public class MMDSceneViewController: SuperViewController {
         //return
         
         //let mmdScene = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
+        
+        #if !os(watchOS)
+        print("shader...")
+        if let path = Bundle.main.path(forResource: "MMDShader", ofType: "plist") {
+            if let dict1 = NSDictionary(contentsOfFile: path) {
+                print("found shader.")
+                let dict = dict1 as! [String : AnyObject]
+                let technique = SCNTechnique(dictionary:dict)
+                print("technique: \(technique)")
+                //var screenSize: Float = Float(max(view.frame.size.height, view.frame.size.width))
+                
+                //let customData = NSData(bytes: &screenSize, length: MemoryLayout<Float>.size)
+                //technique?.setValue(customData, forKey: "screenSize")
+                
+                view.technique = technique
+            }
+        }
+        #endif
+        
+        /*
         let mmdScene = MMDSceneSource(named: "art3.scnassets/宝箱開け.pmm")!.getScene()!
         view.scene = mmdScene
         view.delegate = MMDIKController.sharedController
@@ -51,27 +71,9 @@ public class MMDSceneViewController: SuperViewController {
         // allows the user to manipulate the camera
         view.allowsCameraControl = true
         #endif
-        
-        /*
-        print("shader...")
-        if let path = Bundle.main.path(forResource: "MMDShader", ofType: "plist") {
-            if let dict1 = NSDictionary(contentsOfFile: path) {
-                print("found shader.")
-                let dict = dict1 as! [String : AnyObject]
-                let technique = SCNTechnique(dictionary:dict)
-                print("technique: \(technique)")
-                var screenSize: Float = Float(max(view.frame.size.height, view.frame.size.width))
-                
-                let customData = NSData(bytes: &screenSize, length: MemoryLayout<Float>.size)
-                technique?.setValue(customData, forKey: "screenSize")
 
-                view.technique = technique
-            }
-        }
-         */
-        
         return
-        
+        */
         
         // create and add a camera to the scene
         //let cameraNode = SCNNode()
@@ -85,6 +87,7 @@ public class MMDSceneViewController: SuperViewController {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = SCNLight.LightType.directional
+        //lightNode.light!.color = CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         lightNode.position = SCNVector3(x: 0, y: 100, z: 10)
         scene.rootNode.addChildNode(lightNode)
         

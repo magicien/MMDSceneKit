@@ -72,6 +72,7 @@
 		DD2687491DEB9770003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
 		DD26874A1DEB9772003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
 		DD26874B1DEB9775003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
+		DD32D14B1DFD744500D589E7 /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
 		DD3313351D39C0A30027FCA9 /* MMDSceneKit_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DD3313BB1D39C3160027FCA9 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
@@ -1360,6 +1361,7 @@
 				DD12BFC81C1AB78000B20F37 /* Assets.xcassets in Resources */,
 				DD2687491DEB9770003C1CC1 /* art4.scnassets in Resources */,
 				DD12BFC61C1AB78000B20F37 /* Main.storyboard in Resources */,
+				DD32D14B1DFD744500D589E7 /* MMDShader.plist in Resources */,
 				DDC087841DE427AD002ED4A3 /* art3.scnassets in Resources */,
 				DD1701E01DF2C1C60000D5AB /* art5.scnassets in Resources */,
 			);

@@ -23,7 +23,7 @@
 			<key>program</key>
 			<string>doesntexist</string>
 			<key>draw</key>
-			<string>DRAW_QUAD</string>
+			<string>DRAW_SCENE</string>
 			<key>metalVertexShader</key>
 			<string>pass_through_vertex</string>
 		</dict>
@@ -46,7 +46,7 @@
 			<key>program</key>
 			<string>doesntexist</string>
 			<key>draw</key>
-			<string>DRAW_QUAD</string>
+			<string>DRAW_SCENE</string>
 			<key>metalVertexShader</key>
 			<string>pass_through_vertex</string>
 		</dict>

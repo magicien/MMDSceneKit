@@ -1183,11 +1183,11 @@ class MMDPMXReader: MMDReader {
         
         
         
-        /*
-        for material in self.materialArray {
-        material.program = program
-        }
-    */
+    
+        //for material in self.materialArray {
+        //    material.program = program
+        //}
+    
     
 #endif
         
