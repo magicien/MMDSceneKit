@@ -81,6 +81,8 @@ class MMDPMXReader: MMDReader {
     // MARK: physics body data
     fileprivate var physicsBodyCount = 0
     fileprivate var physicsBodyArray: [SCNPhysicsBody]! = nil
+    fileprivate var physicsBoneArray: [MMDNode]! = nil
+    fileprivate var constraintArray: [SCNPhysicsBehavior]! = nil
     
     // MARK: geometry data
     fileprivate var vertexSource: SCNGeometrySource! = nil
@@ -156,6 +158,8 @@ class MMDPMXReader: MMDReader {
         
         self.physicsBodyCount = 0
         self.physicsBodyArray = [SCNPhysicsBody]()
+        self.physicsBoneArray = [MMDNode]()
+        self.constraintArray = [SCNPhysicsBehavior]()
         
         self.faceCount = 0
         self.faceIndexArray = [Int]()
@@ -1280,9 +1284,9 @@ class MMDPMXReader: MMDReader {
             let posX = CGFloat(getFloat())
             let posY = CGFloat(getFloat())
             let posZ = CGFloat(-getFloat())
-            let rotX = CGFloat(getFloat())
-            let rotY = CGFloat(getFloat())
-            let rotZ = CGFloat(-getFloat())
+            let rotX = CGFloat(-getFloat())
+            let rotY = CGFloat(-getFloat())
+            let rotZ = CGFloat(getFloat())
             let weight = CGFloat(getFloat())
             let positionDim = CGFloat(getFloat())
             let rotateDim = CGFloat(getFloat())
@@ -1290,58 +1294,135 @@ class MMDPMXReader: MMDReader {
             let friction = CGFloat(getFloat())
             let type = Int(getUnsignedByte())
             
+            print("")
+            print("physicsBody: \(name)")
             var bodyType: SCNPhysicsBodyType! = nil
             if type == 0 {
+                print("type 0: kinematic")
                 bodyType = SCNPhysicsBodyType.kinematic
             } else if type == 1 {
+                print("type 1: dynamic")
                 bodyType = SCNPhysicsBodyType.dynamic
             } else if type == 2 {
+                print("type 2: dynamic")
                 bodyType = SCNPhysicsBodyType.dynamic
             }
             bodyType = SCNPhysicsBodyType.kinematic // for debug
             
             var shape: SCNGeometry! = nil
             if shapeType == 0 {
+                print("shape: Sphere radius: \(dx)")
                 shape = SCNSphere(radius: dx)
             } else if shapeType == 1 {
+                print("shape: Box (\(dx), \(dy), \(dz))")
                 shape = SCNBox(width: dx, height: dy, length: dz, chamferRadius: 0.0)
             } else if shapeType == 2 {
+                print("shape: Capsule (\(dx), \(dy)")
                 shape = SCNCapsule(capRadius: dx, height: dy)
             } else {
                 print("unknown physics body shape")
             }
+            print("pos: \(posX), \(posY), \(posZ)")
+            print("rot: \(rotX), \(rotY), \(rotZ)")
+
+            var _bone: MMDNode? = nil
+            if boneIndex != -1 {
+                _bone = self.boneArray[boneIndex]
+            }
             
+            var bone: MMDNode
+            if _bone != nil {
+                bone = _bone!
+            } else {
+                bone = self.boneArray[0]
+            }
             
-            let body = SCNPhysicsBody(type: bodyType, shape: SCNPhysicsShape(geometry: shape, options: nil))
+            //var worldTransform = SCNMatrix4MakeRotation(rotY, 0, 1, 0)
+            //worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
+            //worldTransform = SCNMatrix4Rotate(worldTransform, rotZ, 0, 0, 1)
+            //worldTransform = SCNMatrix4Translate(worldTransform, posX, posY, posZ)
+            
+            //var worldTransform = SCNMatrix4MakeRotation(rotZ, 0, 0, 1)
+            //worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
+            //worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)
+            //worldTransform = SCNMatrix4Translate(worldTransform, posX, posY, posZ)
+            
+            var worldTransform = SCNMatrix4MakeTranslation(posX, posY, posZ)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotZ, 0, 0, 1)
+            
+            let invBoneTransform = SCNMatrix4Invert(bone.worldTransform)
+            let physicsTransform = SCNMatrix4Mult(worldTransform, invBoneTransform)
+            let transformValue = NSValue(scnMatrix4: physicsTransform)
+            print("physicsTransform.m41-43: \(physicsTransform.m41), \(physicsTransform.m42), \(physicsTransform.m43)")
+
+            let physicsShape = SCNPhysicsShape(geometry: shape, options: nil)
+            var transformedShape = SCNPhysicsShape(shapes: [physicsShape], transforms: [transformValue])
+            //var transformedShape = physicsShape
+            
+            if let currentBody = bone.physicsBody {
+                let identity = NSValue(scnMatrix4: SCNMatrix4Identity)
+                transformedShape = SCNPhysicsShape(shapes: [currentBody.physicsShape!, transformedShape], transforms: [identity, identity])
+            }
+            
+            let body = SCNPhysicsBody(type: bodyType, shape: transformedShape)
             
             body.isAffectedByGravity = true
             body.mass = weight
             body.friction = friction
-            body.rollingFriction = rotateDim
+            body.rollingFriction = friction
+            body.damping = positionDim
+            body.angularDamping = rotateDim
+            body.categoryBitMask = (1 << groupIndex)
             body.collisionBitMask = groupTarget
             body.restitution = recoil
             body.usesDefaultMomentOfInertia = true
+            body.allowsResting = true
+            body.charge = 0
+            //body.angularVelocityFactor = SCNVector3(x: 0.00001, y: 0.00001, z: 0.00001)
+            //body.velocityFactor = SCNVector3(x: 0.00001, y: 0.00001, z: 0.00001)
             
-            if boneIndex == -1 {
-                let bone = self.boneArray[boneIndex]
+            print("groupIndex: \(groupIndex)")
+            print("groupTarget: \(groupTarget)")
+            
+            if boneIndex != -1 {
                 bone.physicsBody = body
                 print("physicsBody: \(name) -> \(bone.name)")
             }else{
                 print("physicsBody: \(name) -> nil")
             }
             
-            self.physicsBodyArray.append(body)
+            //self.physicsBodyArray.append(body)
+            self.physicsBoneArray.append(bone)
+        }
+        
+        for bone in self.physicsBoneArray {
+            self.physicsBodyArray.append(bone.physicsBody!)
         }
     }
     
     func readConstraint() {
         let constraintCount = Int(getUnsignedInt())
         
-        for _ in 0..<constraintCount {
+        self.workingNode.joints = [SCNPhysicsBehavior]()
+        
+        for index in 0..<constraintCount {
+            print("")
+            print("=== Constraint Index: \(index) ===")
             let name = getTextBuffer()
             let englishName = getTextBuffer()
             
             let type = getUnsignedByte()
+            print("\(name) constraint type: \(type)")
+            // 0: btGeneric6DofSpringConstraint
+            // 1: btGeneric6DofConstraint
+            // 2: btPoint2PointConstraint => SCNPhysicsBallSocketJoint
+            // 3: btConeTwistConstraint
+            // 4: ?
+            // 5: btSliderConstraint => SCNPhysicsSliderJoint
+            // 6: btHingeConstraint => SCNPhysicsHingeJoint
+            
             
             let bodyANo = getIntOfLength(self.physicsBodyIndexSize)
             let bodyBNo = getIntOfLength(self.physicsBodyIndexSize)
@@ -1353,6 +1434,8 @@ class MMDPMXReader: MMDReader {
             
             let pos = SCNVector3(getFloat(), getFloat(), -getFloat())
             let rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+            print("pos: \(pos.x), \(pos.y), \(pos.z)")
+            print("rot: \(rot.x), \(rot.y), \(rot.z)")
             
             let minPos = SCNVector3(getFloat(), getFloat(), -getFloat())
             let maxPos = SCNVector3(getFloat(), getFloat(), -getFloat())
@@ -1362,17 +1445,61 @@ class MMDPMXReader: MMDReader {
 
             let spring_pos = SCNVector3(getFloat(), getFloat(), -getFloat())
             let sprint_rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+
+            let boneA = self.physicsBoneArray[bodyANo]
+            let boneB = self.physicsBoneArray[bodyBNo]
             
-            //let constraint = SCNPhysicsBallSocketJoint(bodyA: bodyA, anchorA: pos1, bodyB: bodyB, anchorB: pos2)
+            let anchorA = SCNVector3(
+                x: pos.x - boneA.worldTransform.m41,
+                y: pos.y - boneA.worldTransform.m42,
+                z: pos.z - boneA.worldTransform.m43
+            )
+            let anchorB = SCNVector3(
+                x: pos.x - boneB.worldTransform.m41,
+                y: pos.y - boneB.worldTransform.m42,
+                z: pos.z - boneB.worldTransform.m43
+            )
+            
+            print("boneA: \(boneA.name), boneB: \(boneB.name)")
+            print("anchorA: \(anchorA.x), \(anchorA.y), \(anchorA.z)")
+            print("anchorB: \(anchorB.x), \(anchorB.y), \(anchorB.z)")
+            assert(bodyA == boneA.physicsBody, "bodyA physicsBody unmatch")
+            assert(bodyB == boneB.physicsBody, "bodyB physicsBody unmatch")
+
+            if boneA == boneB {
+                print("boneA == boneB. skip")
+                continue
+            }
+            
+            let constraint = SCNPhysicsBallSocketJoint(bodyA: bodyA, anchorA: anchorA, bodyB: bodyB, anchorB: anchorB)
+    #if false
+            let axis = SCNVector3(0, 1, 0)
+            let anchor = SCNVector3(0, 0, 0)
+            let constraint = SCNPhysicsSliderJoint.init(bodyA: bodyA, axisA: axis, anchorA: anchorA, bodyB: bodyB, axisB: axis, anchorB: anchorB)
+            constraint.minimumLinearLimit = 0.00
+            constraint.maximumLinearLimit = 0.00
+            constraint.minimumAngularLimit = 0.00
+            constraint.maximumAngularLimit = 0.00
+            constraint.motorMaximumForce = 0.0000
+            constraint.motorMaximumTorque = 0.0000
+            constraint.motorTargetLinearVelocity = 0
+            constraint.motorTargetAngularVelocity = 0
+    #endif
+            //self.constraintArray.append(constraint)
+            self.workingNode.joints!.append(constraint)
         }
     }
     
     func readSoftBody() {
         let softBodyCount = Int(getUnsignedInt())
+        
+        print("softBodyCount: \(softBodyCount)")
 
         for _ in 0..<softBodyCount {
             let name = getTextBuffer()
             let englishName = getTextBuffer()
+            
+            print("    softBody: \(name)")
             
             let shape = Int(getUnsignedByte())
             if shape == 0 {

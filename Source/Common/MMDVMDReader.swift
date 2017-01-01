@@ -381,7 +381,7 @@ class MMDVMDReader: MMDReader {
         let posZMotion = CAKeyframeAnimation(keyPath: "transform.translation.z")
         let rotZMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTZ_NODE_NAME).eulerAngles.z")
         let rotXMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTX_NODE_NAME).eulerAngles.x")
-        let rotYMotion = CAKeyframeAnimation(keyPath: "eulerAngles.y")
+        let rotYMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_ROTY_NODE_NAME).eulerAngles.y")
         let angleMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.yFov")
         let persMotion = CAKeyframeAnimation(keyPath: "/\(MMD_CAMERA_NODE_NAME).camera.usesOrthographicProjection")
         

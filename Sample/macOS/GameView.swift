@@ -12,7 +12,10 @@ import MMDSceneKit_macOS
 class GameView: SCNView {
     
     override func mouseDown(with theEvent: NSEvent) {
+        super.mouseDown(with: theEvent)
         return
+        
+        
         let materials = mikuNode.materialArray!
         for index in 0..<materials.count {
             let material = materials[index]

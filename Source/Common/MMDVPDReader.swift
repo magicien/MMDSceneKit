@@ -59,13 +59,13 @@ class MMDVPDReader: MMDReader {
             let posX = getFloatFromText(posText[0])
             let posY = getFloatFromText(posText[1])
             let posZ = getFloatFromText(posText[2])
-            let pos = SCNVector3Make(OSFloat(posX), OSFloat(posY), OSFloat(posZ))
+            let pos = SCNVector3Make(OSFloat(posX), OSFloat(posY), OSFloat(-posZ))
             
             let rotX = getFloatFromText(rotText[0])
             let rotY = getFloatFromText(rotText[1])
             let rotZ = getFloatFromText(rotText[2])
             let rotW = getFloatFromText(rotText[3])
-            let rot = SCNVector4Make(OSFloat(rotX), OSFloat(rotY), OSFloat(rotZ), OSFloat(rotW))
+            let rot = SCNVector4Make(OSFloat(-rotX), OSFloat(-rotY), OSFloat(rotZ), OSFloat(rotW))
 
             let posMotion = CAKeyframeAnimation(keyPath: "/\(boneName).transform.translation")
             let rotMotion = CAKeyframeAnimation(keyPath: "/\(boneName).transform.quaternion")
@@ -76,10 +76,10 @@ class MMDVPDReader: MMDReader {
             posMotion.keyTimes = [NSNumber(value: 0.0)]
             rotMotion.keyTimes = [NSNumber(value: 0.0)]
             
-            //print("boneNo: \(boneNo)")
-            //print("boneName: \(boneName)")
-            //print("position: \(pos)")
-            //print("rotation: \(rot)")
+            print("boneNo: \(boneNo)")
+            print("boneName: \(boneName)")
+            print("position: \(pos)")
+            print("rotation: \(rot)")
             
             self.workingAnimationGroup.animations!.append(posMotion)
             self.workingAnimationGroup.animations!.append(rotMotion)

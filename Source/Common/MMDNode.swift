@@ -41,7 +41,15 @@ open class DummyNode: NSObject {
     public typealias MMDNodeProgramDelegate = SCNProgramDelegate
 #endif
 
-open class MMDNode: SCNNode, MMDNodeProgramDelegate {
+private let MMDAnimationCompletionBlockKey = "MMDAnimationCompletionBlockKey"
+/*
+@objc public protocol MMDAnimationDelegate {
+    @objc optional func animationDidStart(_ anim: CAAnimation, node: MMDNode, key: String)
+    @objc optional func animationDidStop(_ anim: CAAnimation, finished: Bool, node: MMDNode, key: String)
+}
+*/
+
+open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
     open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
     open internal(set) var type: MMDNodeType = .unknown
     open internal(set) var isKnee: Bool = false
@@ -52,7 +60,10 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     internal var ikConstraint: MMDIKConstraint? = nil
     open var ikArray: [MMDIKConstraint]? = nil
     //open var ikEffector: MMDNode? = nil
+    open var joints: [SCNPhysicsBehavior]? = nil
 
+    //open var animationDelegate: MMDAnimationDelegate?
+    
     /*
     public var ikAnim: Float = 0.0 {
         didSet {
@@ -128,6 +139,11 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
 
     fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
     
+#if !os(watchOS)
+    //open var convertedAnimation: [CAAnimation: CAAnimation]! = nil
+    open var preparedAnimation: [String: CAAnimation]? = nil
+#endif
+    
     // for animation
     //open var parentNo: Int = -1
     //open var parentNodes: [MMDNode]? = nil
@@ -150,6 +166,165 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 */
+
+    override public init() {
+        super.init()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    convenience init(mmdNode: MMDNode) {
+        self.init()
+        
+        
+        self.copySCNNodeValues(mmdNode)
+        self.copyValues(mmdNode)
+        
+        //print("after: self.preparedAnimation: \(self.preparedAnimation)")
+        //print("after: mmdNode.preparedAnimation: \(mmdNode.preparedAnimation)")
+    }
+    
+    
+    open override func clone() -> MMDNode {
+        //let newNode = MMDNode(mmdNode: self)
+        //for child in self.childNodes {
+        //    let newChild = child.clone()
+        //    if self.rootBone === child {
+        //        newNode.rootBone = newChild as! MMDNode
+        //    }
+        //    newNode.addChildNode(newChild)
+        //}
+        //return newNode
+        let newNode = super.clone() as! MMDNode
+        self.copyValuesRecursive(src: self, dst: newNode)
+        
+        return newNode
+    }
+    
+    func copySCNNodeValues(_ node: SCNNode) {
+        self.name = node.name
+        self.light = node.light
+        self.camera = node.camera
+        self.geometry = node.geometry
+        self.morpher = node.morpher
+        self.skinner = node.skinner
+        self.categoryBitMask = node.categoryBitMask
+        self.isPaused = node.isPaused
+        self.transform = node.transform
+        self.constraints = node.constraints
+        self.isHidden = node.isHidden
+        self.opacity = node.opacity
+        self.renderingOrder = node.renderingOrder
+        self.castsShadow = node.castsShadow
+        self.movabilityHint = node.movabilityHint
+        self.filters = node.filters
+        self.rendererDelegate = node.rendererDelegate
+        
+        if let body = node.physicsBody {
+            var newBody: SCNPhysicsBody
+            switch body.type {
+            case .static:
+                newBody = SCNPhysicsBody.static()
+                break
+            case .dynamic:
+                newBody = SCNPhysicsBody.dynamic()
+                break
+            case .kinematic:
+                newBody = SCNPhysicsBody.kinematic()
+                break
+            }
+            newBody.physicsShape = body.physicsShape
+            newBody.velocityFactor = body.velocityFactor
+            newBody.angularVelocityFactor = body.angularVelocityFactor
+            newBody.isAffectedByGravity = body.isAffectedByGravity
+            newBody.mass = body.mass
+            newBody.charge = body.charge
+            newBody.friction = body.friction
+            newBody.rollingFriction = body.rollingFriction
+            newBody.restitution = body.restitution
+            newBody.damping = body.damping
+            newBody.angularDamping = body.angularDamping
+            newBody.momentOfInertia = body.momentOfInertia
+            newBody.usesDefaultMomentOfInertia = body.usesDefaultMomentOfInertia
+            newBody.categoryBitMask = body.categoryBitMask
+            newBody.contactTestBitMask = body.contactTestBitMask
+            newBody.collisionBitMask = body.collisionBitMask
+            newBody.velocity = body.velocity
+            newBody.angularVelocity = body.angularVelocity
+            //newBody.isResting = body.isResting
+            newBody.allowsResting = body.allowsResting
+            
+            self.physicsBody = newBody
+        }
+        
+        self.physicsField = node.physicsField
+        //self.particleSystems = node.particleSystems
+        //self.audioPlayers = node.audioPlayers
+    }
+    
+    func copyValues(_ node: MMDNode) {
+        // FIXME: clone values
+        self.physicsBehaviors = node.physicsBehaviors // [SCNPhysicsBehavior]
+        self.type = node.type
+        self.isKnee = node.isKnee
+        self.ikConstraint = node.ikConstraint // MMDIKConstraint
+        self.ikArray = node.ikArray // [MMDIKConstraint]
+        self.joints = node.joints // [SCNPhysicsBehavior]
+        self.vertexCount = node.vertexCount
+        self.vertexArray = node.vertexArray
+        self.normalArray = node.normalArray
+        self.texcoordArray = node.texcoordArray
+        self.boneIndicesArray = node.boneIndicesArray
+        self.boneWeightsArray = node.boneWeightsArray
+        self.indexCount = node.indexCount
+        self.indexArray = node.indexArray
+        self.materialCount = node.materialCount
+        self.materialArray = node.materialArray // [SCNMaterial]
+        self.materialIndexCountArray = node.materialIndexCountArray
+        self.elementArray = node.elementArray // [SCNGeometryElement]
+        self.boneArray = node.boneArray // [MMDNode]
+        self.boneInverseMatrixArray = node.boneInverseMatrixArray
+        self.rootBone = node.rootBone // MMDNode
+        
+        self.rotateEffector = node.rotateEffector // MMDNode
+        self.rotateEffectRate = node.rotateEffectRate
+        self.translateEffector = node.translateEffector // MMDNode
+        self.translateEffectRate = node.translateEffectRate
+        
+        //fileprivate var dummyNode: DummyNode = DummyNode()
+        
+        self.faceIndexArray = node.faceIndexArray
+        self.faceDataArray = node.faceDataArray
+        self.faceWeights = node.faceWeights
+        self.geometryMorpher = node.geometryMorpher // SCNMorpher
+        
+        //fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
+        
+        //print("before: self.preparedAnimation: \(self.preparedAnimation)")
+        //print("before: mmdNode.preparedAnimation: \(mmdNode.preparedAnimation)")
+        
+        #if !os(watchOS)
+            self.preparedAnimation = node.preparedAnimation
+        #endif
+    }
+    
+    func copyValuesRecursive(src: SCNNode, dst: SCNNode) {
+        if let mmdSrc = src as? MMDNode {
+            if let mmdDst = dst as? MMDNode {
+                mmdDst.copyValues(mmdSrc)
+            }
+        }
+        
+        guard src.childNodes.count == dst.childNodes.count else {
+            fatalError("src.childNodes.count != dst.childNodes.count")
+        }
+        
+        for index in 0..<src.childNodes.count {
+            self.copyValuesRecursive(src: src.childNodes[index], dst: dst.childNodes[index])
+        }
+    }
     
     // FIXME: use morpher
     open func updateFace() {
@@ -279,134 +454,163 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     }
 
 #if !os(watchOS)
-    override open func addAnimation(_ animation: CAAnimation, forKey key: String?) {
-        let geometryNode = self.childNode(withName: "Geometry", recursively: true)
+    open func prepareAnimation(_ animation: CAAnimation, forKey key: String) {
+        if self.preparedAnimation == nil {
+            self.preparedAnimation = [String: CAAnimation]()
+        }
         
-        // FIXME: clone values
         if let group = animation as? CAAnimationGroup {
-            let newGroup = group.copy() as! CAAnimationGroup
-            newGroup.animations = [CAAnimation]()
-            
-            if let animations = group.animations {
-                for anim in animations {
-                    var hasEffector = false
-                    let newAnim = anim.copy()
+            let convertedAnimation = self.convertAnimation(group)
+            convertedAnimation.delegate = self
+            self.preparedAnimation?[key] = convertedAnimation
+        }else{
+            animation.delegate = self
+            self.preparedAnimation?[key] = animation
+        }
+    }
+    
+    open func playPreparedAnimation(forKey key: String) {
+        if let anim = self.preparedAnimation?[key] {
+            super.addAnimation(anim, forKey: key)
+        }
+    }
+    
+    open func convertAnimation(_ animation: CAAnimationGroup) -> CAAnimationGroup {
+        let geometryNode = self.childNode(withName: "Geometry", recursively: true)
+        let newGroup = animation.copy() as! CAAnimationGroup
+        newGroup.animations = [CAAnimation]()
+        
+        if let animations = animation.animations {
+            for anim in animations {
+                var hasEffector = false
+                let newAnim = anim.copy()
+                
+                if let keyAnim = newAnim as? CAKeyframeAnimation {
+                    let boneNameKey = keyAnim.keyPath!.components(separatedBy: ".")[0]
+                    let boneName = (boneNameKey as NSString).substring(from: 1)
+                    let bone = self.childNode(withName: boneName, recursively: true)
                     
-                    if let keyAnim = newAnim as? CAKeyframeAnimation {
-                        let boneNameKey = keyAnim.keyPath!.components(separatedBy: ".")[0]
-                        let boneName = (boneNameKey as NSString).substring(from: 1)
-                        let bone = self.childNode(withName: boneName, recursively: true)
+                    if boneNameKey == "morpher" {
                         
-                        if boneNameKey == "morpher" {
-
-                            if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
-                                //print("+++++ morpher Animation - \(keyAnim.keyPath!)")
-                                let faceName = (keyAnim.keyPath! as NSString).substring(from: 16)
-                                var faceIndex = -1
-                                
-                                // search face name from geometry node
-                                for index in 0..<geometryNode!.morpher!.targets.count {
-                                    if geometryNode!.morpher!.targets[index].name == faceName {
-                                        faceIndex = index
-                                        break
-                                    }
-                                }
-                                
-                                if faceIndex >= 0 {
-                                    var newKeyPath: String! = "faceWeights[\(faceIndex)].value"
-                                    if MMD_USES_SCNMORPHER {
-                                        newKeyPath = "/Geometry.morpher.weights[\(faceIndex)]"
-                                    }
-                                    //print("Face: \(faceName), KeyPath: \(newKeyPath), duration: \(keyAnim.duration)")
-                                    keyAnim.keyPath = newKeyPath
-                                }else{
-                                    keyAnim.keyPath = "//"
+                        if keyAnim.keyPath!.hasPrefix("morpher.weights.") {
+                            //print("+++++ morpher Animation - \(keyAnim.keyPath!)")
+                            let faceName = (keyAnim.keyPath! as NSString).substring(from: 16)
+                            var faceIndex = -1
+                            
+                            // search face name from geometry node
+                            for index in 0..<geometryNode!.morpher!.targets.count {
+                                if geometryNode!.morpher!.targets[index].name == faceName {
+                                    faceIndex = index
+                                    break
                                 }
                             }
                             
-                                                    
-                        } else if bone != nil {
-                            
-                            if keyAnim.keyPath!.hasSuffix(".translation.x") {
-                                // FIXME: clone values
-                            
-                                for index in 0..<keyAnim.values!.count {
-                                    let origValue = keyAnim.values![index] as! Float
-                                    let newValue = origValue + Float(bone!.position.x)
-                                    keyAnim.values![index] = newValue
+                            if faceIndex >= 0 {
+                                var newKeyPath: String! = "faceWeights[\(faceIndex)].value"
+                                if MMD_USES_SCNMORPHER {
+                                    newKeyPath = "/Geometry.morpher.weights[\(faceIndex)]"
                                 }
-                                
-                                //if let mmdBone = bone as? MMDNode {
-                                //    if (mmdBone.translateEffector != nil) {
-                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
-                                //        hasEffector = true
-                                //    }
-                                //}
-                            }else if keyAnim.keyPath!.hasSuffix(".translation.y") {
-                                for index in 0..<keyAnim.values!.count {
-                                    let origValue = keyAnim.values![index] as! Float
-                                    let newValue = origValue + Float(bone!.position.y)
-                                    keyAnim.values![index] = newValue
-                                }
-                                
-                                //if let mmdBone = bone as? MMDNode {
-                                //    if (mmdBone.translateEffector != nil) {
-                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
-                                //        hasEffector = true
-                                //    }
-                                //}
-                            }else if keyAnim.keyPath!.hasSuffix(".translation.z") {
-                                for index in 0..<keyAnim.values!.count {
-                                    let origValue = keyAnim.values![index] as! Float
-                                    let newValue = origValue + Float(bone!.position.z)
-                                    keyAnim.values![index] = newValue
-                                }
-                                
-                                //if let mmdBone = bone as? MMDNode {
-                                //    if (mmdBone.translateEffector != nil) {
-                                //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
-                                //        hasEffector = true
-                                //    }
-                                //}
-                            }else if keyAnim.keyPath!.hasSuffix(".quaternion") {
-                                //if let mmdBone = bone as? MMDNode {
-                                //    if let rotateEffector = mmdBone.rotateEffector {
-                                //        if rotateEffector.ikEffector != nil {
-                                //            hasEffector = true
-                                //        }
-                                //    }
-                                //}
+                                //print("Face: \(faceName), KeyPath: \(newKeyPath), duration: \(keyAnim.duration)")
+                                keyAnim.keyPath = newKeyPath
+                            }else{
+                                keyAnim.keyPath = "//"
                             }
-                            
-                            if keyAnim.values!.count == 1 {
-                                // remove the meanless animation
-                                if let value = keyAnim.values![0] as? SCNVector3 {
-                                    if value.x == 0 && value.y == 0 && value.z == 0 {
-                                        hasEffector = true
-                                    }
-                                } else if let value = keyAnim.values![0] as? SCNVector4 {
-                                    if value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 {
-                                        hasEffector = true
-                                    }
-                                }
-                            }
-                        } else {
-                            // The bone is not found. It might happen.
-                            //print("missing bone: \(boneName)")
                         }
-                    }else{
-                        // not CAKeyframeAnimation: nothing to do so far
+                        
+                        
+                    } else if bone != nil {
+                        
+                        if keyAnim.keyPath!.hasSuffix(".translation.x") {
+                            // FIXME: clone values
+                            
+                            for index in 0..<keyAnim.values!.count {
+                                let origValue = keyAnim.values![index] as! Float
+                                let newValue = origValue + Float(bone!.position.x)
+                                keyAnim.values![index] = newValue
+                            }
+                            
+                            //if let mmdBone = bone as? MMDNode {
+                            //    if (mmdBone.translateEffector != nil) {
+                            //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                            //        hasEffector = true
+                            //    }
+                            //}
+                        }else if keyAnim.keyPath!.hasSuffix(".translation.y") {
+                            for index in 0..<keyAnim.values!.count {
+                                let origValue = keyAnim.values![index] as! Float
+                                let newValue = origValue + Float(bone!.position.y)
+                                keyAnim.values![index] = newValue
+                            }
+                            
+                            //if let mmdBone = bone as? MMDNode {
+                            //    if (mmdBone.translateEffector != nil) {
+                            //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                            //        hasEffector = true
+                            //    }
+                            //}
+                        }else if keyAnim.keyPath!.hasSuffix(".translation.z") {
+                            for index in 0..<keyAnim.values!.count {
+                                let origValue = keyAnim.values![index] as! Float
+                                let newValue = origValue + Float(bone!.position.z)
+                                keyAnim.values![index] = newValue
+                            }
+                            
+                            //if let mmdBone = bone as? MMDNode {
+                            //    if (mmdBone.translateEffector != nil) {
+                            //        print("effector: \(mmdBone.translateEffector?.name) \(mmdBone.translateEffectRate)")
+                            //        hasEffector = true
+                            //    }
+                            //}
+                        }else if keyAnim.keyPath!.hasSuffix(".quaternion") {
+                            //if let mmdBone = bone as? MMDNode {
+                            //    if let rotateEffector = mmdBone.rotateEffector {
+                            //        if rotateEffector.ikEffector != nil {
+                            //            hasEffector = true
+                            //        }
+                            //    }
+                            //}
+                        }
+                        
+                        if keyAnim.values!.count == 1 {
+                            // remove the meanless animation
+                            if let value = keyAnim.values![0] as? SCNVector3 {
+                                if value.x == 0 && value.y == 0 && value.z == 0 {
+                                    //print("skip: \(keyAnim.keyPath)")
+                                    hasEffector = true
+                                }
+                            } else if let value = keyAnim.values![0] as? SCNVector4 {
+                                if value.x == 0 && value.y == 0 && value.z == 0 {
+                                    //print("skip: \(keyAnim.keyPath)")
+                                    hasEffector = true
+                                }
+                            }
+                        }
+                    } else {
+                        // The bone is not found. It might happen.
+                        //print("missing bone: \(boneName)")
                     }
-                    
-                    // FIXME: don't remove animation even if it has the effector.
-                    if !hasEffector {
-                        newGroup.animations!.append(newAnim as! CAAnimation)
-                    }
+                }else{
+                    // not CAKeyframeAnimation: nothing to do so far
+                }
+                
+                // FIXME: don't remove animation even if it has the effector.
+                if !hasEffector {
+                    newGroup.animations!.append(newAnim as! CAAnimation)
                 }
             }
-            super.addAnimation(newGroup, forKey: key)
+        }
+        return newGroup
+    }
+    
+    override open func addAnimation(_ animation: CAAnimation, forKey key: String?) {
+        if let group = animation as? CAAnimationGroup {
+            // FIXME: clone values
+            let convertedAnimation = self.convertAnimation(group)
+            convertedAnimation.delegate = self
+            super.addAnimation(convertedAnimation, forKey: key)
         }else{
             // not CAAnimationGroup: just call the superclass
+            animation.delegate = self
             super.addAnimation(animation, forKey: key)
         }
     }
@@ -554,6 +758,34 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         }
     }
     
+    open func addPhysicsBehavior(scene: SCNScene) {
+        guard let joints = self.joints else {
+            return
+        }
+
+        for joint in joints {
+            scene.physicsWorld.addBehavior(joint)
+        }
+    }
+    
+    open func removePhysicsBehavior(scene: SCNScene) {
+        guard let joints = self.joints else {
+            return
+        }
+        
+        for joint in joints {
+            scene.physicsWorld.removeBehavior(joint)
+        }
+    }
+    
+    func getRootNode() -> SCNNode {
+        var node: SCNNode = self
+        while let parentNode = node.parent {
+            node = parentNode
+        }
+        return node
+    }
+    
     fileprivate func sub(_ v1: SCNVector3, _ v2: SCNVector3) -> SCNVector3 {
         var v = SCNVector3()
         v.x = v1.x - v2.x
@@ -674,7 +906,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         print("\(v.x) \(v.y) \(v.z) \(v.w)")
     }
     
-    func rotationToQuat(_ rot: SCNVector4) -> SCNVector4 {
+    public func rotationToQuat(_ rot: SCNVector4) -> SCNVector4 {
         var quat = SCNVector4()
         if rot.x == 0 && rot.y == 0 && rot.z == 0 {
             quat.x = 0
@@ -694,7 +926,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         return quat
     }
     
-    func quatToRotation(_ quat: SCNVector4) -> SCNVector4 {
+    public func quatToRotation(_ quat: SCNVector4) -> SCNVector4 {
         var quat = quat
         var rot = SCNVector4()
         
@@ -765,6 +997,97 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         }
         
         return ans
+    }
+
+    // TODO: implement getPose(forKey key: String, atTime: Float, boneName: String) -> (SCNVector3, SCNVector4)
+    public func getFirstFramePose(forKey key: String, boneName: String) -> (SCNVector3, SCNVector4) {
+        let transXKey = "/\(boneName).transform.translation.x"
+        let transYKey = "/\(boneName).transform.translation.y"
+        let transZKey = "/\(boneName).transform.translation.z"
+        let quatKey = "/\(boneName).transform.quaternion"
+        
+        var translate = SCNVector3()
+        var quaternion = SCNVector4(x: 0, y: 0, z: 0, w: 1)
+        
+        if let group = self.animation(forKey: key) as? CAAnimationGroup {
+            print("group found")
+            for anim in group.animations! {
+                if let keyAnim = anim as? CAKeyframeAnimation {
+                    print("keyPath: \(keyAnim.keyPath!)")
+                    switch keyAnim.keyPath! {
+                    case transXKey:
+                        print("transXKey found")
+                        translate.x = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        print("value: \(translate.x)")
+                        break
+                    case transYKey:
+                        print("transYKey found")
+                        translate.y = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        print("value: \(translate.y)")
+                        break
+                    case transZKey:
+                        print("transZKey found")
+                        translate.z = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        print("value: \(translate.z)")
+                        break
+                    case quatKey:
+                        print("quatKey found")
+                        quaternion = (keyAnim.values!.first! as! NSValue).scnVector4Value
+                        print("value: \(quaternion)")
+                        break
+                    default:
+                        break
+                    }
+                }
+            }
+        }
+        
+        return (translate, quaternion)
+    }
+
+    public func getLastFramePose(forKey key: String, boneName: String) -> (SCNVector3, SCNVector4) {
+        let transXKey = "/\(boneName).transform.translation.x"
+        let transYKey = "/\(boneName).transform.translation.y"
+        let transZKey = "/\(boneName).transform.translation.z"
+        let quatKey = "/\(boneName).transform.quaternion"
+
+        var translate = SCNVector3()
+        var quaternion = SCNVector4(x: 0, y: 0, z: 0, w: 1)
+        
+        if let group = self.animation(forKey: key) as? CAAnimationGroup {
+            print("group found")
+            for anim in group.animations! {
+                if let keyAnim = anim as? CAKeyframeAnimation {
+                    print("keyPath: \(keyAnim.keyPath!)")
+                    switch keyAnim.keyPath! {
+                    case transXKey:
+                        print("transXKey found")
+                        translate.x = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        print("value: \(translate.x)")
+                        break
+                    case transYKey:
+                        print("transYKey found")
+                        translate.y = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        print("value: \(translate.y)")
+                        break
+                    case transZKey:
+                        print("transZKey found")
+                        translate.z = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        print("value: \(translate.z)")
+                        break
+                    case quatKey:
+                        print("quatKey found")
+                        quaternion = (keyAnim.values!.last! as! NSValue).scnVector4Value
+                        print("value: \(quaternion)")
+                        break
+                    default:
+                        break
+                    }
+                }
+            }
+        }
+        
+        return (translate, quaternion)
     }
     
     var checkParentPosition: SCNVector3 = SCNVector3()
@@ -930,6 +1253,22 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                 boneName = "(no name)"
             }
             print("\(index): \(boneName)")
+        }
+    }
+    
+    // MARK: CAAnimationDelegate
+    //public func animationDidStart(_ anim: CAAnimation) {}
+    public func animationDidStop(_ anim: CAAnimation, finished: Bool) {
+        if finished {
+            if let block = anim.value(forKey: MMDAnimationCompletionBlockKey) as? () -> Void {
+                block()
+            }
+        }
+    }
+    
+    public func setCompletionHandler(_ block: () -> Void, forPreparedAnimationKey key: String) {
+        if let anim = self.preparedAnimation?[key] {
+            anim.setValue(block, forKey: MMDAnimationCompletionBlockKey)
         }
     }
 }

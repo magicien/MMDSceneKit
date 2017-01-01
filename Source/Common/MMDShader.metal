@@ -169,7 +169,6 @@ vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
     
     //float4 color = float4(r, g, b, 1.0);
     //out.color = scn_commonprofile.diffuseColor;
-    //out.color = scn_lights.color;
     //out.color = in.color;
     //out.color = float4(0.3, 0.3, 0.3, 1.0);
     //out.color = color;
@@ -235,9 +234,6 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
     float3 posMove = 0.0;
     float3 normal = 0.0;
     
-    float3 posN = normalize(in.position);
-    float posSize = length(in.position);
-    
     for(int i=0; i<4; i++){
         float weight = in.boneWeights[i];
         if(weight <= 0.0){
@@ -252,13 +248,11 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
         
         float3x3 normalMat = float3x3(jointMatrix[0].xyz, jointMatrix[1].xyz, jointMatrix[2].xyz);
         normal += (in.normal * normalMat) * weight;
-        //pos += (in * normalMat) * weight;
-        //posMove += float3(jointMatrix[0].w, jointMatrix[1].w, jointMatrix[2].w) * weight;
     }
     //pos = normalize(pos) * posSize + posMove;
     
     out.eye = (scn_frame.viewTransform * float4(pos, 1.0)).xyz;
-    out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
+    //out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
     
     float4 in_pos0 = float4(pos, 1.0);
     float4 in_pos1 = float4(pos + normal, 1.0);
@@ -279,12 +273,6 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
     }
 
     out.position = scn_frame.viewProjectionTransform * float4(pos + normal * coeff, 1.0);
-    //out.position = scn_frame.viewProjectionTransform * float4(pos, 1.0);
-    
-    //out.position = float4(in.position, 1.0) * scn_node.modelViewProjectionTransform;
-    //out.position = scn_node.modelViewProjectionTransform * float4(in.position, 1.0);
-    //out.position = float4(in.position, 1.0);
-    
     
     return out;
 };

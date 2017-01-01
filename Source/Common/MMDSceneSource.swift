@@ -45,7 +45,7 @@ open class MMDSceneSource: SCNSceneSource {
         self.loadData(data, options: options)
     }
     
-    fileprivate func loadData(_ data: Data, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
+    fileprivate func loadData(_ data: Data, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) {
         self.workingScene = SCNScene()
         
         _ = checkFileTypeFromData(data)
@@ -72,7 +72,7 @@ open class MMDSceneSource: SCNSceneSource {
                 }
             #endif
         }else if self.fileType == .pmm {
-            if let pmmScene = MMDPMMReader.getScene(data, directoryPath: self.directoryPath) {
+            if let pmmScene = MMDPMMReader.getScene(data, directoryPath: self.directoryPath, models: models, motions: motions) {
                 for node in pmmScene.rootNode.childNodes {
                     self.workingScene.rootNode.addChildNode(node)
                 }
@@ -110,7 +110,7 @@ open class MMDSceneSource: SCNSceneSource {
         - parameter path: A path identifying the location of a scene file in MMD file format.
         - parameter options: ignored. just for compatibility of SCNSceneSource.
     */
-    public convenience init?(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
+    public convenience init?(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) {
         self.init()
         self.directoryPath = (path as NSString).deletingLastPathComponent
 
@@ -123,7 +123,7 @@ open class MMDSceneSource: SCNSceneSource {
             print("data is nil... (\(path))")
             return nil
         } else {
-            self.loadData(data!, options: options)
+            self.loadData(data!, options: options, models: models, motions: motions)
         }
     }
     
@@ -132,13 +132,13 @@ open class MMDSceneSource: SCNSceneSource {
          - parameter url: A URL identifying the location of a scene file in MMD file format.
          - parameter options: ignored.
     */
-    public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
+    public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode?]? = nil) {
         let filePath = Bundle.main.path(forResource: name, ofType: nil)
         guard let path = filePath else {
             print("error: file \(name) not found.")
             return nil
         }
-        self.init(path: path, options: options)
+        self.init(path: path, options: options, models: models)
     }
     
     /**

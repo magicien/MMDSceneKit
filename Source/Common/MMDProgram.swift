@@ -19,24 +19,23 @@ public class MMDProgram: SCNProgram, SCNProgramDelegate {
         self.vertexFunctionName = "mmdVertex"
         self.fragmentFunctionName = "mmdFragment"
         
-        
         /*
         let device = MTLCreateSystemDefaultDevice()
         print("device.name: \(device!.name!)")
-        let libraryPath = NSBundle(forClass: MMDProgram.self).pathForResource("default", ofType: "metallib")
+        let libraryPath = Bundle(for: MMDProgram.self).path(forResource: "default", ofType: "metallib")
         print("libraryPath: \(libraryPath!)")
         
-        let commandQueue = device!.newCommandQueue()
+        let commandQueue = device!.makeCommandQueue()
         do {
-            self.library = try device!.newLibraryWithFile(libraryPath!)
+            self.library = try device!.makeLibrary(filepath: libraryPath!)
         } catch {
             print("********* library setting error ************")
         }
         self.vertexFunctionName = "mmdVertex"
         self.fragmentFunctionName = "mmdFragment"
 
-        let vertexShader = self.library!.newFunctionWithName("mmdVertex")
-        let fragmentShader = self.library!.newFunctionWithName("mmdFragment")
+        let vertexShader = self.library!.makeFunction(name: "mmdVertex")
+        let fragmentShader = self.library!.makeFunction(name: "mmdFragment")
         let functionNames = self.library!.functionNames
         
         for name in functionNames {

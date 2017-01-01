@@ -11,7 +11,7 @@ import SceneKit
 #if os(watchOS)
 
     class MMDPMMReader: MMDReader {
-        static func getScene(_ data: Data, directoryPath: String! = "") -> SCNScene? {
+        func getScene(_ data: Data, directoryPath: String! = "", models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
             return SCNScene()
         }
     }
@@ -352,6 +352,9 @@ class MMDPMMReader: MMDReader {
     private var workingModel: MMDNode! = nil
     private var motions = [CAAnimationGroup]()
     
+    private var substituteModels: [MMDNode?]! = nil
+    private var substituteMotions: [CAAnimation?]! = nil
+    
     // for animation
     private var frameLength: Int = 0
     private var workingAnimationGroup: CAAnimationGroup! = nil
@@ -384,9 +387,9 @@ class MMDPMMReader: MMDReader {
     /**
      
      */
-    static func getScene(_ data: Data, directoryPath: String! = "") -> SCNScene? {
+    static func getScene(_ data: Data, directoryPath: String! = "", models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
         let reader = MMDPMMReader(data: data, directoryPath: directoryPath)
-        let scene = reader.loadPMMFile()
+        let scene = reader.loadPMMFile(models: models, motions: motions)
         
         return scene
     }
@@ -396,12 +399,17 @@ class MMDPMMReader: MMDReader {
      * load .pmm file
      * - return:
      */
-    private func loadPMMFile() -> SCNScene? {
+    private func loadPMMFile(models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
         // initialize working variables
         self.workingScene = SCNScene()
         
         self.pmmMagic = ""
         self.version = 0
+        
+        self.substituteModels = models
+        if self.substituteModels == nil {
+            self.substituteModels = [MMDNode?]()
+        }
         
         // read contents of file
         self.readPMMHeader()
@@ -481,43 +489,65 @@ class MMDPMMReader: MMDReader {
         
         if self.version == 1 {
             for _ in 0..<self.modelCount {
-                let text = getString(length: 20)
-                print("\(text)")
+                var modelName = ""
+                if let text = getString(length: 20) as? String {
+                    modelName = text
+                }
+                print("modelName: \(modelName)")
+            }
+        }
+        
+        if self.modelCount > self.substituteModels.count {
+            for _ in 0..<(self.modelCount - self.substituteModels.count) {
+                self.substituteModels.append(nil)
             }
         }
         
         for modelNo in 0..<self.modelCount {
             var model = MMDNode()
-            
-            let no = getUnsignedByte()
-            
-            if version == 1 {
-                model.name = getString(length: 20) as! String
-            } else {
-                model.name = getPascalString() as String
-                //model.englishName = getPascalString() as String
-                let englishName = getPascalString() as String
-            }
-            
-            let filePath = getString(length: 256)
-            skip(1) // unknown flag
-            
-            print("\(model.name): filePath: \(filePath)")
-            
-            let filePathMatches = userFilePathPattern.matches(filePath as! String)
-            if let paths = filePathMatches {
-                let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
-                let newFilePath = self.directoryPath + "/" + replaced
-                print("newFilePath: \(newFilePath)")
+            if let m = self.substituteModels[modelNo] {
+                model = m
                 
-                if let modelScene = MMDSceneSource(path: newFilePath) {
-                    if let newModel = modelScene.getModel() {
-                        model = newModel
-                    } else {
-                        print("can't get model data: \(newFilePath)")
-                    }
+                // just skip data
+                skip(1)
+                if version == 1 {
+                    skip(20)
                 } else {
-                    print("can't read file: \(newFilePath)")
+                    let a = getPascalString() as String
+                    let b = getPascalString() as String
+                    print("\(a), \(b)")
+                }
+                skip(257)
+            } else {
+                let no = getUnsignedByte()
+                
+                if version == 1 {
+                    model.name = getString(length: 20) as! String
+                } else {
+                    model.name = getPascalString() as String
+                    let englishName = getPascalString() as String
+                }
+                
+                let filePath = getString(length: 256)
+                skip(1) // unknown flag
+                
+                print("\(model.name): filePath: \(filePath)")
+                
+                let filePathMatches = userFilePathPattern.matches(filePath as! String)
+                if let paths = filePathMatches {
+                    let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
+                    let newFilePath = self.directoryPath + "/" + replaced
+                    print("newFilePath: \(newFilePath)")
+                    
+                    if let modelScene = MMDSceneSource(path: newFilePath) {
+                        if let newModel = modelScene.getModel() {
+                            model = newModel
+                        } else {
+                            print("can't get model data: \(newFilePath)")
+                        }
+                    } else {
+                        print("can't read file: \(newFilePath)")
+                    }
                 }
             }
             self.workingModel = model
@@ -568,6 +598,7 @@ class MMDPMMReader: MMDReader {
             
             skip(4) // unknown
 
+            
             // read motions
             let lastFrame = getUnsignedInt()
             print("lastFrame: \(lastFrame)")
@@ -663,7 +694,7 @@ class MMDPMMReader: MMDReader {
         for index in 0..<self.boneCount {
             let boneName = self.boneNameArray[index]
             
-            //print("============== bone animation: \(boneName) =====================")
+            print("============== bone animation: \(boneName) =====================")
             
             let posXMotion = CAKeyframeAnimation(keyPath: "/\(boneName).transform.translation.x")
             let posYMotion = CAKeyframeAnimation(keyPath: "/\(boneName).transform.translation.y")
@@ -738,9 +769,9 @@ class MMDPMMReader: MMDReader {
         posZMotion.values!.insert(info.posZ, at: frameIndex)
         rotMotion.values!.insert(info.rotate, at: frameIndex)
         
-        //print("frameNo: \(info.frameNo)")
-        //print("pos: \(info.posX), \(info.posY), \(info.posZ)")
-        //print("rot: \(info.rotate)")
+        print("frameNo: \(info.frameNo)")
+        print("pos: \(info.posX), \(info.posY), \(info.posZ)")
+        print("rot: \(info.rotate)")
 
         if info.next > 0 {
             if let nextMotion = self.boneFrameHash[info.next] {
@@ -1452,72 +1483,64 @@ class MMDPMMReader: MMDReader {
         for index in 0..<self.accessoryCount {
             print("[\(index)]: \(self.accessoryNameArray[index])")
         }
+        
+        if (self.modelCount + self.accessoryCount) > self.substituteModels.count {
+            for _ in 0..<(self.modelCount + self.accessoryCount - self.substituteModels.count) {
+                self.substituteModels.append(nil)
+            }
+        }
 
         self.accessoryFrameHash = [Int:MMDVMDAccessoryInfo]()
 
-        for _ in 0..<self.accessoryCount {
+        for index in 0..<self.accessoryCount {
             var accessory = MMDNode()
-            let no = getUnsignedByte()
-            let name = getString(length: 100)
-            let path = getString(length: 256)
-            
-            accessory.name = name as String?
-            print("accessory[\(no)]: \(name): \(path)")
-            
-            let filePathMatches = userFilePathPattern.matches(path as! String)
-            if let paths = filePathMatches {
-                let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
-                let newFilePath = self.directoryPath + "/" + replaced
-                print("newFilePath: \(newFilePath)")
+            if let m = self.substituteModels[self.modelCount + index] {
+                accessory = m
                 
-                if let accessoryScene = MMDSceneSource(path: newFilePath) {
-                    if let newAccessory = accessoryScene.getModel() {
-                        accessory = newAccessory
+                // just skip accessory data
+                skip(358)
+            } else {
+                let no = getUnsignedByte()
+                let name = getString(length: 100)
+                let path = getString(length: 256)
+                
+                accessory.name = name as String?
+                print("accessory[\(no)]: \(name): \(path)")
+                
+                let filePathMatches = userFilePathPattern.matches(path as! String)
+                if let paths = filePathMatches {
+                    let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
+                    let newFilePath = self.directoryPath + "/" + replaced
+                    print("newFilePath: \(newFilePath)")
+                    
+                    if let accessoryScene = MMDSceneSource(path: newFilePath) {
+                        if let newAccessory = accessoryScene.getModel() {
+                            accessory = newAccessory
+                        } else {
+                            print("can't get accessory data: \(newFilePath)")
+                        }
                     } else {
-                        print("can't get accessory data: \(newFilePath)")
+                        print("can't read file: \(newFilePath)")
                     }
-                } else {
-                    print("can't read file: \(newFilePath)")
                 }
-            }
 
-            // set the default scale for accessory (x10)
-            accessory.scale = SCNVector3Make(10.0, 10.0, 10.0)
-            /*
-            accessory.filters = [CIFilter]()
-            let filter = CIFilter(name: "CIAdditionCompositing")
-            if let additive = filter {
-                additive.name = "additive"
-                additive.isEnabled = false
-                accessory.filters!.append(additive)
-            }
-            let isEnabled = accessory.value(forKeyPath: "filters.additive.isEnabled")
-            print("additive.isEnabled: \(isEnabled)")
-            */
-            let accessoryIndex = Int(getUnsignedByte())
-            print("index[\(accessoryIndex)]: \(accessoryNameArray[accessoryIndex])")
-
-            /*
-            for index in 0..<52 {
-                let data = getUnsignedByte()
-                let ascii = String(format: "%c", data)
-                print("accessory \(no) A[\(index)] \(String(data, radix: 16)): \(ascii)")
-            }
-            let aCount = getUnsignedByte()
-            print("count: \(aCount)")
-            for count in 0..<aCount {
-                for index in 0..<55 {
-                    let data = getUnsignedByte()
-                    let ascii = String(format: "%c", data)
-                    print("accessory \(no) B[\(count)][\(index)] \(String(data, radix: 16)): \(ascii)")
+                // set the default scale for accessory (x10)
+                accessory.scale = SCNVector3Make(10.0, 10.0, 10.0)
+                /*
+                accessory.filters = [CIFilter]()
+                let filter = CIFilter(name: "CIAdditionCompositing")
+                if let additive = filter {
+                    additive.name = "additive"
+                    additive.isEnabled = false
+                    accessory.filters!.append(additive)
                 }
+                let isEnabled = accessory.value(forKeyPath: "filters.additive.isEnabled")
+                print("additive.isEnabled: \(isEnabled)")
+                */
+                let accessoryIndex = Int(getUnsignedByte())
+                print("index[\(accessoryIndex)]: \(accessoryNameArray[accessoryIndex])")
             }
-            for index in 0..<41 {
-                let data = getUnsignedByte()
-                let ascii = String(format: "%c", data)
-                print("accessory \(no) C[\(index)] \(String(data, radix: 16)): \(ascii)")                
-            }
-             */
+            
             readOneAccessoryFrame(hasIndex: false)
             
             let accessoryFrameCount = getUnsignedInt()
@@ -1860,7 +1883,9 @@ class MMDPMMReader: MMDReader {
         
         // camera
         let cameraNode = MMDCameraNode()
-        cameraNode.addAnimation(self.workingCameraAnimationGroup, forKey: "motion")
+        //cameraNode.addAnimation(self.workingCameraAnimationGroup, forKey: "motion")
+        cameraNode.prepareAnimation(self.workingCameraAnimationGroup, forKey: "motion")
+        cameraNode.playPreparedAnimation(forKey: "motion")
         cameraNode.camera?.automaticallyAdjustsZRange = true
         
         self.workingScene.rootNode.addChildNode(cameraNode)
@@ -1888,7 +1913,9 @@ class MMDPMMReader: MMDReader {
             
             print("model[\(index)]: \(model.name) added")
 
-            model.addAnimation(motion, forKey: "motion")
+            //model.addAnimation(motion, forKey: "motion")
+            model.prepareAnimation(motion, forKey: "motion")
+            model.playPreparedAnimation(forKey: "motion")
             self.workingScene.rootNode.addChildNode(model)
         }
         
@@ -1897,7 +1924,9 @@ class MMDPMMReader: MMDReader {
             let accessory = self.accessories[index]
             let motion = self.accessoryMotions[index]
             
-            accessory.addAnimation(motion, forKey: "motion")
+            //accessory.addAnimation(motion, forKey: "motion")
+            accessory.prepareAnimation(motion, forKey: "motion")
+            accessory.playPreparedAnimation(forKey: "motion")
             
             /*
             accessory.filters = [CIFilter]()
