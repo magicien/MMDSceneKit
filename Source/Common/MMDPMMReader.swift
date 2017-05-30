@@ -11,7 +11,7 @@ import SceneKit
 #if os(watchOS)
 
     class MMDPMMReader: MMDReader {
-        func getScene(_ data: Data, directoryPath: String! = "", models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
+        static func getScene(_ data: Data, directoryPath: String! = "", models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
             return SCNScene()
         }
     }
@@ -269,9 +269,25 @@ fileprivate class MMDVMDAccessoryInfo {
         var parentNode: MMDNode? = nil
         if modelIndex >= 0 && modelIndex < reader.models.count {
             let parentModel = reader.models[modelIndex]
+            
+            //print(String(format: "<Pointer> MMDVMDAccessoryInfo parentModel: %p", parentModel))
             if boneIndex < parentModel.boneArray.count {
-                parentNode = parentModel.boneArray[boneIndex]
-                //print("accessory parentNode: \(parentNode!.name)")
+                guard let boneName = parentModel.boneArray[boneIndex].name else {
+                    fatalError("bone.name == nil")
+                }
+                parentNode = parentModel.childNode(withName: boneName, recursively: true) as? MMDNode
+                guard parentNode != nil else {
+                    fatalError("parentNode == nil")
+                }
+                
+                print("accessory parentNode: \(parentNode!.name)")
+                //print(String(format: "<Pointer><Center> MMDVMDAccessoryInfo parentNode: %p", parentNode!))
+                
+                //var node:SCNNode? = parentNode
+                //while node != nil {
+                //    print(String(format: "<Pointer><Recursive>%@: %p", node!.name ?? "", node!))
+                //    node = node!.parent
+                //}
             }
         }
         self.parent = parentNode
@@ -388,6 +404,8 @@ class MMDPMMReader: MMDReader {
      
      */
     static func getScene(_ data: Data, directoryPath: String! = "", models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) -> SCNScene? {
+        
+        //print(String(format: "<Pointer> MMDPMMReader.getScene models[0]: %p", models![0]!))
         let reader = MMDPMMReader(data: data, directoryPath: directoryPath)
         let scene = reader.loadPMMFile(models: models, motions: motions)
         
@@ -629,6 +647,9 @@ class MMDPMMReader: MMDReader {
             
             self.models.append(model)
         }
+        
+        //print(String(format: "<Pointer> MMDPMMReader.readModels self.models[0]: %p", self.models[0]))
+
     }
     
     private func readBone() {
@@ -1472,6 +1493,7 @@ class MMDPMMReader: MMDReader {
     
     // MARK: - Accessory Frame
     private func readAccessories() {
+        print("before accessoryCount pos: \(self._pos)")
         self.accessoryCount = Int(getUnsignedByte())
         self.accessoryNameArray = [String]()
         
@@ -1494,6 +1516,7 @@ class MMDPMMReader: MMDReader {
 
         for index in 0..<self.accessoryCount {
             var accessory = MMDNode()
+            print("reader pos: \(self._pos)")
             if let m = self.substituteModels[self.modelCount + index] {
                 accessory = m
                 
@@ -1671,10 +1694,14 @@ class MMDPMMReader: MMDReader {
                             mmdParentNode.addChildNode(node)
                         }
                         
+                        //print(String(format: "<Pointer><Center><callback> readOneAccessoryFrame callback mmdParentNode: %p", mmdParentNode))
+
                         //print("accessory.transform: \(node.transform)")
                         //print("accessory.presentation.transform: \(node.presentation.transform)")
                     }
                 })
+                //print(String(format: "<Pointer><Center> readOneAccessoryFrame mmdParentNode: %p", mmdParentNode))
+
                 parentEvents.append(parentEvent)
                 prevParent = mmdParentNode
             }
@@ -1782,9 +1809,20 @@ class MMDPMMReader: MMDReader {
         // float3 pos
         // float scale
         // float3 rot
-        // byte flag?
+        // byte flag1?
+        // byte flag2?
         
-        skip(38)
+        print("readAccessoryStatus")
+        for i in 0..<38 {
+            let data = getUnsignedByte()
+            print("\(i): \(data)")
+        }
+        if(self.version >= 2){
+            let data = getUnsignedByte()
+            print("38: \(data)")
+        }
+        
+        //skip(39)
     }
 
     // MARK: - other settings

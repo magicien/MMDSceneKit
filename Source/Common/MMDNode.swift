@@ -49,7 +49,7 @@ private let MMDAnimationCompletionBlockKey = "MMDAnimationCompletionBlockKey"
 }
 */
 
-open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
+open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
     open internal(set) var type: MMDNodeType = .unknown
     open internal(set) var isKnee: Bool = false
@@ -219,7 +219,9 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
         self.renderingOrder = node.renderingOrder
         self.castsShadow = node.castsShadow
         self.movabilityHint = node.movabilityHint
+#if os(macOS) || os(iOS) || os(tvOS)
         self.filters = node.filters
+#endif
         self.rendererDelegate = node.rendererDelegate
         
         if let body = node.physicsBody {
@@ -778,7 +780,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
         }
     }
     
-    func getRootNode() -> SCNNode {
+    public func getRootNode() -> SCNNode {
         var node: SCNNode = self
         while let parentNode = node.parent {
             node = parentNode
@@ -999,6 +1001,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
         return ans
     }
 
+#if os(macOS) || os(iOS) || os(tvOS)
     // TODO: implement getPose(forKey key: String, atTime: Float, boneName: String) -> (SCNVector3, SCNVector4)
     public func getFirstFramePose(forKey key: String, boneName: String) -> (SCNVector3, SCNVector4) {
         let transXKey = "/\(boneName).transform.translation.x"
@@ -1017,17 +1020,17 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
                     switch keyAnim.keyPath! {
                     case transXKey:
                         print("transXKey found")
-                        translate.x = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.x = OSFloat(keyAnim.values!.first! as! NSNumber)
                         print("value: \(translate.x)")
                         break
                     case transYKey:
                         print("transYKey found")
-                        translate.y = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.y = OSFloat(keyAnim.values!.first! as! NSNumber)
                         print("value: \(translate.y)")
                         break
                     case transZKey:
                         print("transZKey found")
-                        translate.z = CGFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.z = OSFloat(keyAnim.values!.first! as! NSNumber)
                         print("value: \(translate.z)")
                         break
                     case quatKey:
@@ -1062,17 +1065,17 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
                     switch keyAnim.keyPath! {
                     case transXKey:
                         print("transXKey found")
-                        translate.x = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.x = OSFloat(keyAnim.values!.last! as! NSNumber)
                         print("value: \(translate.x)")
                         break
                     case transYKey:
                         print("transYKey found")
-                        translate.y = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.y = OSFloat(keyAnim.values!.last! as! NSNumber)
                         print("value: \(translate.y)")
                         break
                     case transZKey:
                         print("transZKey found")
-                        translate.z = CGFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.z = OSFloat(keyAnim.values!.last! as! NSNumber)
                         print("value: \(translate.z)")
                         break
                     case quatKey:
@@ -1089,7 +1092,24 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
         
         return (translate, quaternion)
     }
+
+#else
+    // TODO: implement
+    public func getFirstFramePose(forKey key: String, boneName: String) -> (SCNVector3, SCNVector4) {
+        let vec3 = SCNVector3(x: 0, y: 0, z: 0)
+        let vec4 = SCNVector4(x: 0, y: 0, z: 0, w: 0)
     
+        return (vec3, vec4)
+    }
+    
+    public func getLastFramePose(forKey key: String, boneName: String) -> (SCNVector3, SCNVector4) {
+        let vec3 = SCNVector3(x: 0, y: 0, z: 0)
+        let vec4 = SCNVector4(x: 0, y: 0, z: 0, w: 0)
+    
+        return (vec3, vec4)
+    }
+#endif
+
     var checkParentPosition: SCNVector3 = SCNVector3()
     var checkParentRotation: SCNVector4 = SCNVector4()
     var checkParentPresentPosition: SCNVector3 = SCNVector3()
@@ -1255,9 +1275,10 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
             print("\(index): \(boneName)")
         }
     }
-    
-    // MARK: CAAnimationDelegate
-    //public func animationDidStart(_ anim: CAAnimation) {}
+}
+
+#if os(macOS) || os(iOS) || os(tvOS)
+extension MMDNode: CAAnimationDelegate {
     public func animationDidStop(_ anim: CAAnimation, finished: Bool) {
         if finished {
             if let block = anim.value(forKey: MMDAnimationCompletionBlockKey) as? () -> Void {
@@ -1272,3 +1293,4 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate, CAAnimationDelegate {
         }
     }
 }
+#endif

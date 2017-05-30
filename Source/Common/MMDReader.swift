@@ -8,16 +8,6 @@
 
 import SceneKit
 
-#if os(iOS) || os(tvOS) || os(watchOS)
-    typealias OSFloat = Float
-    typealias OSColor = UIColor
-    typealias OSImage = UIImage
-#elseif os(OSX)
-    typealias OSFloat = CGFloat
-    typealias OSColor = NSColor
-    typealias OSImage = NSImage
-#endif
-
 internal class MMDReader: NSObject {
     internal var directoryPath: String! = ""
     internal var binaryData: Data! = nil
@@ -277,6 +267,7 @@ internal class MMDReader: NSObject {
     internal func createTexture(cgImage: CGImage, light: OSColor) -> CGImage? {
         //guard let cgImage = texture.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
         let ciImage = CIImage(cgImage: cgImage)
+        return cgImage
         
         guard let filter = CIFilter(name: "CIColorPolynomial") else { return cgImage }
         
@@ -340,4 +331,10 @@ internal class MMDReader: NSObject {
         }
     }
 #endif
+    // for debug
+    var _pos: Int {
+        get {
+            return self.pos
+        }
+    }
 }

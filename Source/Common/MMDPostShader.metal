@@ -6,6 +6,7 @@
 //  Copyright © 2016 DarkHorse. All rights reserved.
 //
 
+/*
 #include <metal_stdlib>
 using namespace metal;
 #include <SceneKit/scn_metal>
@@ -61,3 +62,4 @@ fragment half4 pass_through_fragment_vert(out_vertex_t vert [[stage_in]],
     return half4(FragmentColor);
     
 };
+ */

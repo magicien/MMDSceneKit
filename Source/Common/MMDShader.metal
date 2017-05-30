@@ -27,7 +27,7 @@ struct NodeBuffer {
     float4x4 modelViewProjectionTransform;
     float4x4 normalTransform;
     float4 skinningJointMatrices[765];
-    float color[27];
+    float color[10000];
 };
 
 // Light
@@ -43,19 +43,29 @@ struct Light {
     //float2 spotAttenuation;
     //float4x4 invProjectionTransform;
 
-    float4  color;
-    float4  direction;
-    float4  position;
-    float4  attenuation;
-    float4  spotAttenuation;
-    float4x4    shadowMatrix;
-    float4  shadowRadius;
-    float4  shadowColor;
-    float4x4    goboMatrix;
-    float4  projectorColor;
-    float4  right;
-    float4  up;
-    float4x4    iesMatrix;
+    //float4  color;
+    //float4  direction;
+    //float4  position;
+    //float4  attenuation;
+    //float4  spotAttenuation;
+    //float4x4    shadowMatrix;
+    //float4  shadowRadius;
+    //float4  shadowColor;
+    //float4x4    goboMatrix;
+    //float4  projectorColor;
+    //float4  right;
+    //float4  up;
+    //float4x4    iesMatrix;
+    float4 color0;
+    float4 color1;
+    float4 color2;
+    float4 color3;
+    float4 color4;
+    float4 color5;
+    float4 color6;
+    float4 color7;
+    float4 color8;
+    float4 color9;
 };
 
 struct SCNShaderLight {
@@ -113,7 +123,8 @@ struct VertexOutput {
 //                               constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
 //                               constant NodeBuffer& scn_node [[ buffer(1) ]],
 //                               constant CustomBuffer& custom [[ buffer(2) ]]) {
-
+    
+    
 vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
                               constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
                               constant NodeBuffer& scn_node [[ buffer(1) ]],
@@ -122,7 +133,10 @@ vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
                               texture2d<float> u_emissionTexture [[ texture(0) ]],
                               sampler u_emissionTextureSampler [[ sampler(0) ]],
                               texture2d<float> u_diffuseTexture [[ texture(2) ]],
-                              sampler u_diffuseTextureSampler [[ sampler(2) ]]){
+                              sampler u_diffuseTextureSampler [[ sampler(2) ]],
+                              texture2d<float> u_multiplyTexture [[ texture(6) ]],
+                              sampler u_multiplyTextureSampler [[ sampler(6) ]]) {
+
     VertexOutput out;
     
     float3 pos = 0.0;
@@ -146,7 +160,7 @@ vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
     //out.eye = cameraPosition - pos;
     
     //out.color = scn_commonprofile.emissionColor;
-    //out.color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
+    //out.color = u_emissionTexture.sample(u_emissionTextureSampler, float2(0.5, 0.5));
     
     //if( !useToon ) {
     //    out.color.rgb += max(0, dot(normal, -scn_lights.direction)) * scn_commonprofile.diffuseColor;
@@ -155,14 +169,18 @@ vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
     //out.color = saturate(out.color);
     
     //out.color = float4(0.2, 0.2, 0.2, 1.0);
-    //out.color = scn_commonprofile.u_emissionColor;
-    out.color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
-    out.color += u_diffuseTexture.sample(u_diffuseTextureSampler, in.texcoord);
+    //out.color = scn_commonprofile.emissionColor;
+    //out.color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
+    out.color = u_diffuseTexture.sample(u_diffuseTextureSampler, in.texcoord);
+    //out.color = scn_commonprofile.diffuseColor;
     out.texcoord = in.texcoord;
     
     //float r = scn_node.color[0] + scn_node.color[1] + scn_node.color[2];
     //float g = scn_node.color[9] + scn_node.color[10] + scn_node.color[11];
     //float b = scn_node.color[18] + scn_node.color[19] + scn_node.color[20];
+    //float r = scn_node.color[9997];
+    //float g = scn_node.color[9998];
+    //float b = scn_node.color[9999];
     //float r = scn_node.color[12];
     //float g = scn_node.color[13];
     //float b = scn_node.color[14];
@@ -171,17 +189,26 @@ vertex VertexOutput mmdVertex(VertexInput in [[ stage_in ]],
     //out.color = scn_commonprofile.diffuseColor;
     //out.color = in.color;
     //out.color = float4(0.3, 0.3, 0.3, 1.0);
-    //out.color = color;
+    //out.color = scn_commonprofile.ambientColor;
     
     //float3 halfVector = normalize(normalize(out.eye) - lightDirection);
     //out.specular = pow(max(0, dot(halfVector, out.normal)), scn_commonprofile.materialShininess) * scn_commonprofile.specularColor;
+                                  
+                                  
+    //out.color = u_multiplyTexture.sample(u_multiplyTextureSampler, in.texcoord);
     out.specular = float3(0);
     
+    //out.color = scn_lights.color1;
+    //out.color = float4(0.0, 0.0, 1.0, 1.0);
     return out;
 }
 
 //fragment half4 mmdFragment(VertexOutput in [[ stage_in ]]){
 fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
+                           texture2d<float> u_emissionTexture [[ texture(0) ]],
+                           sampler u_emissionTextureSampler [[ sampler(0) ]],
+                           texture2d<float> u_diffuseTexture [[ texture(2) ]],
+                           sampler u_diffuseTextureSampler [[ sampler(2) ]],
                            texture2d<float> u_multiplyTexture [[ texture(6) ]],
                            sampler u_multiplyTextureSampler [[ sampler(6) ]]) {
     float4 color = in.color;
@@ -189,6 +216,9 @@ fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
     color *= u_multiplyTexture.sample(u_multiplyTextureSampler, in.texcoord);
     //}
     
+    //color = u_emissionTexture.sample(u_emissionTextureSampler, in.texcoord);
+    //color = u_diffuseTexture.sample(u_diffuseTextureSampler, in.texcoord);
+
     //if(useSphereMap){
     //
     //}
@@ -202,7 +232,7 @@ fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
     return half4(color);
 }
 
-
+/*
 vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
 //                                     constant NodeBuffer& scn_node [[ buffer(0) ]]){
                                      constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
@@ -210,25 +240,6 @@ vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
 //                                     constant float& screenSize [[ buffer(2) ]])
 {
     VertexOutput out;
-    /*
-    float4 in_pos0 = float4(in.position, 1.0);
-    float4 in_pos1 = float4(in.position + in.normal, 1.0);
-    
-    float edgeSize = 1.0;
-    float screenSize = 200; // debug
-    
-    float4 pos0 = scn_node.modelViewProjectionTransform * in_pos0;
-    float4 pos1 = scn_node.modelViewProjectionTransform * in_pos1;
-    
-    pos0.xy /= pos0.w;
-    pos1.xy /= pos1.w;
-    
-    float d = distance(pos0.xy, pos1.xy);
-    float coeff = screenSize * d;
-    if(coeff > edgeSize){
-        coeff = edgeSize / coeff;
-    }
-    */
     
     float3 pos = 0.0;
     float3 posMove = 0.0;
@@ -286,3 +297,4 @@ fragment half4 pass_edge_fragment(VertexOutput in [[stage_in]])
     return half4(color);
 };
 
+*/

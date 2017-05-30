@@ -1188,9 +1188,9 @@ class MMDPMXReader: MMDReader {
         
         
     
-        //for material in self.materialArray {
-        //    material.program = program
-        //}
+        for material in self.materialArray {
+            material.program = program
+        }
     
     
 #endif
@@ -1207,9 +1207,6 @@ class MMDPMXReader: MMDReader {
         geometryNode.skinner = skinner
         geometryNode.skinner!.skeleton = self.rootBone
         geometryNode.castsShadow = true
-        
-        //let program = MMDProgram()
-        //geometryNode.geometry!.program = program
         
         self.workingNode.name = "rootNode" // FIXME: set model name or file name
         self.workingNode.castsShadow = true
@@ -1281,12 +1278,12 @@ class MMDPMXReader: MMDReader {
             let dx = CGFloat(getFloat())
             let dy = CGFloat(getFloat())
             let dz = CGFloat(getFloat())
-            let posX = CGFloat(getFloat())
-            let posY = CGFloat(getFloat())
-            let posZ = CGFloat(-getFloat())
-            let rotX = CGFloat(-getFloat())
-            let rotY = CGFloat(-getFloat())
-            let rotZ = CGFloat(getFloat())
+            let posX = OSFloat(getFloat())
+            let posY = OSFloat(getFloat())
+            let posZ = OSFloat(-getFloat())
+            let rotX = OSFloat(-getFloat())
+            let rotY = OSFloat(-getFloat())
+            let rotZ = OSFloat(getFloat())
             let weight = CGFloat(getFloat())
             let positionDim = CGFloat(getFloat())
             let rotateDim = CGFloat(getFloat())
@@ -1443,8 +1440,8 @@ class MMDPMXReader: MMDReader {
             let minRot = SCNVector3(getFloat(), getFloat(), -getFloat())
             let maxRot = SCNVector3(getFloat(), getFloat(), -getFloat())
 
-            let spring_pos = SCNVector3(getFloat(), getFloat(), -getFloat())
-            let sprint_rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let springPos = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let springRot = SCNVector3(getFloat(), getFloat(), -getFloat())
 
             let boneA = self.physicsBoneArray[bodyANo]
             let boneB = self.physicsBoneArray[bodyBNo]

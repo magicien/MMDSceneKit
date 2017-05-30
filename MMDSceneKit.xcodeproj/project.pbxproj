@@ -106,6 +106,10 @@
 		DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
 		DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
 		DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296F31C2FF21E00707364 /* EmptyShader.metal */; };
+		DD8A4A111E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
+		DD8A4A121E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
+		DD8A4A131E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
+		DD8A4A141E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DD9ECF7A1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
 		DD9ECF7B1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
@@ -160,6 +164,7 @@
 		DDCF5D2D1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
 		DDCF5D2E1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
 		DDCF5D2F1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
+		DDD2AE791E2EA1C500B988EA /* MMDShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD6296EF1C2FD49400707364 /* MMDShader.metal */; };
 		DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */; };
 		DDE586CE1C7123D900CF3B48 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
@@ -388,6 +393,7 @@
 		DD6296D81C2D120800707364 /* MMDProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDProgram.swift; sourceTree = "<group>"; };
 		DD6296EF1C2FD49400707364 /* MMDShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDShader.metal; sourceTree = "<group>"; };
 		DD6296F31C2FF21E00707364 /* EmptyShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = EmptyShader.metal; sourceTree = "<group>"; };
+		DD8A4A101E26CD380047995C /* CommonTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
 		DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVACReader.swift; sourceTree = "<group>"; };
 		DDBFF9711DD3A81400E4CE78 /* MMDSceneKitSample_watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_watchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBFF9741DD3A81400E4CE78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -584,6 +590,7 @@
 				DD370BC11DDA589700F55DF0 /* MMDCameraNode.swift */,
 				DD12BF151C18361400B20F37 /* MMDSceneSource.swift */,
 				DD41D8961C23F42500A7F834 /* MMDReader.swift */,
+				DD8A4A101E26CD380047995C /* CommonTypes.swift */,
 				DD41D8991C23F93100A7F834 /* MMDPMDReader.swift */,
 				DDEC59891C38B4570043F939 /* MMDPMXReader.swift */,
 				DD41D89C1C23FAE700A7F834 /* MMDVMDReader.swift */,
@@ -1552,6 +1559,7 @@
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
 				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */,
+				DD8A4A111E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2B1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1586,6 +1594,7 @@
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
 				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */,
+				DD8A4A121E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2C1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1623,6 +1632,7 @@
 				DDE586CF1C7123DB00CF3B48 /* MMDSceneViewController.swift in Sources */,
 				DD6296F41C2FF21E00707364 /* EmptyShader.metal in Sources */,
 				DD12BFE71C1AB85800B20F37 /* GameView.swift in Sources */,
+				DDD2AE791E2EA1C500B988EA /* MMDShader.metal in Sources */,
 				DD12BFE91C1AB85800B20F37 /* GameViewController.swift in Sources */,
 				DD12BFE51C1AB85800B20F37 /* AppDelegate.swift in Sources */,
 			);
@@ -1657,6 +1667,7 @@
 				DD3313C51D39C32A0027FCA9 /* MMDShader.metal in Sources */,
 				DD3313BF1D39C3160027FCA9 /* MMDVMDReader.swift in Sources */,
 				DD3313C31D39C3160027FCA9 /* MMDProgram.swift in Sources */,
+				DD8A4A131E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2D1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1692,6 +1703,7 @@
 				DDCF5C631DD4F3830037BD66 /* MMDShader.metal in Sources */,
 				DDCF5C571DD4F3720037BD66 /* MMDVMDReader.swift in Sources */,
 				DDCF5C5B1DD4F3720037BD66 /* MMDProgram.swift in Sources */,
+				DD8A4A141E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2E1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2060,7 +2072,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Source/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

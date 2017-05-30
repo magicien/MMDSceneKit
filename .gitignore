@@ -35,4 +35,5 @@ Carthage/Build
 # etc
 Framework/
 *~
+*.swp
 

@@ -15,7 +15,7 @@ import SceneKit
 #endif
 
 public enum MMDFileType {
-    case pmm, pmd, vmd, vpd, x, vac, pmx, unknown
+    case pmm, pmd, vmd, vpd, x, vac, pmx, obj, dae, abc, scn, unknown
 }
 
 open class MMDSceneSource: SCNSceneSource {
@@ -90,6 +90,21 @@ open class MMDSceneSource: SCNSceneSource {
                 //self.workingScene.rootNode.addChildNode(pmdNode)
                 self.workingNode = pmxNode
             }
+        }else if self.fileType == .obj || self.fileType == .dae || self.fileType == .scn {
+            if let sceneSource = SCNSceneSource(data: data, options: options) {
+                do {
+                    let scene = try sceneSource.scene(options: options)
+                    let mmdNode = MMDNode()
+                    for child in scene.rootNode.childNodes {
+                        mmdNode.addChildNode(child)
+                    }
+                    self.workingNode = mmdNode
+                }catch{
+                    print("error: scene file loading error.")
+                }
+            }
+        }else if self.fileType == .abc {
+            // ?
         }else{
             // unknown file
         }
@@ -116,15 +131,64 @@ open class MMDSceneSource: SCNSceneSource {
 
         if path.hasSuffix(".vac") {
             self.fileType = .vac
+        } else if path.hasSuffix(".obj") {
+            self.fileType = .obj
+        } else if path.hasSuffix(".dae") {
+            self.fileType = .dae
+        } else if path.hasSuffix(".abc") {
+            self.fileType = .abc
+        } else if path.hasSuffix(".scn") {
+            self.fileType = .scn
         }
 
+        if self.fileType == .obj {
+            do {
+                self.workingScene = try SCNScene(url: URL(fileURLWithPath: path), options: nil)
+            } catch {
+                print("SCNScene URL open error")
+            }
+            
+            guard self.workingScene != nil else {
+                fatalError("can't open obj file: \(path)")
+            }
+            
+            self.workingNode = MMDNode()
+            for child in self.workingScene.rootNode.childNodes {
+                self.workingNode.addChildNode(child)
+            }
+            self.workingScene.rootNode.addChildNode(self.workingNode)
+            return
+        }
+        
         let data = try? Data(contentsOf: URL(fileURLWithPath: path))
         if data == nil {
             print("data is nil... (\(path))")
             return nil
         } else {
-            self.loadData(data!, options: options, models: models, motions: motions)
+            var opt: [SCNSceneSource.LoadingOption: Any]
+            if options != nil {
+                opt = options!
+            } else {
+                opt = [:]
+            }
+            
+            if opt[.assetDirectoryURLs] == nil {
+                opt[.assetDirectoryURLs] = [URL(fileURLWithPath: self.directoryPath)]
+            }
+            self.loadData(data!, options: opt, models: models, motions: motions)
         }
+        
+        //if self.fileType == .unknown {
+        //    let data = try? Data(contentsOf: URL(fileURLWithPath: path))
+        //    if data == nil {
+        //        print("data is nil... (\(path))")
+        //        return nil
+        //    } else {
+        //        self.loadData(data!, options: options, models: models, motions: motions)
+        //    }
+        //} else {
+        //
+        //}
     }
     
     /**
@@ -178,8 +242,7 @@ open class MMDSceneSource: SCNSceneSource {
     }
     
     open func getModel() -> MMDNode? {
-        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x || self.fileType == .vac {
-            // FIXME: clone node
+        if self.fileType == .pmd || self.fileType == .pmx || self.fileType == .x || self.fileType == .vac || self.fileType == .obj {
             return self.workingNode
         }else if self.fileType == .pmm {
             for node in self.workingScene.rootNode.childNodes {
@@ -187,7 +250,10 @@ open class MMDSceneSource: SCNSceneSource {
                     return mmdNode
                 }
             }
+        }else{
+            fatalError("getModel not implemented for fileType \(self.fileType)")
         }
+        
         return nil
     }
     
@@ -267,13 +333,9 @@ open class MMDSceneSource: SCNSceneSource {
             return self.fileType
         }
         
-        if self.fileType == .vac {
-            // TODO: check file content
-            return .vac
-        }
+        // TODO: check file content
         
-        self.fileType = .unknown
-        return .unknown
+        return self.fileType
     }
     
     // MARK: - for Debug
