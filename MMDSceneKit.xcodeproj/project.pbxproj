@@ -1171,7 +1171,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = DarkHorse;
 				TargetAttributes = {
 					DD12BF751C1838D700B20F37 = {
@@ -1923,7 +1923,7 @@
 		DD12BF881C1838D700B20F37 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
@@ -1947,7 +1947,7 @@
 		DD12BF891C1838D700B20F37 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
@@ -2221,9 +2221,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2248,9 +2247,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2275,14 +2273,6 @@
 		DDA557191DD3C9DC00592E12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					i386,
-					x86_64,
-					armv7,
-					arm64,
-					armv7k,
-				);
 				CODE_SIGN_IDENTITY = "Mac Developer: OHNO YUUKI (7S54TRHWB3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
@@ -2296,14 +2286,6 @@
 		DDA5571A1DD3C9DC00592E12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					i386,
-					x86_64,
-					armv7,
-					arm64,
-					armv7k,
-				);
 				CODE_SIGN_IDENTITY = "Mac Developer: OHNO YUUKI (7S54TRHWB3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
