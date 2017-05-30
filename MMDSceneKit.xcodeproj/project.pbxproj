@@ -28,7 +28,6 @@
 		DD12BF9C1C18390700B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
 		DD12BFA11C18390800B20F37 /* MMDSceneKit_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFA01C18390800B20F37 /* MMDSceneKit_iOSTests.swift */; };
 		DD12BFBF1C1AB78000B20F37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFBE1C1AB78000B20F37 /* AppDelegate.swift */; };
-		DD12BFC11C1AB78000B20F37 /* art2.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art2.scnassets */; };
 		DD12BFC31C1AB78000B20F37 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFC21C1AB78000B20F37 /* GameViewController.swift */; };
 		DD12BFC61C1AB78000B20F37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC41C1AB78000B20F37 /* Main.storyboard */; };
 		DD12BFC81C1AB78000B20F37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC71C1AB78000B20F37 /* Assets.xcassets */; };
@@ -38,7 +37,6 @@
 		DD12BFE91C1AB85800B20F37 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFE81C1AB85800B20F37 /* GameViewController.swift */; };
 		DD12BFED1C1AB85800B20F37 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */; };
 		DD12BFF01C1AB85800B20F37 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFEE1C1AB85800B20F37 /* MainMenu.xib */; };
-		DD12C0041C1AB95A00B20F37 /* art2.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art2.scnassets */; };
 		DD12C0081C1ABE1700B20F37 /* MMDSceneKitSample_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFFA1C1AB85800B20F37 /* MMDSceneKitSample_iOSTests.swift */; };
 		DD12C0091C1ABE2B00B20F37 /* MMDSceneKitSample_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_macOSTests.swift */; };
 		DD12C00A1C1ABE4200B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
@@ -48,8 +46,6 @@
 		DD1701D71DF2BB8F0000D5AB /* MMDVPDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1701D51DF2BB8F0000D5AB /* MMDVPDReader.swift */; };
 		DD1701D81DF2BB8F0000D5AB /* MMDVPDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1701D51DF2BB8F0000D5AB /* MMDVPDReader.swift */; };
 		DD1701D91DF2BB8F0000D5AB /* MMDVPDReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1701D51DF2BB8F0000D5AB /* MMDVPDReader.swift */; };
-		DD1701DF1DF2C1BF0000D5AB /* art5.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD1701DA1DF2C08A0000D5AB /* art5.scnassets */; };
-		DD1701E01DF2C1C60000D5AB /* art5.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD1701DA1DF2C08A0000D5AB /* art5.scnassets */; };
 		DD1701E21DF4A5E20000D5AB /* MMDPostShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */; };
 		DD1701E31DF4A5E20000D5AB /* MMDPostShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */; };
 		DD1701E41DF4A5E20000D5AB /* MMDPostShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */; };
@@ -66,9 +62,6 @@
 		DD1701F41DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
 		DD1701F51DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
 		DD1701F61DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
-		DD2687491DEB9770003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
-		DD26874A1DEB9772003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
-		DD26874B1DEB9775003C1CC1 /* art4.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD2687471DEACB19003C1CC1 /* art4.scnassets */; };
 		DD3313351D39C0A30027FCA9 /* MMDSceneKit_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DD3313BB1D39C3160027FCA9 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
@@ -127,13 +120,10 @@
 		DDBFF98D1DD3A81500E4CE78 /* MMDSceneKitSample_watchOS.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = DDBFF9711DD3A81400E4CE78 /* MMDSceneKitSample_watchOS.app */; };
 		DDBFF9951DD3A9AF00E4CE78 /* MMDSceneKit_watchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */; };
 		DDBFF9971DD3A9BB00E4CE78 /* MMDSceneKit_watchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DDBFF9A01DD3AB3000E4CE78 /* art1.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */; };
-		DDBFF9A11DD3AB3000E4CE78 /* art1.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */; };
-		DDBFF9A21DD3AB3000E4CE78 /* art1.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */; };
 		DDBFF9A31DD3B50E00E4CE78 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
-		DDC087841DE427AD002ED4A3 /* art3.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art3.scnassets */; };
-		DDC087851DE427AE002ED4A3 /* art3.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art3.scnassets */; };
-		DDC087861DE427B0002ED4A3 /* art3.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art3.scnassets */; };
+		DDC087841DE427AD002ED4A3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art.scnassets */; };
+		DDC087851DE427AE002ED4A3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art.scnassets */; };
+		DDC087861DE427B0002ED4A3 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDC087801DE42576002ED4A3 /* art.scnassets */; };
 		DDCF5C441DD4F33F0037BD66 /* MMDSceneKit_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF5C3B1DD4F33F0037BD66 /* MMDSceneKit_tvOS.framework */; };
 		DDCF5C521DD4F3630037BD66 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
 		DDCF5C531DD4F3660037BD66 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
@@ -156,8 +146,6 @@
 		DDCF5CB11DD4F8970037BD66 /* MMDSceneKit_tvOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF5C3B1DD4F33F0037BD66 /* MMDSceneKit_tvOS.framework */; };
 		DDCF5CB21DD4F8970037BD66 /* MMDSceneKit_tvOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DDCF5C3B1DD4F33F0037BD66 /* MMDSceneKit_tvOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDCF5CB61DD4F8D20037BD66 /* MMDSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */; };
-		DDCF5CB71DD4F9E20037BD66 /* art1.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */; };
-		DDCF5CB81DD4F9E40037BD66 /* art2.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD12BFC01C1AB78000B20F37 /* art2.scnassets */; };
 		DDCF5CBB1DD4FC190037BD66 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDCF5CB91DD4FC190037BD66 /* Main.storyboard */; };
 		DDCF5D2B1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
 		DDCF5D2C1DD596B80037BD66 /* MMDIKController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */; };
@@ -351,7 +339,6 @@
 		DD12BFA21C18390800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD12BFBC1C1AB78000B20F37 /* MMDSceneKitSample_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD12BFBE1C1AB78000B20F37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		DD12BFC01C1AB78000B20F37 /* art2.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art2.scnassets; sourceTree = "<group>"; };
 		DD12BFC21C1AB78000B20F37 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		DD12BFC51C1AB78000B20F37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DD12BFC71C1AB78000B20F37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -371,12 +358,10 @@
 		DD12BFFA1C1AB85800B20F37 /* MMDSceneKitSample_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_iOSTests.swift; sourceTree = "<group>"; };
 		DD12BFFC1C1AB85800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD1701D51DF2BB8F0000D5AB /* MMDVPDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVPDReader.swift; sourceTree = "<group>"; };
-		DD1701DA1DF2C08A0000D5AB /* art5.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art5.scnassets; sourceTree = "<group>"; };
 		DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDPostShader.plist; sourceTree = "<group>"; };
 		DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDPostShader.metal; sourceTree = "<group>"; };
 		DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDShaderModifier.metal; sourceTree = "<group>"; };
 		DD1701F21DF574DB0000D5AB /* MMDShader.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDShader.plist; sourceTree = "<group>"; };
-		DD2687471DEACB19003C1CC1 /* art4.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art4.scnassets; sourceTree = "<group>"; };
 		DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD3313321D39C0A30027FCA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD3313331D39C0A30027FCA9 /* MMDSceneKit_watchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMDSceneKit_watchOS.h; sourceTree = "<group>"; };
@@ -404,8 +389,7 @@
 		DDBFF9861DD3A81400E4CE78 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		DDBFF9881DD3A81500E4CE78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DDBFF98A1DD3A81500E4CE78 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art1.scnassets; sourceTree = "<group>"; };
-		DDC087801DE42576002ED4A3 /* art3.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art3.scnassets; sourceTree = "<group>"; };
+		DDC087801DE42576002ED4A3 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		DDCF5C3B1DD4F33F0037BD66 /* MMDSceneKit_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDCF5C431DD4F33F0037BD66 /* MMDSceneKit_tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKit_tvOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDCF5C651DD4F45D0037BD66 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -709,11 +693,7 @@
 			isa = PBXGroup;
 			children = (
 				DDE586CB1C7123CE00CF3B48 /* MMDSceneViewController.swift */,
-				DDBFF99F1DD3AB3000E4CE78 /* art1.scnassets */,
-				DD12BFC01C1AB78000B20F37 /* art2.scnassets */,
-				DDC087801DE42576002ED4A3 /* art3.scnassets */,
-				DD2687471DEACB19003C1CC1 /* art4.scnassets */,
-				DD1701DA1DF2C08A0000D5AB /* art5.scnassets */,
+				DDC087801DE42576002ED4A3 /* art.scnassets */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1358,14 +1338,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12BFC11C1AB78000B20F37 /* art2.scnassets in Resources */,
 				DD12BFCB1C1AB78000B20F37 /* LaunchScreen.storyboard in Resources */,
-				DDBFF9A01DD3AB3000E4CE78 /* art1.scnassets in Resources */,
 				DD12BFC81C1AB78000B20F37 /* Assets.xcassets in Resources */,
-				DD2687491DEB9770003C1CC1 /* art4.scnassets in Resources */,
 				DD12BFC61C1AB78000B20F37 /* Main.storyboard in Resources */,
-				DDC087841DE427AD002ED4A3 /* art3.scnassets in Resources */,
-				DD1701E01DF2C1C60000D5AB /* art5.scnassets in Resources */,
+				DDC087841DE427AD002ED4A3 /* art.scnassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1381,12 +1357,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD12BFED1C1AB85800B20F37 /* Assets.xcassets in Resources */,
-				DD1701DF1DF2C1BF0000D5AB /* art5.scnassets in Resources */,
-				DD12C0041C1AB95A00B20F37 /* art2.scnassets in Resources */,
-				DDBFF9A11DD3AB3000E4CE78 /* art1.scnassets in Resources */,
-				DD26874A1DEB9772003C1CC1 /* art4.scnassets in Resources */,
 				DD12BFF01C1AB85800B20F37 /* MainMenu.xib in Resources */,
-				DDC087851DE427AE002ED4A3 /* art3.scnassets in Resources */,
+				DDC087851DE427AE002ED4A3 /* art.scnassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1420,7 +1392,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DDBFF9891DD3A81500E4CE78 /* Assets.xcassets in Resources */,
-				DDBFF9A21DD3AB3000E4CE78 /* art1.scnassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1444,11 +1415,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDCF5CB81DD4F9E40037BD66 /* art2.scnassets in Resources */,
-				DDC087861DE427B0002ED4A3 /* art3.scnassets in Resources */,
+				DDC087861DE427B0002ED4A3 /* art.scnassets in Resources */,
 				DDCF5CA51DD4F82A0037BD66 /* Assets.xcassets in Resources */,
-				DDCF5CB71DD4F9E20037BD66 /* art1.scnassets in Resources */,
-				DD26874B1DEB9775003C1CC1 /* art4.scnassets in Resources */,
 				DDCF5CBB1DD4FC190037BD66 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
