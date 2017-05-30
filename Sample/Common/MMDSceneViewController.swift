@@ -34,10 +34,13 @@ public class MMDSceneViewController: SuperViewController {
      */
     public func setupGameScene(_ scene: SCNScene, view: MMDView) {
         
+        //let _mmdScene = MMDSceneSource(named: "art3.scnassets/そのまま保存.pmm")
+        //return
         //let vpdData = MMDSceneSource(named: "art5.scnassets/右手グー.vpd")!.getMotion()!
         //return
         
-        //let mmdScene = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
+        //let mmdScene2 = MMDSceneSource(named: "art3.scnassets/サンプル（きしめんAllStar).pmm")!.getScene()!
+        //return
         
         /*
         #if !os(watchOS)
@@ -85,6 +88,7 @@ public class MMDSceneViewController: SuperViewController {
         return
          */
         
+        /*
         let scene = SCNScene()
         
         let miku = MMDSceneSource(named: "art3.scnassets/Model/初音ミク イミテーションｖ1ミニマム2.pmx")!.getModel()!
@@ -119,18 +123,17 @@ public class MMDSceneViewController: SuperViewController {
         let lightnode = SCNNode()
         lightnode.light = SCNLight()
         lightnode.light!.type = SCNLight.LightType.directional
-        //lightnode.light!.color = CGColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)
+        lightnode.light!.color = CGColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)
+        print("toManyRelationshipKeys: \(lightnode.light!.toManyRelationshipKeys)")
+        print("toOneRelationshipKeys: \(lightnode.light!.toOneRelationshipKeys)")
+        print("debugDescription: \(lightnode.light!.debugDescription)")
         lightnode.position = SCNVector3(x: 0, y: 100, z: 10)
         scene.rootNode.addChildNode(lightnode)
         
-        scene.rootNode.addChildNode(mmdScene.rootNode)
-        
-        print("joints: \(miku.joints!.count)") // 63
-        // index 3 でエラー
-        for index in 0..<59 {
-            scene.physicsWorld.addBehavior(miku.joints![index])
+        for node in mmdScene.rootNode.childNodes {
+            scene.rootNode.addChildNode(node)
         }
-        //scene.physicsWorld.addBehavior(miku.joints![3])
+        
         //miku.addPhysicsBehavior(scene: scene)
 
         view.scene = scene
@@ -150,13 +153,9 @@ public class MMDSceneViewController: SuperViewController {
         #endif
 
         return
-        
+        */
         
         // create and add a camera to the scene
-        //let cameraNode = SCNNode()
-        //cameraNode.camera = SCNCamera()
-        //cameraNode.camera?.automaticallyAdjustsZRange = true
-        //scene.rootNode.addChildNode(cameraNode)
         let cameraNode = MMDCameraNode()
         scene.rootNode.addChildNode(cameraNode)
         
@@ -164,7 +163,6 @@ public class MMDSceneViewController: SuperViewController {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = SCNLight.LightType.directional
-        //lightNode.light!.color = CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         lightNode.position = SCNVector3(x: 0, y: 100, z: 10)
         scene.rootNode.addChildNode(lightNode)
         
@@ -184,9 +182,6 @@ public class MMDSceneViewController: SuperViewController {
         
         
         // create a character node from file
-        //let modelNode = MMDSceneSource(named: "art1.scnassets/miku.pmd")!.getModel()!
-        //let modelNode = MMDSceneSource(named: "art1.scnassets/初音ミク イミテーションｖ1ミニマム2.pmx")!.getModel()!
-        //let modelNode = MMDSceneSource(named: "art1.scnassets/Tda式初音ミク・アペンド_Ver1.00_ボーン未改造.pmx")!.getModel()!
         let modelNode = MMDSceneSource(named: "art4.scnassets/una/音街ウナ（公式モデル）Sugar.pmx")!.getModel()!
         scene.rootNode.addChildNode(modelNode)
         mikuNode = modelNode
