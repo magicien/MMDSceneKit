@@ -3,16 +3,9 @@ SceneKit expansion for MikuMikuDance
 
 ### Install
 
-```
-npm install jmmdscenekit --save
-```
 
 ### Documentation
 
-https://magicien.github.io/JMMDSceneKit/
+https://magicien.github.io/MMDSceneKit/
 
 ### Examples
-
-[ElectronMMDSample](https://github.com/magicien/ElectronMMDSample/)
-
-![ScreenShot](https://github.com/magicien/ElectronMMDSample/blob/readme/readme/screenshot.png)
