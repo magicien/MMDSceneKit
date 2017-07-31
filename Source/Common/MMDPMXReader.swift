@@ -286,10 +286,10 @@ class MMDPMXReader: MMDReader {
             
             for _ in 0..<self.numUV {
                 // FIXME: use additional UV
-                getFloat()
-                getFloat()
-                getFloat()
-                getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
             }
             
             let weightType = getUnsignedByte()
@@ -327,19 +327,19 @@ class MMDPMXReader: MMDReader {
                 weight2 = 1.0 - weight1
                 
                 // FIXME: use SDEF-C
-                getFloat()
-                getFloat()
-                getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
                 
                 // FIXME: use SDEF-R0
-                getFloat()
-                getFloat()
-                getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
                 
                 // FIXME: use SDEF-R1
-                getFloat()
-                getFloat()
-                getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
             case 4: // QDEF
                 boneNo1 = getIntOfLength(self.boneIndexSize)
                 boneNo2 = getIntOfLength(self.boneIndexSize)
@@ -740,18 +740,18 @@ class MMDPMXReader: MMDReader {
             if hasChildBoneIndex {
                 let childBoneNo = getIntOfLength(self.boneIndexSize)
             } else {
-                getFloat()
-                getFloat()
-                getFloat()
+                _ = getFloat()
+                _ = getFloat()
+                _ = getFloat()
             }
             
-            print("\(index): \(boneNode.name)")
+            print("\(index): \(String(describing: boneNode.name))")
             if hasRotationValue || hasTranslationValue {
                 let boneIndex = getIntOfLength(self.boneIndexSize)
                 let rate = getFloat()
                 
                 let bone = self.boneArray[boneIndex]
-                print("   rotation/translation: [\(boneIndex)] \(bone.name) \(rate)")
+                print("   rotation/translation: [\(boneIndex)] \(String(describing: bone.name)) \(rate)")
                 
                 if hasRotationValue {
                     boneNode.rotateEffector = bone
@@ -797,10 +797,10 @@ class MMDPMXReader: MMDReader {
                 ik.ikBone = boneNode
                 ik.targetBone = targetBone
                 ik.iteration = Int(iteration)
-                ik.weight = Float(Double(weight) * 0.25 * M_PI)
+                ik.weight = Float(Double(weight) * 0.25 * Double.pi)
                 ik.boneArray = [MMDNode]()
                 
-                print("targetBoneNo: \(targetBoneNo) \(targetBone.name), ikBone: \(ik.ikBone.name)")
+                print("targetBoneNo: \(targetBoneNo) \(String(describing: targetBone.name)), ikBone: \(String(describing: ik.ikBone.name))")
                 
                 var linkBoneNoArray = [Int]()
                 for _ in 0..<numLink {
@@ -1422,7 +1422,7 @@ class MMDPMXReader: MMDReader {
             
             if boneIndex != -1 {
                 bone.physicsBody = body
-                print("physicsBody: \(name) -> \(bone.name)")
+                print("physicsBody: \(name) -> \(String(describing: bone.name))")
             }else{
                 print("physicsBody: \(name) -> nil")
             }
@@ -1494,7 +1494,7 @@ class MMDPMXReader: MMDReader {
                 z: pos.z - boneB.worldTransform.m43
             )
             
-            print("boneA: \(boneA.name), boneB: \(boneB.name)")
+            print("boneA: \(String(describing: boneA.name)), boneB: \(String(describing: boneB.name))")
             print("anchorA: \(anchorA.x), \(anchorA.y), \(anchorA.z)")
             print("anchorB: \(anchorB.x), \(anchorB.y), \(anchorB.z)")
             assert(bodyA == boneA.physicsBody, "bodyA physicsBody unmatch")
@@ -1619,7 +1619,7 @@ class MMDPMXReader: MMDReader {
     }
  
     func showBoneTree(_ bone: SCNNode, prefix: String = "") {
-        print("\(prefix)\(bone.name)")
+        print("\(prefix)\(String(describing: bone.name))")
         let newPrefix = "\(prefix)    "
         for child in bone.childNodes {
             showBoneTree(child, prefix: newPrefix)
@@ -1631,12 +1631,11 @@ class MMDPMXReader: MMDReader {
         
         for index in 0..<count {
             let bone = self.boneArray[index]
-            print("\(index): \(bone.name)")
+            print("\(index): \(String(describing: bone.name))")
         }
     }
     
     func showBoneIndexData() {
-        var index = 0
         let numIndices = self.boneIndicesArray.count
         
         for index in 0..<numIndices {
@@ -1648,7 +1647,7 @@ class MMDPMXReader: MMDReader {
             let boneWeight = self.boneWeightsArray[index]
             let bone = self.boneArray[boneIndex]
             
-            print("\(i): \(boneIndex) (\(bone.name)): \(boneWeight)")
+            print("\(i): \(boneIndex) (\(String(describing: bone.name))): \(boneWeight)")
         }
     }
 }

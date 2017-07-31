@@ -131,7 +131,7 @@ internal class MMDReader: NSObject {
         //token.copyBytes(to: &num, count: 2)
         
         let pointer = UnsafeMutableBufferPointer<UInt16>(start: &num, count: 1)
-        self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+2))
+        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+2))
 
         self.pos += 2
         
@@ -148,7 +148,7 @@ internal class MMDReader: NSObject {
         //token.copyBytes(to: &num, count: 4)
         
         let pointer = UnsafeMutableBufferPointer<UInt32>(start: &num, count: 1)
-        self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
+        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
         
         self.pos += 4
         
@@ -165,7 +165,7 @@ internal class MMDReader: NSObject {
         //token.copyBytes(to: &num, count: 4)
         
         let pointer = UnsafeMutableBufferPointer<Int32>(start: &num, count: 1)
-        self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
+        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
 
         self.pos += 4
         
@@ -186,7 +186,7 @@ internal class MMDReader: NSObject {
         //let token = self.binaryData.subdata(in: NSRange.init(location: self.pos, length: length))
         //token.copyBytes(to: &num, count: length)
         let pointer = UnsafeMutableBufferPointer<Int>(start: &num, count: 1)
-        self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+length))
+        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+length))
 
         self.pos += length
         
@@ -203,7 +203,7 @@ internal class MMDReader: NSObject {
         //token.copyBytes(to: &num, from: Range(0..<4))
 
         let pointer = UnsafeMutableBufferPointer<Float32>(start: &num, count: 1)
-        self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
+        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
 
         self.pos += 4
         
@@ -355,14 +355,14 @@ internal class MMDReader: NSObject {
      */
     internal func normalizeKeytimes(animations: [CAKeyframeAnimation], fps: Double = 30.0) {
         for motion in animations {
-            let motionLength = Double(motion.keyTimes!.last!)
+            let motionLength = motion.keyTimes!.last!.doubleValue
             motion.duration = motionLength / fps
             motion.usesSceneTimeBase = false
             motion.isRemovedOnCompletion = false
             motion.fillMode = kCAFillModeForwards
             
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                let keyTime = motion.keyTimes![num].floatValue / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
         }

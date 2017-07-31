@@ -368,8 +368,8 @@ class MMDPMDReader: MMDReader {
             }
             
             
-            print("textureFileName: \(textureFile)")
-            print("sphereFileName: \(sphereFile)")
+            print("textureFileName: \(String(describing: textureFile))")
+            print("sphereFileName: \(String(describing: sphereFile))")
             if textureFile != "" {
                 let fileName = (self.directoryPath as NSString).appendingPathComponent(String(textureFile!))
                 
@@ -576,7 +576,7 @@ class MMDPMDReader: MMDReader {
             ik.ikBone = self.boneArray[ikBoneNo]
             ik.targetBone = self.boneArray[targetBoneNo]
             ik.iteration = Int(iteration)
-            ik.weight = Float(Double(weight) * M_PI)
+            ik.weight = Float(Double(weight) * Double.pi)
             ik.boneArray = [MMDNode]()
             
             print("targetBoneNo: \(targetBoneNo) \(ik.targetBone.name!), ikBoneNo: \(ikBoneNo) \(ik.ikBone.name!)")
@@ -632,7 +632,7 @@ class MMDPMDReader: MMDReader {
         var x = atan2( Double(mat.m23), Double(mat.m33) )
 
         let minX = 0.003
-        let maxX = M_PI - 0.003
+        let maxX = Double.pi - 0.003
         if x < minX {
             x = minX
         }
@@ -686,7 +686,7 @@ class MMDPMDReader: MMDReader {
                 let numVertices = getUnsignedInt()
                 
                 // 0: base, 1: eyebrows, 2: eyes, 3: lips, 4: etc
-                let type = getUnsignedByte()
+                _ = getUnsignedByte() // type
                 
                 for _ in 0..<numVertices {
                     let index = self.faceIndexArray[Int(getUnsignedInt())]
@@ -737,22 +737,22 @@ class MMDPMDReader: MMDReader {
         self.faceDisplayCount = Int(getUnsignedByte())
         
         for _ in 0..<faceDisplayCount {
-            let index = getUnsignedShort()
+            _ = getUnsignedShort() // index; unused
         }
         
         // read bone display name
         self.boneDisplayNameCount = Int(getUnsignedByte())
         
         for _ in 0..<boneDisplayNameCount {
-            let name = getString(length: 50)
+            _ = getString(length: 50) // name; unused
         }
         
         // read bone display
         self.boneDisplayCount = Int(getUnsignedInt())
         
         for _ in 0..<boneDisplayCount {
-            let index = getUnsignedShort()
-            let frameIndex = getUnsignedByte()
+            _ = getUnsignedShort() // index; unused
+            _ = getUnsignedByte() // frameIndex; unused
         }
     }
     
@@ -868,7 +868,7 @@ class MMDPMDReader: MMDReader {
             let bodyB = self.physicsBodyArray[bodyBNo]
             
             print("===============")
-            print("name: \(name), bodyA: \(bodyANo), bodyB: \(bodyBNo)")
+            print("name: \(String(describing: name)), bodyA: \(bodyANo), bodyB: \(bodyBNo)")
             
             let pos = SCNVector3(getFloat(), getFloat(), -getFloat())
             let rot = SCNVector3(getFloat(), getFloat(), -getFloat())

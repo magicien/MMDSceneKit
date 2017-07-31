@@ -259,7 +259,7 @@ fileprivate class MMDVMDAccessoryInfo {
         self.isHidden = NSNumber(booleanLiteral: (isVisible == 0))
         self.opacity = NSNumber(value: opacity)
         
-        var modelIndexUInt = reader.getUnsignedInt()
+        let modelIndexUInt = reader.getUnsignedInt()
         let boneIndex = Int(reader.getUnsignedInt())
 
         var modelIndex = Int(modelIndexUInt)
@@ -281,7 +281,7 @@ fileprivate class MMDVMDAccessoryInfo {
                     fatalError("parentNode == nil")
                 }
                 
-                print("accessory parentNode: \(parentNode!.name)")
+                print("accessory parentNode: \(String(describing: parentNode!.name))")
                 //print(String(format: "<Pointer><Center> MMDVMDAccessoryInfo parentNode: %p", parentNode!))
                 
                 //var node:SCNNode? = parentNode
@@ -509,7 +509,7 @@ class MMDPMMReader: MMDReader {
         if self.version == 1 {
             for _ in 0..<self.modelCount {
                 var modelName = ""
-                if let text = getString(length: 20) as? String {
+                if let text = getString(length: 20) as String? {
                     modelName = text
                 }
                 print("modelName: \(modelName)")
@@ -541,7 +541,7 @@ class MMDPMMReader: MMDReader {
                 let no = getUnsignedByte()
                 
                 if version == 1 {
-                    model.name = getString(length: 20) as! String
+                    model.name = getString(length: 20)! as String
                 } else {
                     model.name = getPascalString() as String
                     let englishName = getPascalString() as String
@@ -550,9 +550,9 @@ class MMDPMMReader: MMDReader {
                 let filePath = getString(length: 256)
                 skip(1) // unknown flag
                 
-                print("\(model.name): filePath: \(filePath)")
+                print("\(String(describing: model.name)): filePath: \(String(describing: filePath))")
                 
-                let filePathMatches = userFilePathPattern.matches(filePath as! String)
+                let filePathMatches = userFilePathPattern.matches(filePath! as String)
                 if let paths = filePathMatches {
                     let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
                     let newFilePath = self.directoryPath + "/" + replaced
@@ -612,7 +612,7 @@ class MMDPMMReader: MMDReader {
             
             let frameCount = getUnsignedByte()
             for _ in 0..<frameCount {
-                getUnsignedByte() // the frame is shown if it's true...
+                _ = getUnsignedByte() // the frame is shown if it's true...
             }
             
             skip(4) // unknown
@@ -762,7 +762,7 @@ class MMDPMMReader: MMDReader {
 
         // the frame number might not be sorted
         while frameIndex >= 0 {
-            let k = Int(posXMotion.keyTimes![frameIndex])
+            let k = posXMotion.keyTimes![frameIndex].intValue
             if(k < info.frameNo) {
                 break
             }
@@ -907,7 +907,7 @@ class MMDPMMReader: MMDReader {
         
         // the frame number might not be sorted
         while frameIndex >= 0 {
-            let k = Int(faceMotion.keyTimes![frameIndex])
+            let k = faceMotion.keyTimes![frameIndex].intValue
             if(k < info.frameNo) {
                 break
             }
@@ -991,10 +991,10 @@ class MMDPMMReader: MMDReader {
         print("bone frameLength: \(self.frameLength)")
         
         for (name, motion) in self.animationHash {
-            let motionLength = Double(motion.keyTimes!.last!)
+            let motionLength: Double = motion.keyTimes!.last!.doubleValue
             
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                let keyTime = motion.keyTimes![num].floatValue / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
@@ -1011,15 +1011,15 @@ class MMDPMMReader: MMDReader {
         }
         
         for (_, motion) in self.faceAnimationHash {
-            let motionLength = Double(motion.keyTimes!.last!)
+            let motionLength: Float = motion.keyTimes!.last!.floatValue
             
             //print("faceAnimation: \(motion.keyPath!)")
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                let keyTime: Float = motion.keyTimes![num].floatValue / motionLength
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
-            motion.duration = motionLength / self.fps
+            motion.duration = CFTimeInterval(motionLength / Float(self.fps))
             motion.usesSceneTimeBase = false
             motion.isRemovedOnCompletion = false
             motion.fillMode = kCAFillModeForwards
@@ -1153,7 +1153,7 @@ class MMDPMMReader: MMDReader {
         
         // the frame number might not be sorted
         while frameIndex >= 0 {
-            let k = Int(distanceMotion.keyTimes![frameIndex])
+            let k = distanceMotion.keyTimes![frameIndex].intValue
             if(k < info.frameNo) {
                 break
             }
@@ -1280,14 +1280,14 @@ class MMDPMMReader: MMDReader {
         print("camera frameLength: \(self.frameLength)")
         
         for motion in [distanceMotion, posXMotion, posYMotion, posZMotion, rotXMotion, rotYMotion, rotZMotion, angleMotion, persMotion] {
-            let motionLength = Double(motion.keyTimes!.last!)
+            let motionLength = motion.keyTimes!.last!.doubleValue
             motion.duration = motionLength / self.fps
             motion.usesSceneTimeBase = false
             motion.isRemovedOnCompletion = false
             motion.fillMode = kCAFillModeForwards
             
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
+                let keyTime: Float = motion.keyTimes![num].floatValue / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
@@ -1421,7 +1421,7 @@ class MMDPMMReader: MMDReader {
             motion.fillMode = kCAFillModeForwards
             
             for num in 0..<motion.keyTimes!.count {
-                let keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
+                let keyTime: Float = motion.keyTimes![num].floatValue / Float(self.frameLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
             }
             
@@ -1452,7 +1452,7 @@ class MMDPMMReader: MMDReader {
         
         // the frame number might not be sorted
         while frameIndex >= 0 {
-            let k = Int(colorMotion.keyTimes![frameIndex])
+            let k = colorMotion.keyTimes![frameIndex].intValue
             if(k < info.frameNo) {
                 break
             }
@@ -1501,7 +1501,7 @@ class MMDPMMReader: MMDReader {
         print("accessoryCount: \(self.accessoryCount)")
 
         for _ in 0..<self.accessoryCount {
-            self.accessoryNameArray.append(getString(length: 100) as! String)
+            self.accessoryNameArray.append(getString(length: 100)! as String)
         }
         for index in 0..<self.accessoryCount {
             print("[\(index)]: \(self.accessoryNameArray[index])")
@@ -1529,9 +1529,9 @@ class MMDPMMReader: MMDReader {
                 let path = getString(length: 256)
                 
                 accessory.name = name as String?
-                print("accessory[\(no)]: \(name): \(path)")
+                print("accessory[\(no)]: \(String(describing: name)): \(String(describing: path))")
                 
-                let filePathMatches = userFilePathPattern.matches(path as! String)
+                let filePathMatches = userFilePathPattern.matches(path! as String)
                 if let paths = filePathMatches {
                     let replaced = paths[1].replacingOccurrences(of: "\\", with: "/")
                     let newFilePath = self.directoryPath + "/" + replaced
@@ -1645,7 +1645,7 @@ class MMDPMMReader: MMDReader {
             motion.fillMode = kCAFillModeForwards
 
             for num in 0..<motion.keyTimes!.count {
-                var keyTime = Float(motion.keyTimes![num]) / Float(self.frameLength)
+                var keyTime = motion.keyTimes![num].floatValue / Float(self.frameLength)
                 if self.frameLength <= 0 {
                     keyTime = 0.0
                 }
@@ -1657,8 +1657,8 @@ class MMDPMMReader: MMDReader {
         parentMotion.calculationMode = kCAAnimationDiscrete
         
         for num in 0..<hiddenMotion.keyTimes!.count {
-            var keyTime = hiddenMotion.keyTimes![num]
-            var value = hiddenMotion.values![num]
+            let keyTime = hiddenMotion.keyTimes![num]
+            let value = hiddenMotion.values![num]
             print("isHidden @\(keyTime) : \(value)")
         }
         
@@ -1678,13 +1678,13 @@ class MMDPMMReader: MMDReader {
         var prevParent: SCNNode? = nil
         
         for index in 0..<parentMotion.keyTimes!.count {
-            let keyTime = Float(parentMotion.keyTimes![index])
+            let keyTime = parentMotion.keyTimes![index].floatValue
             let value = parentMotion.values![index]
             //print("parent keyTime \(keyTime): value \(value)")
 
             if let mmdParentNode = value as? SCNNode {
                 // TODO: implement for playingBackward
-                var parentEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime), block: { (animation: CAAnimation, animatedObject: Any, playingBackward: Bool) in
+                let parentEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime), block: { (animation: SCNAnimationProtocol, animatedObject: Any, playingBackward: Bool) in
                     //print("===== parentEvent: \(keyTime), \(mmdParentNode) =====")
                     if let node = animatedObject as? SCNNode {
                         //print("change parent")
@@ -1714,7 +1714,7 @@ class MMDPMMReader: MMDReader {
             let keyTime = additiveMotion.keyTimes![index]
             let value = additiveMotion.values![index] as! SCNBlendMode
             
-            var additiveEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime), block: { (animation: CAAnimation, animatedObject: Any, playingBackward: Bool) in
+            let additiveEvent = SCNAnimationEvent(keyTime: CGFloat(keyTime.floatValue), block: { (animation: SCNAnimationProtocol, animatedObject: Any, playingBackward: Bool) in
                 
                 print("additiveEvent")
                 if let node = animatedObject as? SCNNode {
@@ -1758,7 +1758,7 @@ class MMDPMMReader: MMDReader {
         
         // the frame number might not be sorted
         while frameIndex >= 0 {
-            let k = Int(posMotion.keyTimes![frameIndex])
+            let k = posMotion.keyTimes![frameIndex].intValue
             if(k < info.frameNo) {
                 break
             }
@@ -1786,7 +1786,7 @@ class MMDPMMReader: MMDReader {
         hiddenMotion.values!.insert(info.isHidden, at: frameIndex)
         opacityMotion.values!.insert(info.opacity, at: frameIndex)
         additiveMotion.values!.insert(info.additive, at: frameIndex)
-        parentMotion.values!.insert(info.parent, at: frameIndex)
+        parentMotion.values!.insert(info.parent as Any, at: frameIndex)
         
         if info.next > 0 {
             if let nextMotion = self.accessoryFrameHash[info.next] {
@@ -1842,21 +1842,21 @@ class MMDPMMReader: MMDReader {
         let wavPath = getString(length: 256)
         
         print("usesWav: \(usesWav)")
-        print("wavfile: \(wavPath)")
+        print("wavfile: \(String(describing: wavPath))")
         
         // background movie
         let bgMoviePath = getString(length: 256)
         let usesMovie = getUnsignedByte()
         
         print("usesMovie: \(usesMovie)")
-        print("bgMoviePath: \(bgMoviePath)")
+        print("bgMoviePath: \(String(describing: bgMoviePath))")
         
         // background image
         let bgImagePath = getString(length: 256)
         let usesImage = getUnsignedByte()
         
         print("usesImage: \(usesImage)")
-        print("bgImagePath: \(bgImagePath)")
+        print("bgImagePath: \(String(describing: bgImagePath))")
         
         // misc.
         let showInfo = getUnsignedByte()
@@ -1967,7 +1967,7 @@ class MMDPMMReader: MMDReader {
             let model = self.models[index]
             let motion = self.motions[index]
             
-            print("model[\(index)]: \(model.name) added")
+            print("model[\(index)]: \(String(describing: model.name)) added")
 
             //model.addAnimation(motion, forKey: "motion")
             model.prepareAnimation(motion, forKey: "motion")

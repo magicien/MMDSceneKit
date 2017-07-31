@@ -70,7 +70,7 @@ class MMDXReader : MMDReader {
         
         let nsString = NSString(data: self.binaryData, encoding: String.Encoding.shiftJIS.rawValue)
         self.length = nsString!.length
-        self.text = nsString as! String
+        self.text = nsString! as String
         
         self.subText = self.text
         /*
@@ -377,7 +377,7 @@ class MMDXReader : MMDReader {
             self.moveIndex(1)
         }
         */
-        self.getMatches(commaOrSemicolonPattern)
+        _ = self.getMatches(commaOrSemicolonPattern)
     }
 
     let wordPattern = Regexp("^\\w+")
@@ -829,7 +829,7 @@ class MMDXReader : MMDReader {
             return nil
         }
         
-        print("************* id: \(id) ******************")
+        print("************* id: \(String(describing: id)) ******************")
 
         switch(id!) {
         case "template":
@@ -847,7 +847,7 @@ class MMDXReader : MMDReader {
         case "MeshVertexColors":
             return self.MeshVertexColors() as AnyObject?
         default:
-            print("unknown type: \(id)")
+            print("unknown type: \(String(describing: id))")
         }
         return nil
     }
@@ -948,28 +948,28 @@ class MMDXReader : MMDReader {
     }
 
     fileprivate func Template() -> Bool {
-        let name = self.getWord()
+        _ = self.getWord() // name; unused
 
-        self.getLeftBrace()
-        let uuid = self.getUUID()
+        _ = self.getLeftBrace()
+        _ = self.getUUID() // uuid: unused
 
         var member: String? = nil
         repeat {
             member = self.getMember()
         }while(member != nil)
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func Header() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         let major: Int? = self.getInt()
         let minor: Int? = self.getInt()
         let flags: Int? = self.getInt()
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
@@ -977,7 +977,7 @@ class MMDXReader : MMDReader {
     fileprivate func Material() -> SCNMaterial {
         let material = SCNMaterial()
         
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         material.diffuse.contents = self.ColorRGBA()
         material.ambient.contents = material.diffuse.contents
@@ -1009,13 +1009,13 @@ class MMDXReader : MMDReader {
             }
         }
 
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return material
     }
 
     fileprivate func Mesh() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         // vertices
         let rawVertexCount = self.getInt()!
@@ -1040,13 +1040,13 @@ class MMDXReader : MMDReader {
             self.rawVertexIndexArray.append(face)
         }
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func MeshMaterialList() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         // materials
         let nMaterials = self.getInt()!
@@ -1074,13 +1074,13 @@ class MMDXReader : MMDReader {
             name = self.getWord()
         }
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func MeshNormals() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         let nNormals = self.getInt()!
         print("mesh normals: \(nNormals)")
@@ -1094,19 +1094,19 @@ class MMDXReader : MMDReader {
         let nFaceNormals = self.getInt()!
         print("normal indices: \(nFaceNormals)")
         
-        for faceNo in 0..<nFaceNormals {
+        for _ in 0..<nFaceNormals {
             let faceNormals = self.getIntArray()!
             
             self.rawNormalIndexArray.append(faceNormals)
         }
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func MeshTextureCoords() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         // suppose to be the same number as vertexCount
         let nTextureCoords = self.getInt()!
@@ -1118,13 +1118,13 @@ class MMDXReader : MMDReader {
             self.rawTexcoordArray.append(texcoord)
         }
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func MeshVertexColors() -> Bool {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         let nVertexColors = self.getInt()!
         for _ in 0..<nVertexColors {
@@ -1132,24 +1132,24 @@ class MMDXReader : MMDReader {
             // FIXME: not implemented.
         }
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return true
     }
     
     fileprivate func TextureFilename() -> String? {
-        self.getLeftBrace()
+        _ = self.getLeftBrace()
         
         let name = self.getFilename()
         var filePath = name!.replacingOccurrences(of: "\\\\", with: "/")
         
-        print("before: \(name), after: \(filePath)")
+        print("before: \(String(describing: name)), after: \(filePath)")
         
         filePath = (self.directoryPath as NSString).appendingPathComponent(filePath)
         
         print("filePath: \(filePath)")
         
-        self.getRightBrace()
+        _ = self.getRightBrace()
         
         return filePath
     }

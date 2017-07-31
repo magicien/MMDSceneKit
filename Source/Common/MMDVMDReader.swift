@@ -415,7 +415,7 @@ class MMDVMDReader: MMDReader {
         angleMotion.timingFunctions = [CAMediaTimingFunction]()
         //persMotion.timingFunctions = [CAMediaTimingFunction]()
         
-        for index in 0..<self.frameCount {
+        for _ in 0..<self.frameCount {
             var frameIndex = distanceMotion.keyTimes!.count - 1
             let frameNo = Int(getUnsignedInt())
             
@@ -580,7 +580,7 @@ class MMDVMDReader: MMDReader {
         colorMotion.keyTimes = [NSNumber]()
         directionMotion.keyTimes = [NSNumber]()
         
-        for index in 0..<self.frameCount {
+        for _ in 0..<self.frameCount {
             var frameIndex = colorMotion.keyTimes!.count - 1
             let frameNo = Int(getUnsignedInt())
             
@@ -660,7 +660,7 @@ class MMDVMDReader: MMDReader {
      */
     private func readShadow() {
         let shadowFrameCount = Int(getUnsignedInt())
-        let shadowArray = [Any]()
+        _ = [Any]()
         let bytesPerFrame = 9
         
         if shadowFrameCount == 0 {
@@ -681,14 +681,14 @@ class MMDVMDReader: MMDReader {
             return
         }
         
-        var shadowFrameLength = 0
+        let shadowFrameLength = 0
         let shadowMotion = CAKeyframeAnimation(keyPath: "????")
 
         shadowMotion.values = [AnyObject]()
         
         shadowMotion.keyTimes = [NSNumber]()
         
-        for index in 0..<shadowFrameCount {
+        for _ in 0..<shadowFrameCount {
             var frameIndex = shadowMotion.keyTimes!.count - 1
             let frameNo = Int(getUnsignedInt())
             
@@ -710,11 +710,11 @@ class MMDVMDReader: MMDReader {
                 self.frameLength = frameNo
             }
 
-            let mode = getUnsignedByte()
-            let distance = getFloat()
+            _ = getUnsignedByte() // mode
+            _ = getFloat() // distance
         }
         
-        let duration = Double(shadowFrameLength) / self.fps
+        _ = Double(shadowFrameLength) / self.fps // duration
         print("shadow frameLength: \(shadowFrameLength)")
         
         for motion in [shadowMotion] {

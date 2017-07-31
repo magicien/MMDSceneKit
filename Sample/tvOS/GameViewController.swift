@@ -33,7 +33,7 @@ class GameViewController: MMDSceneViewController {
         scnView.gestureRecognizers = gestureRecognizers
     }
     
-    func handleTap(_ gestureRecognize: UIGestureRecognizer) {
+    @objc func handleTap(_ gestureRecognize: UIGestureRecognizer) {
         // retrieve the SCNView
         let scnView = self.view as! SCNView
         
