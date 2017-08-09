@@ -178,7 +178,9 @@ class MMDPMXReader: MMDReader {
         }
         
         // load shader modifiers
+        #if !os(watchOS)
         self.shaderModifiers[.fragment] = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!))
+        #endif
         
         // read basic data
         self.readVertex()

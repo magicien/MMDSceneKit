@@ -194,7 +194,9 @@ class MMDPMDReader: MMDReader {
         }
         
         // load shader modifiers
+        #if !os(watchOS)
         self.shaderModifiers[.fragment] = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!), encoding: String.Encoding.utf8)
+        #endif
         //let fragmentText = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!), encoding: String.Encoding.utf8)
         //print(fragmentText)
         //self.shaderModifiers[.fragment] = ""

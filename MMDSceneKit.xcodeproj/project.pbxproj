@@ -86,6 +86,8 @@
 		DD4E68CC1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
 		DD4E68CD1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
 		DD4E68CE1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E68CA1DDE4487004F53A7 /* MMDPMMReader.swift */; };
+		DD58B2F01F3ADFEE0028F830 /* MMDFragment.shader in Resources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
+		DD58B2F11F3ADFF40028F830 /* MMDFragment.shader in Resources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
 		DD6094981D3A26F600CA22C7 /* MMDSceneKit_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF781C1838D700B20F37 /* MMDSceneKit_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD60949D1D3A27D200CA22C7 /* MMDNode_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949A1D3A27D200CA22C7 /* MMDNode_Tests.swift */; };
 		DD60949E1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD60949B1D3A27D200CA22C7 /* MMDSceneKit_macOSTests.swift */; };
@@ -1340,6 +1342,7 @@
 			files = (
 				DD1701F41DF574DB0000D5AB /* MMDShader.plist in Resources */,
 				DD9EB0A11F3038620024941B /* art.scnassets in Resources */,
+				DD58B2F01F3ADFEE0028F830 /* MMDFragment.shader in Resources */,
 				DD1701E31DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1419,6 +1422,7 @@
 			files = (
 				DD1701F61DF574DB0000D5AB /* MMDShader.plist in Resources */,
 				DD9EB0A31F3038620024941B /* art.scnassets in Resources */,
+				DD58B2F11F3ADFF40028F830 /* MMDFragment.shader in Resources */,
 				DD1701E51DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

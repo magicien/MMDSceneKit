@@ -48,8 +48,14 @@ internal class MMDReader: NSObject {
             #if os(iOS) || os(tvOS) || os(watchOS)
                 MMDReader.toonTextures = [UIImage]()
                 for fileName in toonFiles {
-                    let path = NSBundle(for: MMDReader.self).path(forResource: fileName)
-                    let image = UIImage(contentOfFile: fileName)
+                    #if os(watchOS)
+                        let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
+                        let image = UIImage(contentsOfFile: path)!
+                    #else
+                        let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
+                        let image = UIImage(contentsOfFile: path)!
+                    #endif
+                    
                     MMDReader.toonTextures.append(image)
                 }
             #elseif os(macOS)

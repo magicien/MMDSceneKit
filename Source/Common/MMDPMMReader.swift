@@ -196,7 +196,7 @@ fileprivate class MMDVMDLightInfo {
         #endif
         self.color = color
         
-        print("Light @ \(self.frameNo): \(color.redComponent), \(color.greenComponent), \(color.blueComponent)")
+        //print("Light @ \(self.frameNo): \(color.redComponent), \(color.greenComponent), \(color.blueComponent)")
         let rotX = -reader.getFloat()
         let rotY = -reader.getFloat()
         let rotZ = reader.getFloat()
