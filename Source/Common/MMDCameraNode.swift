@@ -93,6 +93,18 @@ open class MMDCameraNode: MMDNode {
         self.rotXNode.addChildNode(self.rotZNode)
         
         self.rotZNode.addChildNode(self.cameraNode)
+        
+        #if !os(watchOS)
+            // set technique
+            //camera.technique = MMDTechnique()
+            if let path = Bundle(for: MMDCameraNode.self).path(forResource: "MMDShader", ofType: "plist") {
+                if let dict1 = NSDictionary(contentsOfFile: path) {
+                    let dict = dict1 as! [String : AnyObject]
+                    let technique = SCNTechnique(dictionary:dict)
+                    camera.technique = technique
+                }
+            }
+        #endif
     }
     
     required public init?(coder aDecoder: NSCoder) {

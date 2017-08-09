@@ -45,7 +45,7 @@ class MMDPMXReader: MMDReader {
     fileprivate var textureCount = 0
     #if os(iOS) || os(tvOS) || os(watchOS)
         fileprivate var textureArray: [UIImage]! = nil
-    #elseif os(OSX)
+    #elseif os(macOS)
         private var textureArray: [NSImage]! = nil
     #endif
     
@@ -55,6 +55,7 @@ class MMDPMXReader: MMDReader {
     //fileprivate var materialArray: [MMDMaterial]! = nil
     fileprivate var materialIndexCountArray: [Int]! = nil
     fileprivate var materialShapeArray: [SCNGeometryPrimitiveType]! = nil
+    fileprivate var shaderModifiers = [SCNShaderModifierEntryPoint : String]()
     
     // MARK: bone data
     fileprivate var boneCount = 0
@@ -143,7 +144,7 @@ class MMDPMXReader: MMDReader {
         
         #if os(iOS) || os(tvOS) || os(watchOS)
             self.textureArray = [UIImage]()
-        #elseif os(OSX)
+        #elseif os(macOS)
             self.textureArray = [NSImage]()
         #endif
         
@@ -175,6 +176,9 @@ class MMDPMXReader: MMDReader {
             // file is in the wrong format
             return nil
         }
+        
+        // load shader modifiers
+        self.shaderModifiers[.fragment] = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!))
         
         // read basic data
         self.readVertex()
@@ -448,7 +452,7 @@ class MMDPMXReader: MMDReader {
                 if image == nil {
                     image = UIImage()
                 }
-            #elseif os(OSX)
+            #elseif os(macOS)
                 var image = NSImage(contentsOfFile: fileName as String)
                 if image == nil {
                     image = NSImage()
@@ -466,7 +470,7 @@ class MMDPMXReader: MMDReader {
         self.materialCount = Int(getUnsignedInt())
         
         var indexPos = 0
-
+        
         for _ in 0..<self.materialCount {
             let material = SCNMaterial()
             //let material = MMDMaterial()
@@ -479,25 +483,24 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-                material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
 
-            #elseif os(OSX)
+            #elseif os(macOS)
 
                 material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = NSColor(red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: 1.0)
-                material.emission.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
                 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 
             #endif
             
+            material.setValue(edgeColor, forKey: "edgeColor")
             
 
             let noCulling = ((bitFlag & 0x01) != 0)
@@ -514,28 +517,66 @@ class MMDPMXReader: MMDReader {
             let sphereTextureNo = getIntOfLength(self.textureIndexSize)
             let sphereMode = getUnsignedByte()
             let toonFlag = getUnsignedByte()
-            var toonTextureNo = 0
             
             if textureNo < self.textureArray.count {
                 let texture = self.textureArray[textureNo]
-                //material.diffuse.contents = self.createTexture(texture, light: material.diffuse.contents as! OSColor)
-                //material.emission.contents = self.createTexture(texture, light: material.emission.contents as! OSColor)
                 material.multiply.contents = texture
-                material.setValue(SCNMaterialProperty(contents: texture), forKey: "texture")
             }
             
             if toonFlag == 0 {
-                toonTextureNo = getIntOfLength(self.textureIndexSize)
+                // use own texture
+                let toonTextureNo = getIntOfLength(self.textureIndexSize)
+                let toonTexture = self.textureArray[toonTextureNo]
+                material.transparent.contents = toonTexture
+                material.setValue(true, forKey: "useToon")
             } else if toonFlag == 1 {
-                toonTextureNo = Int(getUnsignedByte())
+                // use shared texture
+                let toonTextureNo = Int(getUnsignedByte())
+                // TODO: load the shared toon textures
+                // let toonTexture = self.toonTextureArray[toonTextureNo]
+                // material.multiply.contents = toonTextureNo
+                // material.setValue(true, forKey: "useToon")
+                material.setValue(false, forKey: "useToon")
             } else {
                 // unknown flag
+                material.setValue(false, forKey: "useToon")
             }
             
             if noCulling {
                 material.isDoubleSided = true
             } else {
                 material.isDoubleSided = false
+            }
+            
+            let sphereTexture = self.textureArray[sphereTextureNo]
+            if sphereMode == 0 {
+                // disable
+                material.setValue(false, forKey: "useSphereMap")
+                material.setValue(false, forKey: "spadd")
+                material.setValue(false, forKey: "useSubtexture")
+            }else if sphereMode == 1 {
+                // additive
+                material.setValue(true, forKey: "useSphereMap")
+                material.setValue(true, forKey: "spadd")
+                material.setValue(false, forKey: "useSubtexture")
+                material.reflective.contents = sphereTexture
+            }else if sphereMode == 2 {
+                // multiplicative
+                material.setValue(true, forKey: "useSphereMap")
+                material.setValue(false, forKey: "spadd")
+                material.setValue(false, forKey: "useSubtexture")
+                material.reflective.contents = sphereTexture
+            }else if sphereMode == 3 {
+                // subtexture
+                material.setValue(true, forKey: "useSpehreMap")
+                material.setValue(true, forKey: "spadd")
+                material.setValue(false, forKey: "useSubtexture")
+                material.reflective.contents = sphereTexture
+            }else{
+                // unknown
+                material.setValue(false, forKey: "useSphereMap")
+                material.setValue(false, forKey: "spadd")
+                material.setValue(false, forKey: "useSubtexture")
             }
             
             // FIXME: use floorShadow, shadowMap property
@@ -623,6 +664,8 @@ class MMDPMXReader: MMDReader {
                 }
             }
             
+            material.shaderModifiers = self.shaderModifiers
+            
             self.materialIndexCountArray.append(newIndexCount)
             self.materialArray.append(material)
             self.separatedIndexArray.append(newArray)
@@ -667,7 +710,7 @@ class MMDPMXReader: MMDReader {
                 let x = getFloat()
                 let y = getFloat()
                 let z = -getFloat()
-            #elseif os(OSX)
+            #elseif os(macOS)
                 let x = CGFloat(getFloat())
                 let y = CGFloat(getFloat())
                 let z = CGFloat(-getFloat())
@@ -995,7 +1038,7 @@ class MMDPMXReader: MMDReader {
                 let toonColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
 
                 
-            #elseif os(OSX)
+            #elseif os(macOS)
                 
                 let diffuseColor = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
                 let specularColor = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
@@ -1165,8 +1208,8 @@ class MMDPMXReader: MMDReader {
         }
         
 #if !os(watchOS)
-        print("****************** create program start ***************************")
-        let program = MMDProgram()
+        //print("****************** create program start ***************************")
+        //let program = MMDProgram()
         //program.delegate = self.workingNode
         
         /*
@@ -1181,19 +1224,13 @@ class MMDPMXReader: MMDReader {
         program.setSemantic(SCNModelViewProjectionTransform, forSymbol: "modelViewProjectionTransform", options: nil)
         program.setSemantic(SCNGeometrySourceSemanticVertex, forSymbol: "aPos", options: nil)
         */
-        print("****************** create program end ***************************")
-        
-        
-        
-        
-        
-    
-        for material in self.materialArray {
-            material.program = program
-        }
-    
-    
-#endif
+        //print("****************** create program end ***************************")
+        //for material in self.materialArray {
+        //    material.program = program
+        //}
+
+
+    #endif
         
         let geometry = SCNGeometry(sources: [self.vertexSource, self.normalSource, self.texcoordSource], elements: self.elementArray)
         geometry.materials = self.materialArray

@@ -892,7 +892,7 @@ class MMDXReader : MMDReader {
         return color
     }
 
-#elseif os(OSX)
+#elseif os(macOS)
     /**
         read ColorRGB value
         - returns: ColorRGBA object. Alpha is 1.0
@@ -992,7 +992,7 @@ class MMDXReader : MMDReader {
                 #if os(iOS) || os(tvOS) || os(watchOS)
                     let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0)
                     let image = UIImage(contentsOfFile: textureFilePath!)
-                #elseif os(OSX)
+                #elseif os(macOS)
                     let black = NSColor(red: 0, green: 0, blue: 0, alpha: 0)
                     let image = NSImage(contentsOfFile: textureFilePath!)
                 #endif
@@ -1005,10 +1005,6 @@ class MMDXReader : MMDReader {
                     material.diffuse.contents = self.createTexture(image!, light: material.diffuse.contents as! OSColor)
                     material.diffuse.wrapS = .repeat
                     material.diffuse.wrapT = .repeat
-                    
-                    //material.multiply.contents = image
-                    //material.multiply.wrapS = .repeat
-                    //material.multiply.wrapT = .repeat
                 }
             }
         }

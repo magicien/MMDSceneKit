@@ -20,6 +20,11 @@
 			</dict>
 			<key>draw</key>
 			<string>DRAW_SCENE</string>
+			<key>blendStatus</key>
+			<dict>
+				<key>enable</key>
+				<true/>
+			</dict>
 			<key>inputs</key>
 			<dict>
 				<key>depth</key>
@@ -41,6 +46,11 @@
 			<dict>
 				<key>clear</key>
 				<false/>
+			</dict>
+			<key>blendStates</key>
+			<dict>
+				<key>enable</key>
+				<true/>
 			</dict>
 			<key>depthStates</key>
 			<dict>

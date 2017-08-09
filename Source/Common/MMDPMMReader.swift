@@ -191,11 +191,12 @@ fileprivate class MMDVMDLightInfo {
 
         #if os(iOS) || os(tvOS) || os(watchOS)
             let color = UIColor(colorLiteralRed: reader.getFloat(), green: reader.getFloat(), blue: reader.getFloat(), alpha: 1.0)
-        #elseif os(OSX)
+        #elseif os(macOS)
             let color = NSColor(red: CGFloat(reader.getFloat()), green: CGFloat(reader.getFloat()), blue: CGFloat(reader.getFloat()), alpha: 1.0)
         #endif
         self.color = color
         
+        print("Light @ \(self.frameNo): \(color.redComponent), \(color.greenComponent), \(color.blueComponent)")
         let rotX = -reader.getFloat()
         let rotY = -reader.getFloat()
         let rotZ = reader.getFloat()
@@ -1607,6 +1608,7 @@ class MMDPMMReader: MMDReader {
         let additiveMotion = CAKeyframeAnimation(keyPath: "/Geometry.materials.blendMode")
         let parentMotion = CAKeyframeAnimation(keyPath: "parent.motionParentNode")
         
+        
         posMotion.values = [AnyObject]()
         rotMotion.values = [AnyObject]()
         scaleMotion.values = [AnyObject]()
@@ -1930,6 +1932,7 @@ class MMDPMMReader: MMDReader {
         
         
         // light
+        /*
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
         lightNode.light!.type = .directional
@@ -1937,9 +1940,24 @@ class MMDPMMReader: MMDReader {
         //lightNode.light!.shadowMode = .deferred
         lightNode.addAnimation(self.workingLightAnimationGroup, forKey: "motion")
         lightNode.name = "MMDLight"
+         */
+        let directionalLightNode = SCNNode()
+        directionalLightNode.light = SCNLight()
+        directionalLightNode.light!.type = .directional
+        directionalLightNode.light!.castsShadow = true
+        //lightNode.light!.shadowMode = .deferred
+//        directionalLightNode.addAnimation(self.workingLightAnimationGroup, forKey: "motion")
+        directionalLightNode.name = "MMDLight"
+        self.workingScene.rootNode.addChildNode(directionalLightNode)
         
-        self.workingScene.rootNode.addChildNode(lightNode)
-        
+        let ambientLightNode = SCNNode()
+        ambientLightNode.light = SCNLight()
+        ambientLightNode.light!.type = .ambient
+        ambientLightNode.light!.intensity = 1000
+        ambientLightNode.light!.castsShadow = false
+        ambientLightNode.addAnimation(self.workingLightAnimationGroup, forKey: "motion")
+        ambientLightNode.name = "MMDAmbientLight"
+        directionalLightNode.addChildNode(ambientLightNode)
         
         // model and motion
         print("numModels: \(self.models.count)")

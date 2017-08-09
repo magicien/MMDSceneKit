@@ -92,7 +92,8 @@ class MMDPMDReader: MMDReader {
     fileprivate var materialArray: [SCNMaterial]! = nil
     //fileprivate var materialArray: [MMDMaterial]! = nil
     fileprivate var materialIndexCountArray: [Int]! = nil
-    
+    fileprivate var shaderModifiers = [SCNShaderModifierEntryPoint : String]()
+
     // MARK: bone data
     fileprivate var boneCount = 0
     fileprivate var boneArray: [MMDNode]! = nil
@@ -191,6 +192,12 @@ class MMDPMDReader: MMDReader {
             // file is in the wrong format
             return nil
         }
+        
+        // load shader modifiers
+        self.shaderModifiers[.fragment] = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!), encoding: String.Encoding.utf8)
+        //let fragmentText = try! String(contentsOf: URL(fileURLWithPath: Bundle(for: MMDProgram.self).path(forResource: "MMDFragment", ofType: "shader")!), encoding: String.Encoding.utf8)
+        //print(fragmentText)
+        //self.shaderModifiers[.fragment] = ""
         
         // read basic data
         self.readVertex()
@@ -313,56 +320,103 @@ class MMDPMDReader: MMDReader {
             let material = SCNMaterial()
             //let material = MMDMaterial()
             
+            material.shaderModifiers = self.shaderModifiers
+            
             #if os(iOS) || os(tvOS) || os(watchOS)
                 
-                material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
+                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
                 material.shininess = CGFloat(getFloat())
                 material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                //material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                material.ambient.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                material.diffuse.contents = material.ambient.contents
                 
-            #elseif os(OSX)
+            #elseif os(macOS)
                 
-                material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
-                material.shininess = CGFloat(getFloat())
-                material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                //material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                material.emission.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+                let mmdDiffuse = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
+                let mmdShininess = CGFloat(getFloat())
+                let mmdSpecular = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                let mmdAmbient = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                //material.ambient.contents = NSColor.black
+                //material.locksAmbientWithDiffuse = false
+                material.shininess = mmdShininess
+                material.specular.contents = mmdSpecular
+                material.emission.contents = mmdAmbient
+                material.diffuse.contents = mmdDiffuse
                 
             #endif
             
-            let toonIndex = getUnsignedByte()
+            let toonIndex = Int(getUnsignedByte())
+            if toonIndex < MMDReader.toonTextures.count {
+                material.transparent.contents = MMDReader.toonTextures[toonIndex]
+                material.setValue(1.0, forKey: "useToon")
+            }else{
+                material.setValue(0.0, forKey: "useToon")
+            }
+            
             let edge = getUnsignedByte()
             let indexCount = Int(getUnsignedInt())
-            let textureFile = getString(length: 20)
+            var textureFile = getString(length: 20)
+            var sphereFile: NSString = ""
+            if textureFile!.contains("*") {
+                let texts = textureFile!.components(separatedBy: "*")
+                textureFile = texts[0] as NSString
+                sphereFile = texts[1] as NSString
+            }
+            if textureFile!.hasSuffix(".spa") || textureFile!.hasSuffix(".sph") {
+                sphereFile = textureFile!
+                textureFile = ""
+            }
+            
             
             print("textureFileName: \(textureFile)")
+            print("sphereFileName: \(sphereFile)")
             if textureFile != "" {
                 let fileName = (self.directoryPath as NSString).appendingPathComponent(String(textureFile!))
                 
                 print("setTexture: \(fileName)")
                 
-                //material.ambient.contents = material.emission.contents
                 #if os(iOS) || os(tvOS) || os(watchOS)
-                    //material.diffuse.contents = UIImage(contentsOfFile: fileName)
-                    //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                    //material.diffuse.contents = self.createTexture(fileName: fileName, light: material.diffuse.contents)
-                    //material.emission.contents = self.createTexture(fileName: fileName, light: material.emission.contents)
                     material.multiply.contents = UIImage(contentsOfFile: fileName)
-                #elseif os(OSX)
-                    //material.diffuse.contents = NSImage(contentsOfFile: fileName)
-                    //material.emission.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                    //material.diffuse.contents = self.createTexture(fileName: fileName, light: material.diffuse.contents as! OSColor)
-                    //material.emission.contents = self.createTexture(fileName: fileName, light: material.emission.contents as! OSColor)
+                #elseif os(macOS)
                     material.multiply.contents = NSImage(contentsOfFile: fileName)
                 #endif
+                material.multiply.wrapS = .repeat
+                material.multiply.wrapT = .repeat
+
+                material.setValue(1.0, forKey: "useTexture")
+                
+            }else{
+                material.setValue(0.0, forKey: "useTexture")
+            }
+            
+            if sphereFile != "" {
+                let fileName = (self.directoryPath as NSString).appendingPathComponent(String(sphereFile))
+                
+                print("setSphere: \(fileName)")
+                
+                #if os(iOS) || os(tvOS) || os(watchOS)
+                    material.reflective.contents = UIImage(contentsOfFile: fileName)
+                #elseif os(macOS)
+                    material.reflective.contents = NSImage(contentsOfFile: fileName)
+                #endif
+                material.setValue(1.0, forKey: "useSphereMap")
+                
+                if sphereFile.hasSuffix(".spa") {
+                    material.setValue(1.0, forKey: "spadd")
+                }else if sphereFile.hasSuffix(".sph") {
+                    material.setValue(0.0, forKey: "spadd")
+                }else{
+                    // unknown
+                    material.setValue(0.0, forKey: "spadd")
+                }
+            }else{
+                material.setValue(0.0, forKey: "useSphereMap")
+                material.setValue(0.0, forKey: "spadd")
             }
             material.isDoubleSided = true
             
+            // pmd doesn't have a sub texture.
+            material.setValue(0.0, forKey: "useSubtexture")
             
             self.materialIndexCountArray.append(indexCount)
             self.materialArray.append(material)
@@ -430,7 +484,7 @@ class MMDPMDReader: MMDReader {
                 let x = getFloat()
                 let y = getFloat()
                 let z = -getFloat()
-            #elseif os(OSX)
+            #elseif os(macOS)
                 let x = CGFloat(getFloat())
                 let y = CGFloat(getFloat())
                 let z = CGFloat(-getFloat())
@@ -878,7 +932,7 @@ class MMDPMDReader: MMDReader {
 #if !os(watchOS)
         //let program = MMDProgram()
         print("****************** create program start ***************************")
-        let program = MMDProgram()
+        //let program = MMDProgram()
         //program.delegate = self.workingNode
         
         /*

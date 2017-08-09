@@ -54,10 +54,6 @@
 		DD1701E81DF4A8D70000D5AB /* MMDPostShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */; };
 		DD1701E91DF4A8D70000D5AB /* MMDPostShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */; };
 		DD1701EA1DF4A8D70000D5AB /* MMDPostShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */; };
-		DD1701EE1DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */; };
-		DD1701EF1DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */; };
-		DD1701F01DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */; };
-		DD1701F11DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */ = {isa = PBXBuildFile; fileRef = DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */; };
 		DD1701F31DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
 		DD1701F41DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
 		DD1701F51DF574DB0000D5AB /* MMDShader.plist in Resources */ = {isa = PBXBuildFile; fileRef = DD1701F21DF574DB0000D5AB /* MMDShader.plist */; };
@@ -104,13 +100,25 @@
 		DD8A4A131E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
 		DD8A4A141E26CD380047995C /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8A4A101E26CD380047995C /* CommonTypes.swift */; };
 		DD97A4921C1E29C500127FC5 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
+		DD9EB0A01F3038620024941B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9EB09F1F3038620024941B /* art.scnassets */; };
+		DD9EB0A11F3038620024941B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9EB09F1F3038620024941B /* art.scnassets */; };
+		DD9EB0A21F3038620024941B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9EB09F1F3038620024941B /* art.scnassets */; };
+		DD9EB0A31F3038620024941B /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9EB09F1F3038620024941B /* art.scnassets */; };
 		DD9ECF7A1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
 		DD9ECF7B1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
 		DD9ECF7C1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
 		DD9ECF7D1DE96F86007D3989 /* MMDVACReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */; };
 		DDA5571D1DD3DE6E00592E12 /* MMDSceneKit_macOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DDA7541E1F2FA0CC005E1714 /* MMDFragment.shader in Sources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
+		DDA7541F1F2FA0CC005E1714 /* MMDFragment.shader in Sources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
+		DDA754201F2FA0CC005E1714 /* MMDFragment.shader in Sources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
+		DDA754211F2FC39C005E1714 /* MMDFragment.shader in Resources */ = {isa = PBXBuildFile; fileRef = DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */; };
 		DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF151C18361400B20F37 /* MMDSceneSource.swift */; };
 		DDAE3ACB1C1D415A0014F375 /* MMDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BF131C1835E000B20F37 /* MMDNode.swift */; };
+		DDBE84B11F32EEFB00835EBE /* MMDTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */; };
+		DDBE84B21F32EEFB00835EBE /* MMDTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */; };
+		DDBE84B31F32EEFB00835EBE /* MMDTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */; };
+		DDBE84B41F32EEFB00835EBE /* MMDTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */; };
 		DDBFF9751DD3A81400E4CE78 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF9731DD3A81400E4CE78 /* Interface.storyboard */; };
 		DDBFF9771DD3A81400E4CE78 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBFF9761DD3A81400E4CE78 /* Assets.xcassets */; };
 		DDBFF97E1DD3A81400E4CE78 /* MMDSceneKitSample_watchOS Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = DDBFF97D1DD3A81400E4CE78 /* MMDSceneKitSample_watchOS Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -360,7 +368,6 @@
 		DD1701D51DF2BB8F0000D5AB /* MMDVPDReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVPDReader.swift; sourceTree = "<group>"; };
 		DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDPostShader.plist; sourceTree = "<group>"; };
 		DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDPostShader.metal; sourceTree = "<group>"; };
-		DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDShaderModifier.metal; sourceTree = "<group>"; };
 		DD1701F21DF574DB0000D5AB /* MMDShader.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MMDShader.plist; sourceTree = "<group>"; };
 		DD3313121D39BF020027FCA9 /* MMDSceneKit_watchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MMDSceneKit_watchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD3313321D39C0A30027FCA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -379,7 +386,10 @@
 		DD6296EF1C2FD49400707364 /* MMDShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MMDShader.metal; sourceTree = "<group>"; };
 		DD6296F31C2FF21E00707364 /* EmptyShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = EmptyShader.metal; sourceTree = "<group>"; };
 		DD8A4A101E26CD380047995C /* CommonTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
+		DD9EB09F1F3038620024941B /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		DD9ECF791DE96F85007D3989 /* MMDVACReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDVACReader.swift; sourceTree = "<group>"; };
+		DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MMDFragment.shader; sourceTree = "<group>"; };
+		DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMDTechnique.swift; sourceTree = "<group>"; };
 		DDBFF9711DD3A81400E4CE78 /* MMDSceneKitSample_watchOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_watchOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBFF9741DD3A81400E4CE78 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		DDBFF9761DD3A81400E4CE78 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -586,6 +596,8 @@
 				DDDE8A3D1C27CE76008DF1A6 /* MMDIKConstraint.swift */,
 				DDCF5D2A1DD596B80037BD66 /* MMDIKController.swift */,
 				DD6296D81C2D120800707364 /* MMDProgram.swift */,
+				DDBE84B01F32EEFB00835EBE /* MMDTechnique.swift */,
+				DD9EB09F1F3038620024941B /* art.scnassets */,
 				DD6296DB1C2D14F600707364 /* Shader */,
 			);
 			name = Common;
@@ -790,9 +802,9 @@
 			children = (
 				DD1701E11DF4A5E20000D5AB /* MMDPostShader.plist */,
 				DD1701F21DF574DB0000D5AB /* MMDShader.plist */,
+				DDA7541D1F2FA0CC005E1714 /* MMDFragment.shader */,
 				DD6296EF1C2FD49400707364 /* MMDShader.metal */,
 				DD1701E61DF4A8D70000D5AB /* MMDPostShader.metal */,
-				DD1701ED1DF4B0410000D5AB /* MMDShaderModifier.metal */,
 			);
 			name = Shader;
 			sourceTree = "<group>";
@@ -1307,7 +1319,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD1701F31DF574DB0000D5AB /* MMDShader.plist in Resources */,
+				DD9EB0A01F3038620024941B /* art.scnassets in Resources */,
 				DD1701E21DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
+				DDA754211F2FC39C005E1714 /* MMDFragment.shader in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1323,6 +1337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD1701F41DF574DB0000D5AB /* MMDShader.plist in Resources */,
+				DD9EB0A11F3038620024941B /* art.scnassets in Resources */,
 				DD1701E31DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1374,6 +1389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD1701F51DF574DB0000D5AB /* MMDShader.plist in Resources */,
+				DD9EB0A21F3038620024941B /* art.scnassets in Resources */,
 				DD1701E41DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1400,6 +1416,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD1701F61DF574DB0000D5AB /* MMDShader.plist in Resources */,
+				DD9EB0A31F3038620024941B /* art.scnassets in Resources */,
 				DD1701E51DF4A5E20000D5AB /* MMDPostShader.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1511,6 +1528,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD41D8A31C25354C00A7F834 /* Regexp.swift in Sources */,
+				DDA7541E1F2FA0CC005E1714 /* MMDFragment.shader in Sources */,
 				DDDE8A3E1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89D1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DD6296D91C2D120800707364 /* MMDProgram.swift in Sources */,
@@ -1522,11 +1540,11 @@
 				DDEC598A1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD1701E71DF4A8D70000D5AB /* MMDPostShader.metal in Sources */,
 				DD41D8971C23F42500A7F834 /* MMDReader.swift in Sources */,
-				DD1701EE1DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */,
 				DD370BC21DDA589700F55DF0 /* MMDCameraNode.swift in Sources */,
 				DD12C00D1C1ABF5600B20F37 /* MMDNode.swift in Sources */,
 				DD41D89A1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F01C2FD49400707364 /* MMDShader.metal in Sources */,
+				DDBE84B11F32EEFB00835EBE /* MMDTechnique.swift in Sources */,
 				DD8A4A111E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2B1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
@@ -1546,6 +1564,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD41D8A41C25354C00A7F834 /* Regexp.swift in Sources */,
+				DDA7541F1F2FA0CC005E1714 /* MMDFragment.shader in Sources */,
 				DDDE8A3F1C27CE76008DF1A6 /* MMDIKConstraint.swift in Sources */,
 				DD41D89E1C23FAE700A7F834 /* MMDVMDReader.swift in Sources */,
 				DD6296DA1C2D120800707364 /* MMDProgram.swift in Sources */,
@@ -1557,11 +1576,11 @@
 				DDEC598B1C38B4570043F939 /* MMDPMXReader.swift in Sources */,
 				DD1701E81DF4A8D70000D5AB /* MMDPostShader.metal in Sources */,
 				DD41D8981C23F42500A7F834 /* MMDReader.swift in Sources */,
-				DD1701EF1DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */,
 				DD370BC31DDA589700F55DF0 /* MMDCameraNode.swift in Sources */,
 				DDAE3ACA1C1D41520014F375 /* MMDSceneSource.swift in Sources */,
 				DD41D89B1C23F93100A7F834 /* MMDPMDReader.swift in Sources */,
 				DD6296F11C2FD49400707364 /* MMDShader.metal in Sources */,
+				DDBE84B21F32EEFB00835EBE /* MMDTechnique.swift in Sources */,
 				DD8A4A121E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2C1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);
@@ -1624,13 +1643,13 @@
 				DD3313BE1D39C3160027FCA9 /* MMDPMXReader.swift in Sources */,
 				DD1701D81DF2BB8F0000D5AB /* MMDVPDReader.swift in Sources */,
 				DD3313C21D39C3160027FCA9 /* MMDIKConstraint.swift in Sources */,
+				DDBE84B31F32EEFB00835EBE /* MMDTechnique.swift in Sources */,
 				DD4E68CD1DDE4487004F53A7 /* MMDPMMReader.swift in Sources */,
 				DD3313BC1D39C3160027FCA9 /* MMDReader.swift in Sources */,
 				DD9ECF7C1DE96F86007D3989 /* MMDVACReader.swift in Sources */,
 				DD3313BA1D39C3160027FCA9 /* MMDNode.swift in Sources */,
 				DD1701E91DF4A8D70000D5AB /* MMDPostShader.metal in Sources */,
 				DD3313BD1D39C3160027FCA9 /* MMDPMDReader.swift in Sources */,
-				DD1701F01DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */,
 				DD370BC41DDA589700F55DF0 /* MMDCameraNode.swift in Sources */,
 				DD3313C51D39C32A0027FCA9 /* MMDShader.metal in Sources */,
 				DD3313BF1D39C3160027FCA9 /* MMDVMDReader.swift in Sources */,
@@ -1655,6 +1674,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DDCF5C581DD4F3720037BD66 /* MMDXReader.swift in Sources */,
+				DDA754201F2FA0CC005E1714 /* MMDFragment.shader in Sources */,
 				DDCF5C531DD4F3660037BD66 /* MMDSceneSource.swift in Sources */,
 				DDCF5C591DD4F3720037BD66 /* Regexp.swift in Sources */,
 				DDCF5C561DD4F3720037BD66 /* MMDPMXReader.swift in Sources */,
@@ -1666,11 +1686,11 @@
 				DDCF5C521DD4F3630037BD66 /* MMDNode.swift in Sources */,
 				DD1701EA1DF4A8D70000D5AB /* MMDPostShader.metal in Sources */,
 				DDCF5C551DD4F3720037BD66 /* MMDPMDReader.swift in Sources */,
-				DD1701F11DF4B0410000D5AB /* MMDShaderModifier.metal in Sources */,
 				DD370BC51DDA589700F55DF0 /* MMDCameraNode.swift in Sources */,
 				DDCF5C631DD4F3830037BD66 /* MMDShader.metal in Sources */,
 				DDCF5C571DD4F3720037BD66 /* MMDVMDReader.swift in Sources */,
 				DDCF5C5B1DD4F3720037BD66 /* MMDProgram.swift in Sources */,
+				DDBE84B41F32EEFB00835EBE /* MMDTechnique.swift in Sources */,
 				DD8A4A141E26CD380047995C /* CommonTypes.swift in Sources */,
 				DDCF5D2E1DD596B80037BD66 /* MMDIKController.swift in Sources */,
 			);

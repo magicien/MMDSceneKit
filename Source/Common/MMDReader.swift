@@ -8,11 +8,30 @@
 
 import SceneKit
 
+let toonFiles: [String] = [
+    "art.scnassets/toon01.bmp",
+    "art.scnassets/toon02.bmp",
+    "art.scnassets/toon03.bmp",
+    "art.scnassets/toon04.bmp",
+    "art.scnassets/toon05.bmp",
+    "art.scnassets/toon06.bmp",
+    "art.scnassets/toon07.bmp",
+    "art.scnassets/toon08.bmp",
+    "art.scnassets/toon09.bmp",
+    "art.scnassets/toon10.bmp"
+]
+
 internal class MMDReader: NSObject {
     internal var directoryPath: String! = ""
     internal var binaryData: Data! = nil
     internal var length = 0
     internal var pos = 0
+    
+    #if os(iOS) || os(tvOS) || os(watchOS)
+        static var toonTextures: [UIImage]! = nil
+    #elseif os(macOS)
+        static var toonTextures: [NSImage]! = nil
+    #endif
     
     /**
      * 
@@ -24,6 +43,24 @@ internal class MMDReader: NSObject {
         self.binaryData = data
         self.length = data.count
         self.pos = 0
+        
+        if MMDReader.toonTextures == nil {
+            #if os(iOS) || os(tvOS) || os(watchOS)
+                MMDReader.toonTextures = [UIImage]()
+                for fileName in toonFiles {
+                    let path = NSBundle(for: MMDReader.self).path(forResource: fileName)
+                    let image = UIImage(contentOfFile: fileName)
+                    MMDReader.toonTextures.append(image)
+                }
+            #elseif os(macOS)
+                MMDReader.toonTextures = [NSImage]()
+                for fileName in toonFiles {
+                    let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)
+                    let image = NSImage(contentsOfFile: path!)
+                    MMDReader.toonTextures.append(image!)
+                }
+            #endif
+        }
     }
     
     // MARK: - Utility functions
@@ -216,7 +253,7 @@ internal class MMDReader: NSObject {
         quat.w *= invr
     }
 
-#if os(OSX)
+#if os(macOS)
     internal func createTexture(fileName: String, light: OSColor) -> NSImage? {
         guard let image = NSImage(contentsOfFile: fileName) else { return nil }
         return createTexture(image, light: light)

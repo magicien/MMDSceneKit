@@ -232,9 +232,8 @@ fragment half4 mmdFragment(VertexOutput in [[ stage_in ]],
     return half4(color);
 }
 
-/*
+
 vertex VertexOutput pass_edge_vertex(VertexInput in [[stage_in]],
-//                                     constant NodeBuffer& scn_node [[ buffer(0) ]]){
                                      constant SCNSceneBuffer& scn_frame [[ buffer(0) ]],
                                      constant NodeBuffer& scn_node [[ buffer(1) ]])
 //                                     constant float& screenSize [[ buffer(2) ]])
@@ -297,4 +296,3 @@ fragment half4 pass_edge_fragment(VertexOutput in [[stage_in]])
     return half4(color);
 };
 
-*/
