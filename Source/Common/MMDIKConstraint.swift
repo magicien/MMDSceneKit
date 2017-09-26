@@ -118,7 +118,7 @@ open class MMDIKConstraint {
     func printInfo() {
         print("boneArray: \(self.boneArray.count)")
         for bone in self.boneArray {
-            print("  \(bone.name)")
+            print("  \(String(describing: bone.name))")
         }
         
         print("minAngleArray: \(self.minAngleArray.count)")
@@ -131,8 +131,8 @@ open class MMDIKConstraint {
             print("  \(val)")
         }
         
-        print("ikBone: \(self.ikBone.name)")
-        print("targetBone: \(self.targetBone.name)")
+        print("ikBone: \(String(describing: self.ikBone.name))")
+        print("targetBone: \(String(describing: self.targetBone.name))")
         print("iteration: \(self.iteration)")
         print("weight: \(self.weight)")
         print("isEnable: \(self.isEnable)")

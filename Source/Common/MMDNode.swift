@@ -33,7 +33,7 @@ open class DummyNode: NSObject {
 }
 
 #if os(watchOS)
-    @objc public protocol EmptyDelegate {
+    public protocol EmptyDelegate {
         // nothing to do
     }
     public typealias MMDNodeProgramDelegate = EmptyDelegate
@@ -604,16 +604,18 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         return newGroup
     }
     
-    override open func addAnimation(_ animation: CAAnimation, forKey key: String?) {
+    override open func addAnimation(_ animation: SCNAnimationProtocol, forKey key: String?) {
         if let group = animation as? CAAnimationGroup {
             // FIXME: clone values
             let convertedAnimation = self.convertAnimation(group)
             convertedAnimation.delegate = self
             super.addAnimation(convertedAnimation, forKey: key)
-        }else{
+        }else if let anim = animation as? CAAnimation {
             // not CAAnimationGroup: just call the superclass
-            animation.delegate = self
-            super.addAnimation(animation, forKey: key)
+            anim.delegate = self
+            super.addAnimation(anim, forKey: key)
+        }else{
+            print("unknown animation type: \(animation)")
         }
     }
 #endif
@@ -736,7 +738,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
             //print("rotateEffector: \(rotateEffector)")
             //print("\(self.name)")
             //print("    before: \(self.presentation.rotation)")
-            var rot = rotateEffector.presentation.rotation
+            let rot = rotateEffector.presentation.rotation
             if self.rotateEffectRate == 1.0 {
                 self.rotation = rot
             } else {
@@ -1020,17 +1022,17 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                     switch keyAnim.keyPath! {
                     case transXKey:
                         print("transXKey found")
-                        translate.x = OSFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.x = keyAnim.values!.first! as! OSFloat
                         print("value: \(translate.x)")
                         break
                     case transYKey:
                         print("transYKey found")
-                        translate.y = OSFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.y = keyAnim.values!.first! as! OSFloat
                         print("value: \(translate.y)")
                         break
                     case transZKey:
                         print("transZKey found")
-                        translate.z = OSFloat(keyAnim.values!.first! as! NSNumber)
+                        translate.z = keyAnim.values!.first! as! OSFloat
                         print("value: \(translate.z)")
                         break
                     case quatKey:
@@ -1065,17 +1067,17 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
                     switch keyAnim.keyPath! {
                     case transXKey:
                         print("transXKey found")
-                        translate.x = OSFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.x = keyAnim.values!.last! as! OSFloat
                         print("value: \(translate.x)")
                         break
                     case transYKey:
                         print("transYKey found")
-                        translate.y = OSFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.y = keyAnim.values!.last! as! OSFloat
                         print("value: \(translate.y)")
                         break
                     case transZKey:
                         print("transZKey found")
-                        translate.z = OSFloat(keyAnim.values!.last! as! NSNumber)
+                        translate.z = keyAnim.values!.last! as! OSFloat
                         print("value: \(translate.z)")
                         break
                     case quatKey:
@@ -1259,7 +1261,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
             if childName == nil {
                 childName = "(no name)"
             }
-            print("\(myIndent)\(childName)")
+            print("\(myIndent)\(String(describing: childName))")
             if let mmdChild = child as? MMDNode {
                 mmdChild.printBoneTree(indent: indent, myIndent: newIndent)
             }
@@ -1272,7 +1274,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
             if boneName == nil {
                 boneName = "(no name)"
             }
-            print("\(index): \(boneName)")
+            print("\(index): \(String(describing: boneName))")
         }
     }
 }
