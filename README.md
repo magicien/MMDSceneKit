@@ -1,2 +1,11 @@
 # MMDSceneKit
-SceneKit expansion for Miku Miku Dance
+SceneKit expansion for MikuMikuDance
+
+### Install
+
+
+### Documentation
+
+https://magicien.github.io/MMDSceneKit/
+
+### Examples
