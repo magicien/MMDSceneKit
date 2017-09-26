@@ -14,6 +14,7 @@ inline float4 srgbToLinear(float4 c) {
     return pow(c, float4(2.2));
 }
 
+#pragma transparent
 #pragma arguments
 
 float useTexture;
@@ -32,8 +33,6 @@ float3 lightAmbient = linearToSrgb(_lightingContribution.ambient);
 float3 lightSpecular = linearToSrgb(_lightingContribution.specular);
 
 float3 lightDirection = -scn_lights.direction0.xyz;
-// DEBUG
-lightDirection = float3(0, -1, 0);
 
 // light direction in view space
 float3 lightDir = normalize((scn_frame.viewTransform * float4(lightDirection, 0)).xyz);
@@ -101,6 +100,9 @@ if(useToon > 0){
     _output.color *= u_transparentTexture.sample(u_transparentTextureSampler, float2(0, 0.5 + lightNormal * 0.5));
 }
 _output.color.rgb += specularColor.rgb;
+
+// needs to multiply the alpha value when it uses "#pragma transparent"
+_output.color.rgb *= _output.color.a;
 
 _output.color = srgbToLinear(_output.color);
 
