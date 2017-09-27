@@ -190,9 +190,9 @@ fileprivate class MMDVMDLightInfo {
         self.next = Int(reader.getUnsignedInt())
 
         #if os(iOS) || os(tvOS) || os(watchOS)
-            let color = UIColor(colorLiteralRed: reader.getFloat(), green: reader.getFloat(), blue: reader.getFloat(), alpha: 1.0)
+            let color = UIColor(red: reader.getCGFloat(), green: reader.getCGFloat(), blue: reader.getCGFloat(), alpha: 1.0)
         #elseif os(macOS)
-            let color = NSColor(red: CGFloat(reader.getFloat()), green: CGFloat(reader.getFloat()), blue: CGFloat(reader.getFloat()), alpha: 1.0)
+            let color = NSColor(red: reader.getCGFloat(), green: reader.getCGFloat(), blue: reader.getCGFloat(), alpha: 1.0)
         #endif
         self.color = color
         

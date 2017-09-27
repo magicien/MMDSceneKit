@@ -326,10 +326,10 @@ class MMDPMDReader: MMDReader {
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 
-                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
+                material.ambient.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
                 material.shininess = CGFloat(getFloat())
-                material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                material.emission.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.specular.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                material.emission.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 material.diffuse.contents = material.ambient.contents
                 
             #elseif os(macOS)

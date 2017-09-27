@@ -482,23 +482,23 @@ class MMDPMXReader: MMDReader {
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 
-                material.diffuse.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-                material.specular.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.diffuse.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                material.specular.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                material.ambient.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
 
                 let bitFlag = getUnsignedByte()
-                let edgeColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
+                let edgeColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
 
             #elseif os(macOS)
 
-                material.diffuse.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
-                material.specular.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
-                material.shininess = CGFloat(getFloat())
-                material.ambient.contents = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
+                material.diffuse.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                material.specular.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                material.shininess = getCGFloat()
+                material.ambient.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 
                 let bitFlag = getUnsignedByte()
-                let edgeColor = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: CGFloat(getFloat()))
+                let edgeColor = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
                 
             #endif
             
@@ -1028,16 +1028,16 @@ class MMDPMXReader: MMDReader {
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 
-                let diffuseColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-                let SpecularColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
-                let shininess = CGFloat(getFloat())
-                let ambientColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                let diffuseColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                let SpecularColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                let shininess = getCGFloat()
+                let ambientColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 //material.emission.contents = UIColor(colorLiteralRed: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
-                let edgeColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-                let edgeSize = getFloat()
-                let textureColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-                let sphereColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
-                let toonColor = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: getFloat())
+                let edgeColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                let edgeSize = getCGFloat()
+                let textureColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                let sphereColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
+                let toonColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
 
                 
             #elseif os(macOS)

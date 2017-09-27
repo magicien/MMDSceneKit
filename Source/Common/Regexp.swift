@@ -56,7 +56,7 @@ class Regexp {
             let rangeCount = match.numberOfRanges
             
             for group in 0..<rangeCount {
-                let range = match.rangeAt(group)
+                let range = match.range(at: group)
                 if range.length > 0 {
                     results.append(nsString.substring(with: range))
                 }

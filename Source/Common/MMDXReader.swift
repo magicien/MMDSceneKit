@@ -866,7 +866,7 @@ class MMDXReader : MMDReader {
         
         self.getCommaOrSemicolon()
         
-        return UIColor(colorLiteralRed: r, green: g, blue: b, alpha: a)
+        return UIColor(red: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: CGFloat(a))
     }
 
     /**
@@ -874,14 +874,14 @@ class MMDXReader : MMDReader {
         - returns: ColorRGBA object
      */
     fileprivate func ColorRGBA() -> UIColor {
-        let r = self.getOSFloat()!
-        let g = self.getOSFloat()!
-        let b = self.getOSFloat()!
-        let a = self.getOSFloat()!
+        let r = self.getCGFloat()!
+        let g = self.getCGFloat()!
+        let b = self.getCGFloat()!
+        let a = self.getCGFloat()!
         
         self.getCommaOrSemicolon()
         
-        return UIColor(colorLiteralRed: r, green: g, blue: b, alpha: a)
+        return UIColor(red: r, green: g, blue: b, alpha: a)
     }
     
     fileprivate func IndexedColor() -> UIColor {
@@ -990,7 +990,7 @@ class MMDXReader : MMDReader {
             let textureFilePath = self.TextureFilename()
             if textureFilePath != nil {
                 #if os(iOS) || os(tvOS) || os(watchOS)
-                    let black = UIColor(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0)
+                    let black = UIColor(red: 0, green: 0, blue: 0, alpha: 0)
                     let image = UIImage(contentsOfFile: textureFilePath!)
                 #elseif os(macOS)
                     let black = NSColor(red: 0, green: 0, blue: 0, alpha: 0)

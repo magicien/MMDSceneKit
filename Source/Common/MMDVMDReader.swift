@@ -603,7 +603,7 @@ class MMDVMDReader: MMDReader {
             }
             
             #if os(iOS) || os(tvOS) || os(watchOS)
-                let color = UIColor(colorLiteralRed: getFloat(), green: getFloat(), blue: getFloat(), alpha: 1.0)
+                let color = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
             #elseif os(macOS)
                 let color = NSColor(red: CGFloat(getFloat()), green: CGFloat(getFloat()), blue: CGFloat(getFloat()), alpha: 1.0)
             #endif

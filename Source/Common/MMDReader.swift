@@ -200,7 +200,7 @@ internal class MMDReader: NSObject {
     }
     
     /**
-     * read Float32 data and return Int value from file
+     * read 4 bytes float data and return Float32 value from file
      * - returns: Float data
      */
     internal func getFloat() -> Float32 {
@@ -214,6 +214,15 @@ internal class MMDReader: NSObject {
         self.pos += 4
         
         return num
+    }
+    
+    /**
+     * read 4 bytes float data and return CGFloat value from file
+     * - returns: Float data
+     */
+    internal func getCGFloat() -> CGFloat {
+        let data = self.getFloat()
+        return CGFloat(data)
     }
     
     /**
