@@ -140,8 +140,8 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
     
 #if !os(watchOS)
-    //open var convertedAnimation: [CAAnimation: CAAnimation]! = nil
-    open var preparedAnimation: [String: CAAnimation]? = nil
+    // open var preparedAnimation: [String: CAAnimation]? = nil
+    open var preparedAnimation: [String: SCNAnimation]? = nil
 #endif
     
     // for animation
@@ -178,12 +178,8 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     convenience init(mmdNode: MMDNode) {
         self.init()
         
-        
         self.copySCNNodeValues(mmdNode)
         self.copyValues(mmdNode)
-        
-        //print("after: self.preparedAnimation: \(self.preparedAnimation)")
-        //print("after: mmdNode.preparedAnimation: \(mmdNode.preparedAnimation)")
     }
     
     
@@ -303,9 +299,6 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
         self.geometryMorpher = node.geometryMorpher // SCNMorpher
         
         //fileprivate let faceWeightsPattern = Regexp("faceWeights\\[(\\d+)\\]")
-        
-        //print("before: self.preparedAnimation: \(self.preparedAnimation)")
-        //print("before: mmdNode.preparedAnimation: \(mmdNode.preparedAnimation)")
         
         #if !os(watchOS)
             self.preparedAnimation = node.preparedAnimation
@@ -458,22 +451,25 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
 #if !os(watchOS)
     open func prepareAnimation(_ animation: CAAnimation, forKey key: String) {
         if self.preparedAnimation == nil {
-            self.preparedAnimation = [String: CAAnimation]()
+            self.preparedAnimation = [String: SCNAnimation]()
         }
         
         if let group = animation as? CAAnimationGroup {
             let convertedAnimation = self.convertAnimation(group)
-            convertedAnimation.delegate = self
-            self.preparedAnimation?[key] = convertedAnimation
+            // convertedAnimation.delegate = self
+            self.preparedAnimation?[key] = SCNAnimation(caAnimation: convertedAnimation)
         }else{
-            animation.delegate = self
-            self.preparedAnimation?[key] = animation
+            // animation.delegate = self
+            self.preparedAnimation?[key] = SCNAnimation(caAnimation: animation)
         }
     }
     
     open func playPreparedAnimation(forKey key: String) {
         if let anim = self.preparedAnimation?[key] {
-            super.addAnimation(anim, forKey: key)
+            // super.addAnimation(anim, forKey: key)
+            let player = SCNAnimationPlayer(animation: anim)
+            self.addAnimationPlayer(player, forKey: key)
+            player.play()
         }
     }
     
@@ -1281,6 +1277,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
 
 #if os(macOS) || os(iOS) || os(tvOS)
 extension MMDNode: CAAnimationDelegate {
+    /*
     public func animationDidStop(_ anim: CAAnimation, finished: Bool) {
         if finished {
             if let block = anim.value(forKey: MMDAnimationCompletionBlockKey) as? () -> Void {
@@ -1288,10 +1285,12 @@ extension MMDNode: CAAnimationDelegate {
             }
         }
     }
+    */
     
-    public func setCompletionHandler(_ block: () -> Void, forPreparedAnimationKey key: String) {
+    public func setCompletionHandler(_ block: @escaping (_ animation: SCNAnimation, _ obj: SCNAnimatable, _ finished: Bool) -> Void, forPreparedAnimationKey key: String) {
         if let anim = self.preparedAnimation?[key] {
-            anim.setValue(block, forKey: MMDAnimationCompletionBlockKey)
+            // anim.setValue(block, forKey: MMDAnimationCompletionBlockKey)
+            anim.animationDidStop = block
         }
     }
 }

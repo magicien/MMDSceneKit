@@ -550,35 +550,41 @@ class MMDPMXReader: MMDReader {
                 material.isDoubleSided = false
             }
             
-            let sphereTexture = self.textureArray[sphereTextureNo]
-            if sphereMode == 0 {
-                // disable
+            if sphereTextureNo >= 255 {
                 material.setValue(false, forKey: "useSphereMap")
                 material.setValue(false, forKey: "spadd")
                 material.setValue(false, forKey: "useSubtexture")
-            }else if sphereMode == 1 {
-                // additive
-                material.setValue(true, forKey: "useSphereMap")
-                material.setValue(true, forKey: "spadd")
-                material.setValue(false, forKey: "useSubtexture")
-                material.reflective.contents = sphereTexture
-            }else if sphereMode == 2 {
-                // multiplicative
-                material.setValue(true, forKey: "useSphereMap")
-                material.setValue(false, forKey: "spadd")
-                material.setValue(false, forKey: "useSubtexture")
-                material.reflective.contents = sphereTexture
-            }else if sphereMode == 3 {
-                // subtexture
-                material.setValue(true, forKey: "useSpehreMap")
-                material.setValue(true, forKey: "spadd")
-                material.setValue(false, forKey: "useSubtexture")
-                material.reflective.contents = sphereTexture
-            }else{
-                // unknown
-                material.setValue(false, forKey: "useSphereMap")
-                material.setValue(false, forKey: "spadd")
-                material.setValue(false, forKey: "useSubtexture")
+            } else {
+                let sphereTexture = self.textureArray[sphereTextureNo]
+                if sphereMode == 0 {
+                    // disable
+                    material.setValue(false, forKey: "useSphereMap")
+                    material.setValue(false, forKey: "spadd")
+                    material.setValue(false, forKey: "useSubtexture")
+                }else if sphereMode == 1 {
+                    // additive
+                    material.setValue(true, forKey: "useSphereMap")
+                    material.setValue(true, forKey: "spadd")
+                    material.setValue(false, forKey: "useSubtexture")
+                    material.reflective.contents = sphereTexture
+                }else if sphereMode == 2 {
+                    // multiplicative
+                    material.setValue(true, forKey: "useSphereMap")
+                    material.setValue(false, forKey: "spadd")
+                    material.setValue(false, forKey: "useSubtexture")
+                    material.reflective.contents = sphereTexture
+                }else if sphereMode == 3 {
+                    // subtexture
+                    material.setValue(true, forKey: "useSpehreMap")
+                    material.setValue(true, forKey: "spadd")
+                    material.setValue(false, forKey: "useSubtexture")
+                    material.reflective.contents = sphereTexture
+                }else{
+                    // unknown
+                    material.setValue(false, forKey: "useSphereMap")
+                    material.setValue(false, forKey: "spadd")
+                    material.setValue(false, forKey: "useSubtexture")
+                }
             }
             
             // FIXME: use floorShadow, shadowMap property

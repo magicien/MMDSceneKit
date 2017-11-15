@@ -180,7 +180,7 @@ class MMDVMDReader: MMDReader {
             let frameNo = Int(getUnsignedInt())
             
             while frameIndex >= 0 {
-                let k = Int(posXMotion!.keyTimes![frameIndex])
+                let k = Int(truncating: posXMotion!.keyTimes![frameIndex])
                 if(k < frameNo) {
                     break
                 }
@@ -283,7 +283,7 @@ class MMDVMDReader: MMDReader {
             
             var frameIndex = animation!.keyTimes!.count - 1
             while frameIndex >= 0 {
-                let k = Int(animation!.keyTimes![frameIndex])
+                let k = Int(truncating: animation!.keyTimes![frameIndex])
                 if(k < frameNo) {
                     break
                 }
@@ -305,7 +305,7 @@ class MMDVMDReader: MMDReader {
         print("bone frameLength: \(self.frameLength)")
         
         for (_, motion) in self.animationHash {
-            let motionLength = Double(motion.keyTimes!.last!)
+            let motionLength = Double(truncating: motion.keyTimes!.last!)
             for num in 0..<motion.keyTimes!.count {
                 let keyTime = Float(motion.keyTimes![num]) / Float(motionLength)
                 motion.keyTimes![num] = NSNumber(value: keyTime)
