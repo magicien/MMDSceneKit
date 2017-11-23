@@ -18,6 +18,7 @@ public enum MMDFileType {
     case pmm, pmd, vmd, vpd, x, vac, pmx, obj, dae, abc, scn, unknown
 }
 
+@objcMembers
 open class MMDSceneSource: SCNSceneSource {
     /// file type which is detected by file header
     open fileprivate(set) var fileType: MMDFileType! = .unknown
@@ -117,7 +118,15 @@ open class MMDSceneSource: SCNSceneSource {
         - parameter options: ignored. just for compatibility of SCNSceneSource.
     */
     public override convenience init?(url: URL, options: [SCNSceneSource.LoadingOption : Any]? = nil) {
-        self.init()
+        print("URL: \(url)")
+        var urlString:String = url.absoluteString.removingPercentEncoding!
+        if urlString.starts(with: "file:///") {
+            let startIndex = urlString.index(urlString.startIndex, offsetBy: 7)
+            urlString = String(urlString[startIndex...])
+        }
+        print("URL string: \(urlString)")
+        
+        self.init(path: urlString, options: options, models: nil, motions: nil)
     }
 
     /**
@@ -125,7 +134,7 @@ open class MMDSceneSource: SCNSceneSource {
         - parameter path: A path identifying the location of a scene file in MMD file format.
         - parameter options: ignored. just for compatibility of SCNSceneSource.
     */
-    public convenience init?(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode?]? = nil, motions: [CAAnimation?]? = nil) {
+    @objc public convenience init?(path: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode]? = nil, motions: [CAAnimation]? = nil) {
         self.init()
         self.directoryPath = (path as NSString).deletingLastPathComponent
 
@@ -193,10 +202,11 @@ open class MMDSceneSource: SCNSceneSource {
     
     /**
          Initializes a scene source for reading the scene graph from a specified file.
-         - parameter url: A URL identifying the location of a scene file in MMD file format.
+         - parameter named: A URL identifying the location of a scene file in MMD file format.
          - parameter options: ignored.
     */
-    public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode?]? = nil) {
+    @objc
+    public convenience init?(named name: String, options: [SCNSceneSource.LoadingOption : Any]? = nil, models: [MMDNode]? = nil) {
         let filePath = Bundle.main.path(forResource: name, ofType: nil)
         guard let path = filePath else {
             print("error: file \(name) not found.")

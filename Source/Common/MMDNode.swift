@@ -49,6 +49,7 @@ private let MMDAnimationCompletionBlockKey = "MMDAnimationCompletionBlockKey"
 }
 */
 
+@objcMembers
 open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
     open internal(set) var type: MMDNodeType = .unknown

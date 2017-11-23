@@ -8,6 +8,7 @@
 
 import SceneKit
 
+@objcMembers
 public class MMDIKController: NSObject, SCNSceneRendererDelegate {
     public static let sharedController = MMDIKController()
     
