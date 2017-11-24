@@ -173,7 +173,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 
     convenience init(mmdNode: MMDNode) {

@@ -32,11 +32,17 @@ float4 materialEmission = linearToSrgb(_surface.emission);
 float3 lightAmbient = linearToSrgb(_lightingContribution.ambient);
 float3 lightSpecular = linearToSrgb(_lightingContribution.specular);
 
-float3 lightDirection = -scn_lights.direction0.xyz;
+/*
+#ifdef USE_PER_PIXEL_LIGHTING
+    float3 lightDirection = -scn_lights.direction0.xyz;
+#else
+    float3 lightDirection = float3(0, 1, 0);
+#endif
+*/
+float3 lightDirection = float3(0, 1, 0);
 
 // light direction in view space
 float3 lightDir = normalize((scn_frame.viewTransform * float4(lightDirection, 0)).xyz);
-
 //float4 diffuseColor = materialDiffuse * float4(lightDiffuse, 1.0);
 float4 diffuseColor = float4(0, 0, 0, 1);
 // This is not typo; use materialDiffuse for ambientColor.
@@ -72,13 +78,11 @@ if(useSphereMap > 0){
 
 
 
-//float3 halfVector = normalize(normalize(_surface.view) - normalize(lightDir));
-//float3 specular = pow(max(0.0, dot(halfVector, n)), _surface.shininess) * specularColor;
+float3 halfVector = normalize(normalize(_surface.view) - normalize(lightDir));
+float3 specular = pow(max(0.0, dot(halfVector, n)), _surface.shininess) * specularColor;
 
-float4 lightScreen = scn_lights.shadowMatrix0 * float4(_surface.position, 1);
-float shadow = 1.0 - shadow2DProj(u_shadowTexture0, lightScreen);
-
-
+//float4 lightScreen = scn_lights.shadowMatrix0 * float4(_surface.position, 1);
+//float shadow = 1.0 - shadow2DProj(u_shadowTexture0, lightScreen);
 
 if(useTexture > 0){
     _output.color *= u_multiplyTexture.sample(u_multiplyTextureSampler, _surface.multiplyTexcoord);
@@ -99,7 +103,8 @@ if(useToon > 0){
     float lightNormal = dot(n, -lightDir);
     _output.color *= u_transparentTexture.sample(u_transparentTextureSampler, float2(0, 0.5 + lightNormal * 0.5));
 }
-_output.color.rgb += specularColor.rgb;
+//_output.color.rgb += specularColor.rgb;
+//_output.color.rgb += specular;
 
 // needs to multiply the alpha value when it uses "#pragma transparent"
 _output.color.rgb *= _output.color.a;
