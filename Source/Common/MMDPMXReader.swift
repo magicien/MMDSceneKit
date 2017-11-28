@@ -485,8 +485,8 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
                 material.specular.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-                material.emission.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                material.ambient.contents = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                material.emission.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())

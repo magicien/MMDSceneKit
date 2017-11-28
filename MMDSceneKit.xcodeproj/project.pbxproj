@@ -400,10 +400,10 @@
 		DD12BFD51C1AB78000B20F37 /* MMDSceneKitSample_macOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMDSceneKitSample_macOSTests.swift; sourceTree = "<group>"; };
 		DD12BFD71C1AB78000B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD12BFE21C1AB85800B20F37 /* MMDSceneKitSample_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MMDSceneKitSample_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD12BFE41C1AB85800B20F37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../macOS/AppDelegate.swift; sourceTree = "<group>"; };
-		DD12BFE61C1AB85800B20F37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameView.swift; path = ../macOS/GameView.swift; sourceTree = "<group>"; };
-		DD12BFE81C1AB85800B20F37 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GameViewController.swift; path = ../macOS/GameViewController.swift; sourceTree = "<group>"; };
-		DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../macOS/Assets.xcassets; sourceTree = "<group>"; };
+		DD12BFE41C1AB85800B20F37 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DD12BFE61C1AB85800B20F37 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		DD12BFE81C1AB85800B20F37 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		DD12BFEC1C1AB85800B20F37 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DD12BFEF1C1AB85800B20F37 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		DD12BFF11C1AB85800B20F37 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD12BFF61C1AB85800B20F37 /* MMDSceneKitSample_macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MMDSceneKitSample_macOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -631,7 +631,7 @@
 				DD33143D1D39CB630027FCA9 /* tvOS */,
 				DD33131A1D39BF400027FCA9 /* watchOS */,
 				DD12C0051C1ABA2200B20F37 /* Tests */,
-				DD12BFB41C1839EE00B20F37 /* Sample */,
+				DD12BFB41C1839EE00B20F37 /* Sample_swift */,
 				DD43F5481FCDF6170047CFDF /* Sample_objc */,
 				DD12BEFA1C18359600B20F37 /* Products */,
 				DD948A8B1FBCDBA00084B88D /* Frameworks */,
@@ -730,7 +730,7 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		DD12BFB41C1839EE00B20F37 /* Sample */ = {
+		DD12BFB41C1839EE00B20F37 /* Sample_swift */ = {
 			isa = PBXGroup;
 			children = (
 				DD12C0031C1AB92000B20F37 /* Common */,
@@ -740,7 +740,7 @@
 				DDBFF9721DD3A81400E4CE78 /* watchOS */,
 				DD12C0061C1ABA6B00B20F37 /* Tests */,
 			);
-			path = Sample;
+			path = Sample_swift;
 			sourceTree = "<group>";
 		};
 		DD12BFBD1C1AB78000B20F37 /* iOS */ = {
@@ -889,6 +889,7 @@
 			children = (
 				DD43F5491FCDF62C0047CFDF /* Common */,
 				DD948A571FBCD2BE0084B88D /* macOS */,
+				DD43F54A1FCDF9820047CFDF /* Tests */,
 			);
 			path = Sample_objc;
 			sourceTree = "<group>";
@@ -900,6 +901,21 @@
 				DD948A881FBCD8790084B88D /* MMDSceneViewController.m */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		DD43F54A1FCDF9820047CFDF /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				DD43F54B1FCDF9BA0047CFDF /* macOS */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		DD43F54B1FCDF9BA0047CFDF /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		DD6296DB1C2D14F600707364 /* Shader */ = {
@@ -958,9 +974,8 @@
 				DDBFF9881DD3A81500E4CE78 /* Assets.xcassets */,
 				DDBFF98A1DD3A81500E4CE78 /* Info.plist */,
 			);
-			name = Extension;
-			path = Sample/watchOS/Extension;
-			sourceTree = SOURCE_ROOT;
+			path = Extension;
+			sourceTree = "<group>";
 		};
 		DDCF5C9E1DD4F8040037BD66 /* UITests */ = {
 			isa = PBXGroup;
@@ -1394,7 +1409,6 @@
 					};
 					DD12BFBB1C1AB78000B20F37 = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = EF37D6UQZ9;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -2096,7 +2110,6 @@
 				DD12BFEF1C1AB85800B20F37 /* Base */,
 			);
 			name = MainMenu.xib;
-			path = ../macOS;
 			sourceTree = "<group>";
 		};
 		DD948A621FBCD2BE0084B88D /* Main.storyboard */ = {
@@ -2406,13 +2419,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
@@ -2425,12 +2440,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: OHNO YUUKI (7S54TRHWB3)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
@@ -2476,7 +2493,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/macOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS";
@@ -2493,7 +2510,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/macOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS";
@@ -2771,7 +2788,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/watchOS/Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -2793,7 +2810,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Extension/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/watchOS/Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -2819,7 +2836,7 @@
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/watchOS/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -2844,7 +2861,7 @@
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				IBSC_MODULE = MMDSceneKitSample_watchOS_Extension;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/watchOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/watchOS/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-iOS.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
