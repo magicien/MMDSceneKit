@@ -344,6 +344,7 @@ class MMDPMDReader: MMDReader {
                 material.specular.contents = mmdSpecular
                 material.emission.contents = mmdAmbient
                 material.diffuse.contents = mmdDiffuse
+                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
                 
             #endif
             
@@ -408,6 +409,7 @@ class MMDPMDReader: MMDReader {
                 }else if sphereFile.hasSuffix(".sph") {
                     material.setValue(0.0, forKey: "spadd")
                 }else{
+                    print("unknown sphere file extension: \(sphereFile)")
                     // unknown
                     material.setValue(0.0, forKey: "spadd")
                 }

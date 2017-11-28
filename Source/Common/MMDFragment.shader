@@ -26,11 +26,27 @@ float spadd;
 
 #pragma body
 
+/*
 float4 materialDiffuse = linearToSrgb(_surface.diffuse);
 float4 materialSpecular = linearToSrgb(_surface.specular);
 float4 materialEmission = linearToSrgb(_surface.emission);
 float3 lightAmbient = linearToSrgb(_lightingContribution.ambient);
+float3 lightDiffuse = linearToSrgb(_lightingContribution.diffuse);
 float3 lightSpecular = linearToSrgb(_lightingContribution.specular);
+*/
+float4 materialDiffuse = _surface.diffuse;
+float4 materialSpecular = _surface.specular;
+float4 materialEmission = _surface.emission;
+float3 lightAmbient = saturate(_lightingContribution.ambient);
+float3 lightDiffuse = saturate(_lightingContribution.diffuse);
+float3 lightSpecular = saturate(_lightingContribution.specular);
+
+// workaround for a doubleSided bug
+#ifdef USE_DOUBLE_SIDED
+    if(_surface.normal.z < 0){
+        _surface.normal *= -1.0;
+    }
+#endif
 
 /*
 #ifdef USE_PER_PIXEL_LIGHTING
@@ -46,7 +62,7 @@ float3 lightDir = normalize((scn_frame.viewTransform * float4(lightDirection, 0)
 //float4 diffuseColor = materialDiffuse * float4(lightDiffuse, 1.0);
 float4 diffuseColor = float4(0, 0, 0, 1);
 // This is not typo; use materialDiffuse for ambientColor.
-float3 ambientColor = materialDiffuse.rgb * lightAmbient.rgb + materialEmission.rgb;
+float3 ambientColor = materialDiffuse.rgb * lightDiffuse.rgb + materialEmission.rgb;
 float3 specularColor = materialSpecular.rgb * lightSpecular.rgb;
 
 float3 n = normalize(_surface.normal);
@@ -68,7 +84,7 @@ if(useSphereMap > 0){
         spTex = _surface.specularTexcoord;
     }else{
         spTex.x = n.x * 0.5 + 0.5;
-        spTex.y = n.y * 0.5 + 0.5;
+        spTex.y = -n.y * 0.5 + 0.5;
     }
 }
 
@@ -89,8 +105,7 @@ if(useTexture > 0){
 }
 
 if(useSphereMap > 0){
-    // use transparentTextureSampler instead of reflectiveTextureSampler (cubeMap)
-    float4 texColor = u_reflectiveTexture.sample(u_transparentTextureSampler, spTex);
+    float4 texColor = u_reflectiveTexture.sample(u_reflectiveTextureSampler, spTex);
     if(spadd){
         _output.color.rgb += texColor.rgb;
     }else{
@@ -109,6 +124,6 @@ if(useToon > 0){
 // needs to multiply the alpha value when it uses "#pragma transparent"
 _output.color.rgb *= _output.color.a;
 
-_output.color = srgbToLinear(_output.color);
+//_output.color = srgbToLinear(_output.color);
 
 //_output.color = float4(shadow, shadow, shadow, 1.0);

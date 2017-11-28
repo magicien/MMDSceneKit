@@ -632,7 +632,7 @@
 				DD33131A1D39BF400027FCA9 /* watchOS */,
 				DD12C0051C1ABA2200B20F37 /* Tests */,
 				DD12BFB41C1839EE00B20F37 /* Sample */,
-				DD948A571FBCD2BE0084B88D /* MMDSceneKitSample_macOS_ObjC */,
+				DD43F5481FCDF6170047CFDF /* Sample_objc */,
 				DD12BEFA1C18359600B20F37 /* Products */,
 				DD948A8B1FBCDBA00084B88D /* Frameworks */,
 			);
@@ -884,6 +884,24 @@
 			path = tvOS;
 			sourceTree = "<group>";
 		};
+		DD43F5481FCDF6170047CFDF /* Sample_objc */ = {
+			isa = PBXGroup;
+			children = (
+				DD43F5491FCDF62C0047CFDF /* Common */,
+				DD948A571FBCD2BE0084B88D /* macOS */,
+			);
+			path = Sample_objc;
+			sourceTree = "<group>";
+		};
+		DD43F5491FCDF62C0047CFDF /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				DD948A8A1FBCD8910084B88D /* MMDSceneViewController.h */,
+				DD948A881FBCD8790084B88D /* MMDSceneViewController.m */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		DD6296DB1C2D14F600707364 /* Shader */ = {
 			isa = PBXGroup;
 			children = (
@@ -896,11 +914,9 @@
 			name = Shader;
 			sourceTree = "<group>";
 		};
-		DD948A571FBCD2BE0084B88D /* MMDSceneKitSample_macOS_ObjC */ = {
+		DD948A571FBCD2BE0084B88D /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				DD948A8A1FBCD8910084B88D /* MMDSceneViewController.h */,
-				DD948A881FBCD8790084B88D /* MMDSceneViewController.m */,
 				DD948A581FBCD2BE0084B88D /* AppDelegate.h */,
 				DD948A591FBCD2BE0084B88D /* AppDelegate.m */,
 				DD948A951FBCE1730084B88D /* GameView.h */,
@@ -913,7 +929,7 @@
 				DD948A661FBCD2BE0084B88D /* main.m */,
 				DD948A681FBCD2BE0084B88D /* MMDSceneKitSample_macOS_ObjC.entitlements */,
 			);
-			path = MMDSceneKitSample_macOS_ObjC;
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		DD948A8B1FBCDBA00084B88D /* Frameworks */ = {
@@ -1352,7 +1368,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = DarkHorse;
 				TargetAttributes = {
 					DD12BF751C1838D700B20F37 = {
@@ -2220,7 +2236,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
@@ -2246,7 +2262,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
@@ -2588,17 +2604,17 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = MMDSceneKitSample_macOS_ObjC/MMDSceneKitSample_macOS_ObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = MMDSceneKitSample_macOS_ObjC/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_objc/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -2613,17 +2629,17 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = MMDSceneKitSample_macOS_ObjC/MMDSceneKitSample_macOS_ObjC.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = MMDSceneKitSample_macOS_ObjC/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_objc/macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.0spec.MMDSceneKitSample-macOS-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 			};
 			name = Release;

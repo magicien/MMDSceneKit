@@ -445,9 +445,9 @@ class MMDPMXReader: MMDReader {
         
         for _ in 0..<self.textureCount {
             let textureFile = getTextBuffer()
-            let fileName = (self.directoryPath as NSString).appendingPathComponent(String(textureFile))
+            let fileName = (self.directoryPath as NSString).appendingPathComponent(String(textureFile)).replacingOccurrences(of: "\\", with: "/")
 
-            print("***** textureName: \(textureFile) *****")
+            print("***** textureName: \(textureFile) => \(fileName) *****")
             
             #if os(iOS) || os(tvOS) || os(watchOS)
                 var image = UIImage(contentsOfFile: fileName as String)
@@ -485,7 +485,8 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
                 material.specular.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 material.shininess = CGFloat(getFloat())
-                material.ambient.contents = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                material.emission.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = UIColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
@@ -495,7 +496,8 @@ class MMDPMXReader: MMDReader {
                 material.diffuse.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
                 material.specular.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 material.shininess = getCGFloat()
-                material.ambient.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
+                material.ambient.contents = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+                material.emission.contents = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: 1.0)
                 
                 let bitFlag = getUnsignedByte()
                 let edgeColor = NSColor(red: getCGFloat(), green: getCGFloat(), blue: getCGFloat(), alpha: getCGFloat())
@@ -523,14 +525,23 @@ class MMDPMXReader: MMDReader {
             if textureNo < self.textureArray.count {
                 let texture = self.textureArray[textureNo]
                 material.multiply.contents = texture
+                material.multiply.wrapS = .repeat
+                material.multiply.wrapT = .repeat
+                material.setValue(1.0, forKey: "useTexture")
+            } else {
+                material.setValue(0.0, forKey: "useTexture")
             }
             
             if toonFlag == 0 {
                 // use own texture
                 let toonTextureNo = getIntOfLength(self.textureIndexSize)
-                let toonTexture = self.textureArray[toonTextureNo]
-                material.transparent.contents = toonTexture
-                material.setValue(true, forKey: "useToon")
+                if toonTextureNo < self.textureArray.count {
+                    let toonTexture = self.textureArray[toonTextureNo]
+                    material.transparent.contents = toonTexture
+                    material.setValue(1.0, forKey: "useToon")
+                } else {
+                    material.setValue(0.0, forKey: "useToon")
+                }
             } else if toonFlag == 1 {
                 // use shared texture
                 let toonTextureNo = Int(getUnsignedByte())
@@ -538,10 +549,10 @@ class MMDPMXReader: MMDReader {
                 // let toonTexture = self.toonTextureArray[toonTextureNo]
                 // material.multiply.contents = toonTextureNo
                 // material.setValue(true, forKey: "useToon")
-                material.setValue(false, forKey: "useToon")
+                material.setValue(0.0, forKey: "useToon")
             } else {
                 // unknown flag
-                material.setValue(false, forKey: "useToon")
+                material.setValue(0.0, forKey: "useToon")
             }
             
             if noCulling {
@@ -551,39 +562,40 @@ class MMDPMXReader: MMDReader {
             }
             
             if sphereTextureNo >= 255 {
-                material.setValue(false, forKey: "useSphereMap")
-                material.setValue(false, forKey: "spadd")
-                material.setValue(false, forKey: "useSubtexture")
+                material.setValue(0.0, forKey: "useSphereMap")
+                material.setValue(0.0, forKey: "spadd")
+                material.setValue(0.0, forKey: "useSubtexture")
             } else {
                 let sphereTexture = self.textureArray[sphereTextureNo]
+                print("sphereMode: \(sphereMode)")
                 if sphereMode == 0 {
                     // disable
-                    material.setValue(false, forKey: "useSphereMap")
-                    material.setValue(false, forKey: "spadd")
-                    material.setValue(false, forKey: "useSubtexture")
+                    material.setValue(0.0, forKey: "useSphereMap")
+                    material.setValue(0.0, forKey: "spadd")
+                    material.setValue(0.0, forKey: "useSubtexture")
                 }else if sphereMode == 1 {
-                    // additive
-                    material.setValue(true, forKey: "useSphereMap")
-                    material.setValue(true, forKey: "spadd")
-                    material.setValue(false, forKey: "useSubtexture")
+                    // multiplicative
+                    material.setValue(1.0, forKey: "useSphereMap")
+                    material.setValue(0.0, forKey: "spadd")
+                    material.setValue(0.0, forKey: "useSubtexture")
                     material.reflective.contents = sphereTexture
                 }else if sphereMode == 2 {
-                    // multiplicative
-                    material.setValue(true, forKey: "useSphereMap")
-                    material.setValue(false, forKey: "spadd")
-                    material.setValue(false, forKey: "useSubtexture")
+                    // additive
+                    material.setValue(1.0, forKey: "useSphereMap")
+                    material.setValue(1.0, forKey: "spadd")
+                    material.setValue(0.0, forKey: "useSubtexture")
                     material.reflective.contents = sphereTexture
                 }else if sphereMode == 3 {
                     // subtexture
-                    material.setValue(true, forKey: "useSpehreMap")
-                    material.setValue(true, forKey: "spadd")
-                    material.setValue(false, forKey: "useSubtexture")
+                    material.setValue(1.0, forKey: "useSpehreMap")
+                    material.setValue(1.0, forKey: "spadd")
+                    material.setValue(0.0, forKey: "useSubtexture")
                     material.reflective.contents = sphereTexture
                 }else{
                     // unknown
-                    material.setValue(false, forKey: "useSphereMap")
-                    material.setValue(false, forKey: "spadd")
-                    material.setValue(false, forKey: "useSubtexture")
+                    material.setValue(0.0, forKey: "useSphereMap")
+                    material.setValue(0.0, forKey: "spadd")
+                    material.setValue(0.0, forKey: "useSubtexture")
                 }
             }
             
@@ -594,8 +606,10 @@ class MMDPMXReader: MMDReader {
             var shape: SCNGeometryPrimitiveType = .triangles
             if drawPoint {
                 shape = .point
+                print("drawPoint")
             } else if drawLine {
                 shape = .line
+                print("drawLine")
             } else {
                 shape = .triangles
             }
