@@ -1712,7 +1712,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/watchOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/watchOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -RP $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
 		};
 		DD97A4911C1E294300127FC5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1725,7 +1725,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"${SRCROOT}/Framework/macOS\"\n\nif [ ! -d \"${DESTINATION_DIR}\" ]; then\n    mkdir -p ${DESTINATION_DIR}\nfi\ncp -r ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME} ${DESTINATION_DIR}\n";
+			shellScript = "DESTINATION_DIR=\"${SRCROOT}/Framework/macOS\"\n\nif [ ! -d \"${DESTINATION_DIR}\" ]; then\n    mkdir -p ${DESTINATION_DIR}\nfi\ncp -RP ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME} ${DESTINATION_DIR}\n";
 		};
 		DDA5571B1DD3CA0900592E12 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1738,7 +1738,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Merge Script\n# original from http://code.hootsuite.com/an-introduction-to-creating-and-distributing-embedded-frameworks-in-ios/\n\n# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Setup some constants for use later on.\nFRAMEWORK_NAME=\"MMDSceneKit\"\nMACOS_FRAMEWORK_NAME=\"MMDSceneKit_macOS\"\nIOS_FRAMEWORK_NAME=\"MMDSceneKit_iOS\"\nTVOS_FRAMEWORK_NAME=\"MMDSceneKit_tvOS\"\nWATCHOS_FRAMEWORK_NAME=\"MMDSceneKit_watchOS\"\nCONF=\"Release\"\n\nBASE_DIR=\"${SRCROOT}/build\"\nMACOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}/${MACOS_FRAMEWORK_NAME}.framework\"\nIOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-iphoneos/${IOS_FRAMEWORK_NAME}.framework\"\nIOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-iphonesimulator/${IOS_FRAMEWORK_NAME}.framework\"\nTVOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-appletvos/${TVOS_FRAMEWORK_NAME}.framework\"\nTVOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-appletvsimulator/${TVOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-watchos/${WATCHOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-watchsimulator/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\nMACOS_BIN_PATH=\"${MACOS_FRAMEWORK_PATH}/${MACOS_FRAMEWORK_NAME}\"\nIOS_BIN_PATH=\"${IOS_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nIOS_SIM_BIN_PATH=\"${IOS_SIM_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nTVOS_BIN_PATH=\"${TVOS_FRAMEWORK_PATH}/${TVOS_FRAMEWORK_NAME}\"\nTVOS_SIM_BIN_PATH=\"${TVOS_SIM_FRAMEWORK_PATH}/${TVOS_FRAMEWORK_NAME}\"\nWATCHOS_BIN_PATH=\"${WATCHOS_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\nWATCHOS_SIM_BIN_PATH=\"${WATCHOS_SIM_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\n\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi\n\n# 4\n# Build the framework for device and for simulator (using\n# all needed architectures).\n\n# macOS\n#xcodebuild -target \"${MACOS_FRAMEWORK_NAME}\" -configuration Release -arch x86_64 only_active_arch=no defines_module=yes -sdk \"macosx\"\n\n# iOS\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch arm64 -arch armv7 -arch armv7s only_active_arch=no defines_module=yes -sdk \"iphoneos\"\n\n# iOS Simulator\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\n\n# tvOS\nxcodebuild -target \"${TVOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch arm64 only_active_arch=no defines_module=yes -sdk \"appletvos\"\n\n# tvOS Simulator\nxcodebuild -target \"${TVOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 only_active_arch=no defines_module=yes -sdk \"appletvsimulator\"\n\n# watchOS\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch armv7k only_active_arch=no defines_module=yes -sdk \"watchos\"\n\n# watchOS Simulator\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch i386 only_active_arch=no defines_module=yes -sdk \"watchsimulator\"\n\n# 5\n# Remove .framework file if exists on Desktop from previous run.\nFAT_DIR=\"$SRCROOT/Framework/FAT\"\n\nif [ -d \"${FAT_DIR}\" ]; then\n    rm -rf \"${FAT_DIR}\"\nfi\nmkdir -p ${FAT_DIR}\n\n# 6\n# Copy the device version of framework to FAT directory.\n\n# macOS: just copy\n#cp -r \"${MACOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${FRAMEWORK_NAME}.framework\"\n\n# iOS\ncp -r \"${IOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework\"\n\n# tvOS\ncp -r \"${TVOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework\"\n\n# watchOS\ncp -r \"${WATCHOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\n# 7\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator\n# frameworks' executables with lipo.\n\n# iOS FAT\nlipo -create -output \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/${IOS_FRAMEWORK_NAME}\" \"${IOS_BIN_PATH}\" \"${IOS_SIM_BIN_PATH}\"\n\n# tvOS FAT\nlipo -create -output \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework/${TVOS_FRAMEWORK_NAME}\" \"${TVOS_BIN_PATH}\" \"${TVOS_SIM_BIN_PATH}\"\n\n# watchOS FAT\nlipo -create -output \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/${WATCHOS_FRAMEWORK_NAME}\" \"${WATCHOS_BIN_PATH}\" \"${WATCHOS_SIM_BIN_PATH}\"\n\n# 8\n# Copy the Swift module mappings for the simulator into the\n# framework.  The device mappings already exist from step 6.\n\n# iOS FAT\ncp -r \"${IOS_SIM_FRAMEWORK_PATH}/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# tvOS FAT\ncp -r \"${TVOS_SIM_FRAMEWORK_PATH}/Modules/${TVOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework/Modules/${TVOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# watchOS FAT\ncp -r \"${WATCHOS_SIM_FRAMEWORK_PATH}/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# 9\n# Delete the most recent build.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi\n";
+			shellScript = "# Merge Script\n# original from http://code.hootsuite.com/an-introduction-to-creating-and-distributing-embedded-frameworks-in-ios/\n\n# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Setup some constants for use later on.\nFRAMEWORK_NAME=\"MMDSceneKit\"\nMACOS_FRAMEWORK_NAME=\"MMDSceneKit_macOS\"\nIOS_FRAMEWORK_NAME=\"MMDSceneKit_iOS\"\nTVOS_FRAMEWORK_NAME=\"MMDSceneKit_tvOS\"\nWATCHOS_FRAMEWORK_NAME=\"MMDSceneKit_watchOS\"\nCONF=\"Release\"\n\nBASE_DIR=\"${SRCROOT}/build\"\nMACOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}/${MACOS_FRAMEWORK_NAME}.framework\"\nIOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-iphoneos/${IOS_FRAMEWORK_NAME}.framework\"\nIOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-iphonesimulator/${IOS_FRAMEWORK_NAME}.framework\"\nTVOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-appletvos/${TVOS_FRAMEWORK_NAME}.framework\"\nTVOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-appletvsimulator/${TVOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-watchos/${WATCHOS_FRAMEWORK_NAME}.framework\"\nWATCHOS_SIM_FRAMEWORK_PATH=\"${BASE_DIR}/${CONF}-watchsimulator/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\nMACOS_BIN_PATH=\"${MACOS_FRAMEWORK_PATH}/${MACOS_FRAMEWORK_NAME}\"\nIOS_BIN_PATH=\"${IOS_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nIOS_SIM_BIN_PATH=\"${IOS_SIM_FRAMEWORK_PATH}/${IOS_FRAMEWORK_NAME}\"\nTVOS_BIN_PATH=\"${TVOS_FRAMEWORK_PATH}/${TVOS_FRAMEWORK_NAME}\"\nTVOS_SIM_BIN_PATH=\"${TVOS_SIM_FRAMEWORK_PATH}/${TVOS_FRAMEWORK_NAME}\"\nWATCHOS_BIN_PATH=\"${WATCHOS_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\nWATCHOS_SIM_BIN_PATH=\"${WATCHOS_SIM_FRAMEWORK_PATH}/${WATCHOS_FRAMEWORK_NAME}\"\n\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi\n\n# 4\n# Build the framework for device and for simulator (using\n# all needed architectures).\n\n# macOS\nxcodebuild -target \"${MACOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 only_active_arch=no defines_module=yes -sdk \"macosx\"\n\n# iOS\n#xcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch arm64 -arch armv7 -arch armv7s only_active_arch=no defines_module=yes -sdk \"iphoneos\"\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch arm64 only_active_arch=no defines_module=yes -sdk \"iphoneos\"\n\n# iOS Simulator\n#xcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\nxcodebuild -target \"${IOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\n\n# tvOS\nxcodebuild -target \"${TVOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch arm64 only_active_arch=no defines_module=yes -sdk \"appletvos\"\n\n# tvOS Simulator\nxcodebuild -target \"${TVOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch x86_64 only_active_arch=no defines_module=yes -sdk \"appletvsimulator\"\n\n# watchOS\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch armv7k only_active_arch=no defines_module=yes -sdk \"watchos\"\n\n# watchOS Simulator\nxcodebuild -target \"${WATCHOS_FRAMEWORK_NAME}\" -configuration \"${CONF}\" -arch i386 only_active_arch=no defines_module=yes -sdk \"watchsimulator\"\n\n# 5\n# Remove .framework file if exists on Desktop from previous run.\nFAT_DIR=\"$SRCROOT/Framework/FAT\"\n\nif [ -d \"${FAT_DIR}\" ]; then\n    rm -rf \"${FAT_DIR}\"\nfi\nmkdir -p ${FAT_DIR}\n\n# 6\n# Copy the device version of framework to FAT directory.\n\n# macOS: just copy\ncp -RP \"${MACOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${FRAMEWORK_NAME}.framework\"\n\n# iOS\ncp -RP \"${IOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework\"\n\n# tvOS\ncp -RP \"${TVOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework\"\n\n# watchOS\ncp -RP \"${WATCHOS_FRAMEWORK_PATH}\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework\"\n\n# 7\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator\n# frameworks' executables with lipo.\n\n# iOS FAT\nlipo -create -output \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/${IOS_FRAMEWORK_NAME}\" \"${IOS_BIN_PATH}\" \"${IOS_SIM_BIN_PATH}\"\n\n# tvOS FAT\nlipo -create -output \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework/${TVOS_FRAMEWORK_NAME}\" \"${TVOS_BIN_PATH}\" \"${TVOS_SIM_BIN_PATH}\"\n\n# watchOS FAT\nlipo -create -output \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/${WATCHOS_FRAMEWORK_NAME}\" \"${WATCHOS_BIN_PATH}\" \"${WATCHOS_SIM_BIN_PATH}\"\n\n# 8\n# Copy the Swift module mappings for the simulator into the\n# framework.  The device mappings already exist from step 6.\n\n# iOS FAT\ncp -RP \"${IOS_SIM_FRAMEWORK_PATH}/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${IOS_FRAMEWORK_NAME}.framework/Modules/${IOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# tvOS FAT\ncp -RP \"${TVOS_SIM_FRAMEWORK_PATH}/Modules/${TVOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${TVOS_FRAMEWORK_NAME}.framework/Modules/${TVOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# watchOS FAT\ncp -RP \"${WATCHOS_SIM_FRAMEWORK_PATH}/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule/\" \"${FAT_DIR}/${WATCHOS_FRAMEWORK_NAME}.framework/Modules/${WATCHOS_FRAMEWORK_NAME}.swiftmodule\"\n\n# 9\n# Delete the most recent build.\nif [ -d \"${BASE_DIR}\" ]; then\n    rm -rf \"${BASE_DIR}\"\nfi\n";
 		};
 		DDAE3ACD1C1D4E150014F375 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1751,7 +1751,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/iOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/iOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -RP $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
 		};
 		DDCF5CBC1DD4FD190037BD66 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1764,7 +1764,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/tvOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\nmkdir -p $DESTINATION_DIR\nfi\ncp -r $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/tvOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -RP $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2895,7 +2895,7 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Debug;
 		};
@@ -2921,7 +2921,7 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 10.0;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Release;
 		};
@@ -2976,7 +2976,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/tvOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKitSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3001,7 +3001,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEVELOPMENT_TEAM = EF37D6UQZ9;
-				INFOPLIST_FILE = "$(SRCROOT)/Sample/tvOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Sample_swift/tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKitSample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
