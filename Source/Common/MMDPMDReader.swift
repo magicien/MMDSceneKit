@@ -119,6 +119,8 @@ class MMDPMDReader: MMDReader {
     // MARK: physics body data
     fileprivate var physicsBodyCount = 0
     fileprivate var physicsBodyArray: [SCNPhysicsBody]! = nil
+    fileprivate var physicsBodyBoneMap: [SCNPhysicsBody: SCNNode]! = nil
+    fileprivate var physicsBodyNames: [String]! = nil
     
     // MARK: geometry data
     fileprivate var vertexSource: SCNGeometrySource! = nil
@@ -177,6 +179,8 @@ class MMDPMDReader: MMDReader {
         
         self.physicsBodyCount = 0
         self.physicsBodyArray = [SCNPhysicsBody]()
+        self.physicsBodyBoneMap = [:]
+        self.physicsBodyNames = [String]()
         
         self.faceCount = 0
         self.faceIndexArray = [Int]()
@@ -794,7 +798,7 @@ class MMDPMDReader: MMDReader {
         self.physicsBodyCount = Int(getUnsignedInt())
         let gravity = SCNPhysicsField()
         
-        for _ in 0..<self.physicsBodyCount {
+        for i in 0..<self.physicsBodyCount {
             let name = getString(length: 20)!
             let boneIndex = Int(getUnsignedShort())
             let groupIndex = Int(getUnsignedByte())
@@ -806,9 +810,9 @@ class MMDPMDReader: MMDReader {
             let posX = CGFloat(getFloat())
             let posY = CGFloat(getFloat())
             let posZ = CGFloat(-getFloat())
-            let rotX = CGFloat(getFloat())
-            let rotY = CGFloat(getFloat())
-            let rotZ = CGFloat(-getFloat())
+            let rotX = CGFloat(-getFloat())
+            let rotY = CGFloat(-getFloat())
+            let rotZ = CGFloat(getFloat())
             let weight = CGFloat(getFloat())
             let positionDim = CGFloat(getFloat())
             let rotateDim = CGFloat(getFloat())
@@ -824,7 +828,7 @@ class MMDPMDReader: MMDReader {
             } else if type == 2 {
                 bodyType = SCNPhysicsBodyType.dynamic
             }
-            bodyType = SCNPhysicsBodyType.kinematic // for debug
+            //bodyType = SCNPhysicsBodyType.kinematic // for debug
             
             var shape: SCNGeometry! = nil
             if shapeType == 0 {
@@ -837,8 +841,35 @@ class MMDPMDReader: MMDReader {
                 print("unknown physics body shape: \(shapeType)")
             }
             
+            var bone: MMDNode
+            if boneIndex != 0xFFFF {
+                bone = self.boneArray[boneIndex]
+            } else {
+                bone = self.boneArray[0]
+                //bone = MMDNode()
+            }
+
+            var worldTransform = SCNMatrix4MakeTranslation(posX, posY, posZ)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, rotZ, 0, 0, 1)
             
-            let body = SCNPhysicsBody(type: bodyType, shape: SCNPhysicsShape(geometry: shape, options: nil))
+            //let invBoneTransform = SCNMatrix4Invert(bone.worldTransform)
+            //let physicsTransform = SCNMatrix4Mult(worldTransform, invBoneTransform)
+            //let transformValue = NSValue(scnMatrix4: physicsTransform)
+            let transformValue = NSValue(scnMatrix4: worldTransform)
+            
+            let physicsShape = SCNPhysicsShape(geometry: shape, options: nil)
+            var transformedShape = SCNPhysicsShape(shapes: [physicsShape], transforms: [transformValue])
+            
+            if let currentBody = bone.physicsBody {
+                let identity = NSValue(scnMatrix4: SCNMatrix4Identity)
+                transformedShape = SCNPhysicsShape(shapes: [currentBody.physicsShape!, transformedShape], transforms: [identity, identity])
+            }
+            
+            let body = SCNPhysicsBody(type: bodyType, shape: transformedShape)
+            
+            //let body = SCNPhysicsBody(type: bodyType, shape: SCNPhysicsShape(geometry: shape, options: nil))
             
             body.isAffectedByGravity = true
             body.mass = weight
@@ -849,18 +880,21 @@ class MMDPMDReader: MMDReader {
             body.usesDefaultMomentOfInertia = true
             
             if boneIndex != 0xFFFF {
-                let bone = self.boneArray[boneIndex]
                 bone.physicsBody = body
-                //print("physicsBody: \(name) -> \(bone.name!), (\(dx), \(dy), \(dz))")
+                print("physicsBody[\(i)]: type \(type), \(name) -> \(bone.name!), (\(dx), \(dy), \(dz))")
             }else{
-                //print("physicsBody: \(name) -> nil")
+                print("physicsBody[\(i)]: type \(type), \(name) -> nil")
             }
             
             self.physicsBodyArray.append(body)
+            self.physicsBodyBoneMap[body] = bone
+            self.physicsBodyNames.append(name as String)
         }
     }
     
     fileprivate func readConstraint() {
+        self.workingNode.joints = []
+        
         let constraintCount = getUnsignedInt()
         
         for _ in 0..<constraintCount {
@@ -868,28 +902,38 @@ class MMDPMDReader: MMDReader {
             let bodyANo = Int(getUnsignedInt())
             let bodyBNo = Int(getUnsignedInt())
             
-            let bodyA = self.physicsBodyArray[bodyANo]
-            let bodyB = self.physicsBodyArray[bodyBNo]
-            
+            let orgBodyA = self.physicsBodyArray[bodyANo]
+            let orgBodyB = self.physicsBodyArray[bodyBNo]
+            let bodyAName = self.physicsBodyNames[bodyANo]
+            let bodyBName = self.physicsBodyNames[bodyBNo]
+
             print("===============")
-            print("name: \(String(describing: name)), bodyA: \(bodyANo), bodyB: \(bodyBNo)")
+            print("name: \(String(describing: name)), bodyA: \(bodyANo) (\(bodyAName)), bodyB: \(bodyBNo) (\(bodyBName))")
             
             let pos = SCNVector3(getFloat(), getFloat(), -getFloat())
-            let rot = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let rot = SCNVector3(-getFloat(), -getFloat(), getFloat())
             
             let pos1 = SCNVector3(getFloat(), getFloat(), -getFloat())
             let pos2 = SCNVector3(getFloat(), getFloat(), -getFloat())
             
-            let rot1 = SCNVector3(getFloat(), getFloat(), -getFloat())
-            let rot2 = SCNVector3(getFloat(), getFloat(), -getFloat())
+            let rot1 = SCNVector3(-getFloat(), -getFloat(), getFloat())
+            let rot2 = SCNVector3(-getFloat(), -getFloat(), getFloat())
             
             let spring_pos = SCNVector3(getFloat(), getFloat(), -getFloat())
-            let sprint_rot = SCNVector3(getFloat(), getFloat(), -getFloat())
-            
+            let sprint_rot = SCNVector3(-getFloat(), -getFloat(), getFloat())
+
+            guard let boneA = self.physicsBodyBoneMap[orgBodyA] else { continue }
+            guard let boneB = self.physicsBodyBoneMap[orgBodyB] else { continue }
+            guard let bodyA = boneA.physicsBody else { continue }
+            guard let bodyB = boneB.physicsBody else { continue }
+
             // FIXME: calc rotation
-            //let posA = SCNVector3(pos.x - bodyA.
-            
-            let constraint = SCNPhysicsBallSocketJoint(bodyA: bodyA, anchorA: pos1, bodyB: bodyB, anchorB: pos2)
+            let boneAPos = boneA.worldPosition
+            let boneBPos = boneB.worldPosition
+            let bodyAPos = SCNVector3(pos.x - boneAPos.x, pos.y - boneAPos.y, pos.z - boneAPos.z)
+            let bodyBPos = SCNVector3(pos.x - boneBPos.x, pos.y - boneBPos.y, pos.z - boneBPos.z)
+
+            let constraint = SCNPhysicsBallSocketJoint(bodyA: bodyA, anchorA: bodyAPos, bodyB: bodyB, anchorB: bodyBPos)
             
             print("pos: \(pos.x), \(pos.y), \(pos.z)")
             print("rot: \(rot.x), \(rot.y), \(rot.z)")
@@ -897,10 +941,10 @@ class MMDPMDReader: MMDReader {
             print("pos2: \(pos2.x), \(pos2.y), \(pos2.z)")
             print("rot1: \(rot1.x), \(rot1.y), \(rot1.z)")
             print("rot2: \(rot2.x), \(rot2.y), \(rot2.z)")
+            print("bodyAPos: \(bodyAPos.x), \(bodyAPos.y), \(bodyAPos.z)")
+            print("bodyBPos: \(bodyBPos.x), \(bodyBPos.y), \(bodyBPos.z)")
             
-            
-            // FIXME: 
-            //self.workingNode.physicsBehaviors.append(constraint)
+            self.workingNode.joints?.append(constraint)
         }
     }
     

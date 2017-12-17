@@ -51,7 +51,7 @@ private let MMDAnimationCompletionBlockKey = "MMDAnimationCompletionBlockKey"
 
 @objcMembers
 open class MMDNode: SCNNode, MMDNodeProgramDelegate {
-    open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
+    //open internal(set) var physicsBehaviors: [SCNPhysicsBehavior]! = []
     open internal(set) var type: MMDNodeType = .unknown
     open internal(set) var isKnee: Bool = false
     
@@ -265,7 +265,7 @@ open class MMDNode: SCNNode, MMDNodeProgramDelegate {
     
     func copyValues(_ node: MMDNode) {
         // FIXME: clone values
-        self.physicsBehaviors = node.physicsBehaviors // [SCNPhysicsBehavior]
+        //self.physicsBehaviors = node.physicsBehaviors // [SCNPhysicsBehavior]
         self.type = node.type
         self.isKnee = node.isKnee
         self.ikConstraint = node.ikConstraint // MMDIKConstraint

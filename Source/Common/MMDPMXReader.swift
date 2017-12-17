@@ -1363,7 +1363,7 @@ class MMDPMXReader: MMDReader {
                 print("type 2: dynamic")
                 bodyType = SCNPhysicsBodyType.dynamic
             }
-            bodyType = SCNPhysicsBodyType.kinematic // for debug
+            //bodyType = SCNPhysicsBodyType.kinematic // for debug
             
             var shape: SCNGeometry! = nil
             if shapeType == 0 {
@@ -1392,16 +1392,6 @@ class MMDPMXReader: MMDReader {
             } else {
                 bone = self.boneArray[0]
             }
-            
-            //var worldTransform = SCNMatrix4MakeRotation(rotY, 0, 1, 0)
-            //worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
-            //worldTransform = SCNMatrix4Rotate(worldTransform, rotZ, 0, 0, 1)
-            //worldTransform = SCNMatrix4Translate(worldTransform, posX, posY, posZ)
-            
-            //var worldTransform = SCNMatrix4MakeRotation(rotZ, 0, 0, 1)
-            //worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
-            //worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)
-            //worldTransform = SCNMatrix4Translate(worldTransform, posX, posY, posZ)
             
             var worldTransform = SCNMatrix4MakeTranslation(posX, posY, posZ)
             worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)

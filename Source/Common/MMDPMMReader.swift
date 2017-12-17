@@ -1973,6 +1973,8 @@ class MMDPMMReader: MMDReader {
             model.prepareAnimation(motion, forKey: "motion")
             model.playPreparedAnimation(forKey: "motion")
             self.workingScene.rootNode.addChildNode(model)
+            
+            model.addPhysicsBehavior(scene: self.workingScene)
         }
         
         // accessory

@@ -1725,7 +1725,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"${SRCROOT}/Framework/macOS\"\n\nif [ ! -d \"${DESTINATION_DIR}\" ]; then\n    mkdir -p ${DESTINATION_DIR}\nfi\ncp -RP ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME} ${DESTINATION_DIR}\n";
+			shellScript = "DESTINATION_DIR=\"${SRCROOT}/Framework/macOS\"\n\nif [ -e \"${DESTINATION_DIR}\" ]; then\n    rm -r ${DESTINATION_DIR}\nfi\nmkdir -p ${DESTINATION_DIR}\n\ncp -RP ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME} ${DESTINATION_DIR}\n";
 		};
 		DDA5571B1DD3CA0900592E12 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
