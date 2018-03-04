@@ -1,0 +1,207 @@
+
+/* Class = "UILabel"; text = "Model Size (in meters)"; ObjectID = "0cg-51-Kb5"; */
+"0cg-51-Kb5.text" = "Model Size (in meters)";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "1Om-Ad-UdG"; */
+"1Om-Ad-UdG.text" = "1.00";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "1qb-bF-fDo"; */
+"1qb-bF-fDo.text" = "1.00";
+
+/* Class = "UILabel"; text = "Volume"; ObjectID = "2hf-Ft-NeH"; */
+"2hf-Ft-NeH.text" = "Volume";
+
+/* Class = "UILabel"; text = "Motion Preview"; ObjectID = "2oO-2N-0o1"; Note = "MotionPreviewViewController title"; */
+"2oO-2N-0o1.text" = "Motion Preview";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "33h-qs-4b8"; */
+"33h-qs-4b8.text" = "0.00";
+
+/* Class = "UIButton"; normalTitle = "Close"; ObjectID = "34M-hc-vSd"; */
+"34M-hc-vSd.normalTitle" = "Close";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "3cd-rd-lxJ"; */
+"3cd-rd-lxJ.text" = "1.00";
+
+/* Class = "UILabel"; text = "Message"; ObjectID = "4Zi-mh-NNz"; */
+"4Zi-mh-NNz.text" = "Message";
+
+/* Class = "UIButton"; normalTitle = "Edit"; ObjectID = "57G-zT-Rgz"; Note = "AnimationSettingsViewController EditButton"; */
+"57G-zT-Rgz.normalTitle" = "Edit";
+
+/* Class = "UILabel"; text = "Coming Soon..."; ObjectID = "5Ad-Pv-QTJ"; Note = "MusicSettingsViewController message"; */
+"5Ad-Pv-QTJ.text" = "Coming Soon...";
+
+/* Class = "UIButton"; normalTitle = "Edit"; ObjectID = "5HD-R6-tHe"; Note = "FaceSettingsViewController EditButton"; */
+"5HD-R6-tHe.normalTitle" = "Edit";
+
+/* Class = "UIButton"; normalTitle = "Done"; ObjectID = "5Vl-gW-Lc8"; */
+"5Vl-gW-Lc8.normalTitle" = "Done";
+
+/* Class = "UILabel"; text = "Face Edit"; ObjectID = "5Yd-YE-7dA"; */
+"5Yd-YE-7dA.text" = "Face Edit";
+
+/* Class = "UILabel"; text = "Length"; ObjectID = "5gk-Gt-ZOx"; */
+"5gk-Gt-ZOx.text" = "Length";
+
+/* Class = "UILabel"; text = "X"; ObjectID = "7FJ-yh-mtT"; */
+"7FJ-yh-mtT.text" = "X";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "7zV-zF-Wu6"; */
+"7zV-zF-Wu6.text" = "Label";
+
+/* Class = "UILabel"; text = "Z"; ObjectID = "8kC-K2-yxj"; */
+"8kC-K2-yxj.text" = "Z";
+
+/* Class = "UILabel"; text = "Y"; ObjectID = "Bvg-tD-MkC"; */
+"Bvg-tD-MkC.text" = "Y";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "CWa-Ti-xwG"; */
+"CWa-Ti-xwG.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Ecn-OH-O1f"; */
+"Ecn-OH-O1f.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Add to List"; ObjectID = "Fv7-Rs-Enw"; */
+"Fv7-Rs-Enw.normalTitle" = "Add to List";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "GQX-IK-egn"; */
+"GQX-IK-egn.text" = "0.00";
+
+/* Class = "UILabel"; text = "Height"; ObjectID = "GVj-aC-Xcs"; */
+"GVj-aC-Xcs.text" = "Height";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Gc2-KM-bSu"; */
+"Gc2-KM-bSu.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Rotation"; ObjectID = "ICv-pk-D17"; */
+"ICv-pk-D17.text" = "Rotation";
+
+/* Class = "UILabel"; text = "Y"; ObjectID = "Iby-pq-gog"; */
+"Iby-pq-gog.text" = "Y";
+
+/* Class = "UILabel"; text = "Model Scale"; ObjectID = "JSu-Oj-Cix"; */
+"JSu-Oj-Cix.text" = "Model Scale";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "JVY-US-Jw0"; */
+"JVY-US-Jw0.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Bone to attach your face"; ObjectID = "JZd-M7-L6V"; */
+"JZd-M7-L6V.text" = "Bone to attach your face";
+
+/* Class = "UILabel"; text = "Offset"; ObjectID = "Jaf-KZ-z1f"; */
+"Jaf-KZ-z1f.text" = "Offset";
+
+/* Class = "UIButton"; normalTitle = "Face"; ObjectID = "Jnc-ud-ZKI"; Note = "FaceSettingsViewController FaceBoneSwitch"; */
+"Jnc-ud-ZKI.normalTitle" = "Face";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "KWn-QL-DBA"; */
+"KWn-QL-DBA.text" = "1.00";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "Kjd-bF-cI4"; */
+"Kjd-bF-cI4.text" = "1.00";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "LcP-bb-hfv"; */
+"LcP-bb-hfv.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Open File..."; ObjectID = "MXu-8Q-FmN"; Note = "AnimationSettingsViewController OpenFileButton"; */
+"MXu-8Q-FmN.normalTitle" = "Open File...";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "NK1-Aa-iqR"; */
+"NK1-Aa-iqR.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "None"; ObjectID = "Oay-mq-DKx"; */
+"Oay-mq-DKx.normalTitle" = "None";
+
+/* Class = "UILabel"; text = "00:00"; ObjectID = "QG1-XE-QH8"; */
+"QG1-XE-QH8.text" = "00:00";
+
+/* Class = "UILabel"; text = "Face / Bone"; ObjectID = "SVo-0d-H5a"; Note = "FaceSettingViewController title"; */
+"SVo-0d-H5a.text" = "Face / Bone";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "SpL-lX-Lrc"; */
+"SpL-lX-Lrc.normalTitle" = "Reset";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "TFa-vE-Sio"; */
+"TFa-vE-Sio.text" = "0.00";
+
+/* Class = "UILabel"; text = "Background"; ObjectID = "YfI-Uq-8Xp"; Note = "BackgroundSettingsViewController title"; */
+"YfI-Uq-8Xp.text" = "Background";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "ZRN-Sb-rsB"; */
+"ZRN-Sb-rsB.text" = "1.00";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "aaw-3a-YSo"; */
+"aaw-3a-YSo.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "b9u-bh-t3W"; */
+"b9u-bh-t3W.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Width"; ObjectID = "bWq-Tp-RdB"; */
+"bWq-Tp-RdB.text" = "Width";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "dIB-Na-eC2"; */
+"dIB-Na-eC2.text" = "0.00";
+
+/* Class = "UILabel"; text = "Sound"; ObjectID = "fZu-qG-27m"; Note = "MusicSettingsViewController title"; */
+"fZu-qG-27m.text" = "Sound";
+
+/* Class = "UILabel"; text = "Message"; ObjectID = "gr2-Pd-RaF"; */
+"gr2-Pd-RaF.text" = "Message";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "ikt-Jr-qGh"; */
+"ikt-Jr-qGh.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Motion"; ObjectID = "kxX-T0-LTf"; Note = "AnimationSettingsViewController title"; */
+"kxX-T0-LTf.text" = "Motion";
+
+/* Class = "UIButton"; normalTitle = "Name"; ObjectID = "lk7-GD-sej"; Note = "FaceSettingsViewController TargetButton"; */
+"lk7-GD-sej.normalTitle" = "Name";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "lr5-4U-1qx"; */
+"lr5-4U-1qx.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "mS4-WI-swS"; */
+"mS4-WI-swS.text" = "Label";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "nFa-hy-1iJ"; */
+"nFa-hy-1iJ.text" = "0.00";
+
+/* Class = "UITextField"; text = "1.00"; ObjectID = "q7c-nS-Dad"; */
+"q7c-nS-Dad.text" = "1.00";
+
+/* Class = "UILabel"; text = "Light"; ObjectID = "rXC-2G-sfR"; Note = "LightSettingsViewController title"; */
+"rXC-2G-sfR.text" = "Light";
+
+/* Class = "UILabel"; text = "RecordingMode"; ObjectID = "rkr-AX-3sN"; */
+"rkr-AX-3sN.text" = "RecordingMode";
+
+/* Class = "UIButton"; normalTitle = "Reset"; ObjectID = "uWd-rj-aNc"; */
+"uWd-rj-aNc.normalTitle" = "Reset";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "vLT-Yn-N20"; */
+"vLT-Yn-N20.normalTitle" = "Button";
+
+/* Class = "UITextField"; text = "0.00"; ObjectID = "vbP-Z1-rKo"; */
+"vbP-Z1-rKo.text" = "0.00";
+
+/* Class = "UILabel"; text = "Z"; ObjectID = "viz-tP-PZG"; */
+"viz-tP-PZG.text" = "Z";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "wOI-Zg-Ghu"; */
+"wOI-Zg-Ghu.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Motion"; ObjectID = "wnQ-Uo-XXi"; */
+"wnQ-Uo-XXi.normalTitle" = "Motion";
+
+/* Class = "UILabel"; text = "●"; ObjectID = "x9h-xk-2sd"; */
+"x9h-xk-2sd.text" = "●";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "xT4-S8-OPH"; */
+"xT4-S8-OPH.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Cancel"; ObjectID = "y7j-30-8Y7"; */
+"y7j-30-8Y7.normalTitle" = "Cancel";
+
+/* Class = "UILabel"; text = "X"; ObjectID = "zAf-x8-aOu"; */
+"zAf-x8-aOu.text" = "X";

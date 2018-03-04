@@ -849,10 +849,10 @@ class MMDPMDReader: MMDReader {
                 //bone = MMDNode()
             }
 
-            var worldTransform = SCNMatrix4MakeTranslation(posX, posY, posZ)
-            worldTransform = SCNMatrix4Rotate(worldTransform, rotY, 0, 1, 0)
-            worldTransform = SCNMatrix4Rotate(worldTransform, rotX, 1, 0, 0)
-            worldTransform = SCNMatrix4Rotate(worldTransform, rotZ, 0, 0, 1)
+            var worldTransform = SCNMatrix4MakeTranslation(OSFloat(posX), OSFloat(posY), OSFloat(posZ))
+            worldTransform = SCNMatrix4Rotate(worldTransform, OSFloat(rotY), 0, 1, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, OSFloat(rotX), 1, 0, 0)
+            worldTransform = SCNMatrix4Rotate(worldTransform, OSFloat(rotZ), 0, 0, 1)
             
             //let invBoneTransform = SCNMatrix4Invert(bone.worldTransform)
             //let physicsTransform = SCNMatrix4Mult(worldTransform, invBoneTransform)

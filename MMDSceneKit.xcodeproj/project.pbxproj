@@ -24,7 +24,6 @@
 		DD0D6CF41C28BBFC00D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
 		DD0D6CF51C28BC2300D675A3 /* MMDXReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD41D89F1C24099400A7F834 /* MMDXReader.swift */; };
 		DD12BF801C1838D700B20F37 /* MMDSceneKit_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF761C1838D700B20F37 /* MMDSceneKit_macOS.framework */; };
-		DD12BF951C18390700B20F37 /* MMDSceneKit_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DD12BF941C18390700B20F37 /* MMDSceneKit_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD12BF9C1C18390700B20F37 /* MMDSceneKit_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD12BF921C18390700B20F37 /* MMDSceneKit_iOS.framework */; };
 		DD12BFA11C18390800B20F37 /* MMDSceneKit_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFA01C18390800B20F37 /* MMDSceneKit_iOSTests.swift */; };
 		DD12BFBF1C1AB78000B20F37 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD12BFBE1C1AB78000B20F37 /* AppDelegate.swift */; };
@@ -1001,7 +1000,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD12BF951C18390700B20F37 /* MMDSceneKit_iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1751,7 +1749,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DESTINATION_DIR=\"$SRCROOT/Framework/iOS\"\n\nif [ ! -d \"$DESTINATION_DIR\" ]; then\n    mkdir -p $DESTINATION_DIR\nfi\ncp -RP $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n";
+			shellScript = "# DESTINATION_DIR=\"$SRCROOT/Framework/iOS\"\n#\n# if [ ! -d \"$DESTINATION_DIR\" ]; then\n#     mkdir -p $DESTINATION_DIR\n# fi\n# cp -RP $BUILT_PRODUCTS_DIR/$WRAPPER_NAME $DESTINATION_DIR\n# ";
 		};
 		DDCF5CBC1DD4FD190037BD66 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2353,7 +2351,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
@@ -2380,7 +2378,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.0spec.MMDSceneKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
