@@ -5,13 +5,23 @@ SceneKit expansion for MikuMikuDance
 
 ## Install
 
+### Using [CocoaPods](https://cocoapods.org/)
+
+Add the following to your [Podfile](http://guides.cocoapods.org/using/the-podfile.html):
+
+```rb
+pod 'MMDSceneKit'
+```
+
+### Manually
+
 Download **MMDSceneKit_vX.X.X.zip** from [Releases](https://github.com/magicien/MMDSceneKit/releases/latest).
 
 ## Usage
 
 ### Swift
 ```
-import MMDSceneKit_macOS
+import MMDSceneKit
 
 guard let sceneSource = MMDSceneSource(named: "art.scnassets/projectFile.pmm") else { return }
 var scene = sceneSource.getScene()
@@ -19,7 +29,7 @@ var scene = sceneSource.getScene()
 
 ### Objective-C
 ```
-@import MMDSceneKit_macOS;
+@import MMDSceneKit;
 
 MMDSceneSource *source = [[MMDSceneSource alloc] initWithNamed:@"art.scnassets/projectFile.pmm" options:nil models:nil];
 SCNScene *scene = [source getScene];
