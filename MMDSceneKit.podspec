@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "11.0"
   s.osx.deployment_target = "10.13"
   s.tvos.deployment_target = "11.0"
-  s.source       = { :git => "https://github.com/magicien/MMDSceneKit.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/magicien/MMDSceneKit.git", :tag => "v#{s.version}" }
   s.source_files = "Source/**/*.{swift,metal}"
   s.resource     = "Source/**/*.shader", "Source/**/*.bmp"
   s.pod_target_xcconfig = {
