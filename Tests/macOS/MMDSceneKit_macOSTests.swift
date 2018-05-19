@@ -6,6 +6,7 @@
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
+/*
 import XCTest
 @testable import MMDSceneKit_macOS
 
@@ -34,3 +35,4 @@ class MMDSceneKit_macOSTests: XCTestCase {
     }
     
 }
+*/

@@ -826,7 +826,7 @@ class MMDPMXReader: MMDReader {
                 
                 var linkBoneNoArray = [Int]()
                 for _ in 0..<numLink {
-                    let linkNo = Int(getUnsignedShort())
+                    let linkNo = getIntOfLength(self.boneIndexSize)
                     let bone = self.boneArray[linkNo]
                     
                     let limitFlag = getUnsignedByte()
@@ -841,7 +841,6 @@ class MMDPMXReader: MMDReader {
                     }
                     
                     ik.boneArray.append(bone)
-                    //bone.ikEffector = boneNode
                 }
                 
                 self.workingNode.ikArray!.append(ik)
