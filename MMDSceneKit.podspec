@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "MMDSceneKit"
-  s.version      = "0.3.4"
+  s.version      = "0.3.5"
   s.summary      = "SceneKit expansion for MikuMikuDance"
   s.homepage     = "https://github.com/magicien/MMDSceneKit"
   s.screenshots  = "https://raw.githubusercontent.com/magicien/MMDSceneKit/master/screenshot.png"
