@@ -10,16 +10,16 @@ import Foundation
 import SceneKit
 
 let toonFiles: [String] = [
-    "art.scnassets/toon01.bmp",
-    "art.scnassets/toon02.bmp",
-    "art.scnassets/toon03.bmp",
-    "art.scnassets/toon04.bmp",
-    "art.scnassets/toon05.bmp",
-    "art.scnassets/toon06.bmp",
-    "art.scnassets/toon07.bmp",
-    "art.scnassets/toon08.bmp",
-    "art.scnassets/toon09.bmp",
-    "art.scnassets/toon10.bmp"
+    "toon01.bmp",
+    "toon02.bmp",
+    "toon03.bmp",
+    "toon04.bmp",
+    "toon05.bmp",
+    "toon06.bmp",
+    "toon07.bmp",
+    "toon08.bmp",
+    "toon09.bmp",
+    "toon10.bmp"
 ]
 
 internal class MMDReader: NSObject {
@@ -29,17 +29,19 @@ internal class MMDReader: NSObject {
     internal var pos = 0
     
     #if os(iOS) || os(tvOS) || os(watchOS)
-        static var toonTextures: [UIImage]! = nil
+    static var toonTextures: [UIImage]! = nil
     #elseif os(macOS)
-        static var toonTextures: [NSImage]! = nil
+    static var toonTextures: [NSImage]! = nil
     #endif
     
     /**
-     * 
-     * - parameter data: 
+     *
+     * - parameter data:
      * - parameter directoryPath:
      */
     internal init(data: Data!, directoryPath: String! = "") {
+        super.init()
+        
         self.directoryPath = directoryPath
         self.binaryData = data
         self.length = data.count
@@ -47,25 +49,25 @@ internal class MMDReader: NSObject {
         
         if MMDReader.toonTextures == nil {
             #if os(iOS) || os(tvOS) || os(watchOS)
-                MMDReader.toonTextures = [UIImage]()
-                for fileName in toonFiles {
-                    #if os(watchOS)
-                        let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
-                        let image = UIImage(contentsOfFile: path)!
-                    #else
-                        let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
-                        let image = UIImage(contentsOfFile: path)!
-                    #endif
-                    
-                    MMDReader.toonTextures.append(image)
-                }
+            MMDReader.toonTextures = [UIImage]()
+            for fileName in toonFiles {
+                #if os(watchOS)
+                let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
+                let image = UIImage(contentsOfFile: path)!
+                #else
+                let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)!
+                let image = UIImage(contentsOfFile: path)!
+                #endif
+                
+                MMDReader.toonTextures.append(image)
+            }
             #elseif os(macOS)
-                MMDReader.toonTextures = [NSImage]()
-                for fileName in toonFiles {
-                    let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)
-                    let image = NSImage(contentsOfFile: path!)
-                    MMDReader.toonTextures.append(image!)
-                }
+            MMDReader.toonTextures = [NSImage]()
+            for fileName in toonFiles {
+                let path = Bundle(for: MMDReader.self).path(forResource: fileName, ofType: nil)
+                let image = NSImage(contentsOfFile: path!)
+                MMDReader.toonTextures.append(image!)
+            }
             #endif
         }
     }
@@ -93,7 +95,7 @@ internal class MMDReader: NSObject {
         var chars = [UInt8](repeating: 0, count: length)
         //self.binaryData.copyBytes(to: &chars, range: NSRange.init(location: self.pos, length: length))
         self.binaryData.copyBytes(to: &chars, from: Range(self.pos..<self.pos+length))
-
+        
         if encoding != String.Encoding.utf16LittleEndian {
             for index in 0..<length {
                 if (chars[index] == 0) {
@@ -107,7 +109,7 @@ internal class MMDReader: NSObject {
         //let token = self.binaryData.subdata(in: NSRange.init(location: self.pos, length: strlen))
         let token = self.binaryData.subdata(in: Range(self.pos..<self.pos+strlen))
         let str = NSString.init(data: token, encoding: encoding.rawValue)
-
+        
         self.pos += length
         
         return str
@@ -139,7 +141,7 @@ internal class MMDReader: NSObject {
         
         let pointer = UnsafeMutableBufferPointer<UInt16>(start: &num, count: 1)
         _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+2))
-
+        
         self.pos += 2
         
         return num
@@ -173,7 +175,7 @@ internal class MMDReader: NSObject {
         
         let pointer = UnsafeMutableBufferPointer<Int32>(start: &num, count: 1)
         _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
-
+        
         self.pos += 4
         
         return num
@@ -192,13 +194,13 @@ internal class MMDReader: NSObject {
         
         //let token = self.binaryData.subdata(in: NSRange.init(location: self.pos, length: length))
         //token.copyBytes(to: &num, count: length)
-
+        
         /*
          getUnsignedByte
          let pointer = UnsafeMutableBufferPointer<Unsign>(start: &num, count: 1)
          _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+length))
          */
-
+        
         if length == 1 {
             return Int(self.getUnsignedByte())
         } else if length == 2 {
@@ -206,7 +208,7 @@ internal class MMDReader: NSObject {
         } else if length == 4 {
             return Int(self.getUnsignedInt())
         }
-
+        
         print("getIntOfLength: unsupported length: \(length)")
         return 0
     }
@@ -219,10 +221,10 @@ internal class MMDReader: NSObject {
         var num: Float32 = 0
         //let token = self.binaryData.subdata(in: Range(self.pos..<self.pos+4))
         //token.copyBytes(to: &num, from: Range(0..<4))
-
+        
         let pointer = UnsafeMutableBufferPointer<Float32>(start: &num, count: 1)
         _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+4))
-
+        
         self.pos += 4
         
         return num
@@ -279,8 +281,8 @@ internal class MMDReader: NSObject {
         quat.z *= invr
         quat.w *= invr
     }
-
-#if os(macOS)
+    
+    #if os(macOS)
     internal func createTexture(fileName: String, light: OSColor) -> NSImage? {
         guard let image = NSImage(contentsOfFile: fileName) else { return nil }
         return createTexture(image, light: light)
@@ -298,7 +300,7 @@ internal class MMDReader: NSObject {
     internal func getColorComponents(color: OSColor) -> (CGFloat, CGFloat, CGFloat, CGFloat) {
         return (color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent)
     }
-#else
+    #else
     internal func createTexture(fileName: String, light: OSColor) -> CGImage? {
         guard let image = UIImage(contentsOfFile: fileName) else { return nil }
         return createTexture(image, light: light)
@@ -306,7 +308,7 @@ internal class MMDReader: NSObject {
     
     internal func createTexture(_ texture: UIImage, light: OSColor) -> CGImage? {
         guard let cgImage = texture.cgImage else { return nil }
-    
+        
         return self.createTexture(cgImage: cgImage, light: light)
     }
     
@@ -317,17 +319,17 @@ internal class MMDReader: NSObject {
         var a: CGFloat = 0
         
         color.getRed(&r, green: &g, blue: &b, alpha: &a)
-
+        
         return (r, g, b, a)
     }
-#endif
+    #endif
     
-
-#if os(watchOS)
+    
+    #if os(watchOS)
     internal func createTexture(cgImage: CGImage, light: OSColor) -> CGImage? {
         return cgImage
     }
-#else
+    #else
     internal func createTexture(cgImage: CGImage, light: OSColor) -> CGImage? {
         //guard let cgImage = texture.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return nil }
         let ciImage = CIImage(cgImage: cgImage)
@@ -346,7 +348,7 @@ internal class MMDReader: NSObject {
         let blue = CIVector(x: 0.0, y: lightBlue, z: 0.0, w: 0.0)
         //let alpha = CIVector(x: 0.0, y: 1.0, z: 0.0, w: 0.0)
         print("light: \(lightRed), \(lightGreen), \(lightBlue)")
-
+        
         filter.setValue(ciImage, forKey: "inputImage")
         filter.setValue(red, forKey: "inputRedCoefficients")
         filter.setValue(green, forKey: "inputGreenCoefficients")
@@ -354,12 +356,12 @@ internal class MMDReader: NSObject {
         //filter.setValue(alpha, forKey: "inputAlphaCoefficients")
         
         guard let newImage = filter.outputImage else { return cgImage }
-
+        
         return newImage.cgImage
     }
-#endif
+    #endif
     
-#if !os(watchOS)
+    #if !os(watchOS)
     /**
      * create new CAKeyframeAnimation object with initializing values, keyTimes, timingFunctions
      * - parameter keyPath: key path for the animation
@@ -394,7 +396,7 @@ internal class MMDReader: NSObject {
             }
         }
     }
-#endif
+    #endif
     // for debug
     var _pos: Int {
         get {
