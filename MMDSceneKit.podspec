@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "MMDSceneKit"
-  s.version      = "0.3.2"
+  s.version      = "0.3.4"
   s.summary      = "SceneKit expansion for MikuMikuDance"
   s.homepage     = "https://github.com/magicien/MMDSceneKit"
   s.screenshots  = "https://raw.githubusercontent.com/magicien/MMDSceneKit/master/screenshot.png"
@@ -12,6 +12,9 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/magicien/MMDSceneKit.git", :tag => "v#{s.version}" }
   s.source_files = "Source/**/*.{swift,metal}"
   s.resources    = "Source/**/*.shader", "Source/**/*.bmp"
+  s.resource_bundles = {
+    "MMDSceneKit" => ["Source/**/*.shader", "Source/**/*.bmp"]
+  }
   s.pod_target_xcconfig = {
     "SWIFT_VERSION" => "4.0"
   }
