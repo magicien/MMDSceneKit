@@ -6,6 +6,7 @@
 //  Copyright © 2015 DarkHorse. All rights reserved.
 //
 
+import Foundation
 import SceneKit
 
 let toonFiles: [String] = [
@@ -183,7 +184,7 @@ internal class MMDReader: NSObject {
      * - returns: Signed Int data
      */
     internal func getIntOfLength(_ length: Int) -> Int {
-        var num: Int = 0
+        //var num: Int = 0
         
         if length <= 0 || length > 4 {
             return 0
@@ -191,12 +192,23 @@ internal class MMDReader: NSObject {
         
         //let token = self.binaryData.subdata(in: NSRange.init(location: self.pos, length: length))
         //token.copyBytes(to: &num, count: length)
-        let pointer = UnsafeMutableBufferPointer<Int>(start: &num, count: 1)
-        _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+length))
 
-        self.pos += length
-        
-        return num
+        /*
+         getUnsignedByte
+         let pointer = UnsafeMutableBufferPointer<Unsign>(start: &num, count: 1)
+         _ = self.binaryData.copyBytes(to: pointer, from: Range(self.pos..<self.pos+length))
+         */
+
+        if length == 1 {
+            return Int(self.getUnsignedByte())
+        } else if length == 2 {
+            return Int(self.getUnsignedShort())
+        } else if length == 4 {
+            return Int(self.getUnsignedInt())
+        }
+
+        print("getIntOfLength: unsupported length: \(length)")
+        return 0
     }
     
     /**
