@@ -20,7 +20,8 @@ open class MMDCameraNode: MMDNode {
     private var rotYNode: SCNNode! = nil
     private var rotZNode: SCNNode! = nil
     private var cameraNode: SCNNode! = nil
-    
+
+    /// x-axis rotation in radians
     public var rotX: Float {
         get {
             return Float(self.rotXNode.eulerAngles.x)
@@ -30,6 +31,7 @@ open class MMDCameraNode: MMDNode {
         }
     }
     
+    /// y-axis rotation in radians
     public var rotY: Float {
         get {
             return Float(self.rotYNode.eulerAngles.y)
@@ -39,6 +41,7 @@ open class MMDCameraNode: MMDNode {
         }
     }
 
+    /// z-axis rotation in radians
     public var rotZ: Float {
         get {
             return Float(self.rotZNode.eulerAngles.z)

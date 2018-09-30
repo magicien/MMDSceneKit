@@ -10,16 +10,16 @@ import Foundation
 import SceneKit
 
 let toonFiles: [String] = [
-    "toon01.bmp",
-    "toon02.bmp",
-    "toon03.bmp",
-    "toon04.bmp",
-    "toon05.bmp",
-    "toon06.bmp",
-    "toon07.bmp",
-    "toon08.bmp",
-    "toon09.bmp",
-    "toon10.bmp"
+    "art.scnassets/toon01.bmp",
+    "art.scnassets/toon02.bmp",
+    "art.scnassets/toon03.bmp",
+    "art.scnassets/toon04.bmp",
+    "art.scnassets/toon05.bmp",
+    "art.scnassets/toon06.bmp",
+    "art.scnassets/toon07.bmp",
+    "art.scnassets/toon08.bmp",
+    "art.scnassets/toon09.bmp",
+    "art.scnassets/toon10.bmp"
 ]
 
 internal class MMDReader: NSObject {

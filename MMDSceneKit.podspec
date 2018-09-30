@@ -11,9 +11,9 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "11.0"
   s.source       = { :git => "https://github.com/magicien/MMDSceneKit.git", :tag => "v#{s.version}" }
   s.source_files = "Source/**/*.{swift,metal}"
-  s.resources    = "Source/**/*.shader", "Source/**/*.bmp"
+  s.resources    = "Source/**/*.shader", "Source/Common/art.scnassets", "Source/Common/*.plist"
   s.resource_bundles = {
-    "MMDSceneKit" => ["Source/**/*.shader", "Source/**/*.bmp"]
+    "MMDSceneKit" => ["Source/**/*.shader", "Source/Common/art.scnassets", "Source/Common/*.plist"]
   }
   s.pod_target_xcconfig = {
     "SWIFT_VERSION" => "4.0"

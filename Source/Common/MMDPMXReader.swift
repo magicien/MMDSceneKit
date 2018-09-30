@@ -1229,11 +1229,12 @@ class MMDPMXReader: MMDReader {
         }
         
 #if !os(watchOS)
-        //print("****************** create program start ***************************")
-        //let program = MMDProgram()
-        //program.delegate = self.workingNode
-        
         /*
+        //print("****************** create program start ***************************")
+        let program = MMDProgram()
+        program.delegate = self.workingNode
+        
+        
         var path = NSBundle(forClass: MMDProgram.self).pathForResource("MMDShader", ofType: "vsh")
         let vertexShader = try! String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
         program.vertexShader = vertexShader
@@ -1244,12 +1245,12 @@ class MMDPMXReader: MMDReader {
         
         program.setSemantic(SCNModelViewProjectionTransform, forSymbol: "modelViewProjectionTransform", options: nil)
         program.setSemantic(SCNGeometrySourceSemanticVertex, forSymbol: "aPos", options: nil)
-        */
+        
         //print("****************** create program end ***************************")
-        //for material in self.materialArray {
-        //    material.program = program
-        //}
-
+        for material in self.materialArray {
+            material.program = program
+        }
+*/
 
     #endif
         
